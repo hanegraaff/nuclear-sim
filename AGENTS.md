@@ -36,6 +36,7 @@ Reimplement the application described in [requirements.md](requirements.md) so i
 - Cover model invariants and representative catalog values with unit tests; cover state transitions with application tests; cover projection/rendering contracts with focused tests; and cover critical user paths and visual states with browser tests.
 - Run the checks specified in `architecture.md` before declaring work complete. Report exactly which checks ran and any remaining visual differences.
 - Publish each completed roadmap increment to the same Site using the Sites workflow. Preserve its project ID and audience; record the deployed version and URL in `roadmap.md`. Local runs and previews are for engineering checks, not the user-facing deliverable.
+- Keep the root GitHub repository up to date after each completed roadmap increment. Commit and push from the project root, checking for and reconciling remote changes first. The separate Git checkout inside `site/` belongs to the Sites publishing workflow; preserve both histories.
 - Keep tests independent of live map tiles, current weather, random launch angles, and wall-clock time. Inject or freeze these inputs.
 - Do not update visual baselines to make a failing comparison pass without inspecting the difference against `prototype-screenshots/`.
 
