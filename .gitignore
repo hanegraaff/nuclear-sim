@@ -1,0 +1,10 @@
+.DS_Store
+**/node_modules/
+**/coverage/
+site/dist/
+site/playwright-report/
+site/test-results/
+site/.git/
+.site-git-preserve/
+*.pem
+.env*

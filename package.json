@@ -1,0 +1,13 @@
+{
+  "name": "nuke-simulator-workspace",
+  "private": true,
+  "scripts": {
+    "typecheck": "npm --prefix site run typecheck",
+    "lint": "npm --prefix site run lint",
+    "test:unit": "npm --prefix site run test:unit",
+    "test:integration": "npm --prefix site run test:integration",
+    "test:e2e": "npm --prefix site run test:e2e",
+    "build": "npm --prefix site run build",
+    "verify": "npm --prefix site run verify"
+  }
+}

@@ -1,0 +1,90 @@
+# Nuke Simulator requirements
+
+## Purpose and references
+
+Build a full-screen satellite-map nuclear effects visualizer that reproduces the look, interaction, and animation of `prototype-code/` and `prototype-screenshots/`. The prototype is the visual reference, not the implementation architecture. Effects are illustrative screening estimates, not forecasts or emergency guidance.
+
+The nine supplied image references are in `prototype-screenshots/` (there is no `/screenshots` directory). Most full-page captures are 2208 × 1276 pixels. The initial camera in the prototype centers on Midtown Manhattan at approximately longitude −73.9857, latitude 40.7484, zoom 10.6. The current prototype uses MapLibre over Esri World Imagery with visible attribution. Reproduce the imagery character, camera framing, and UI composition, subject to tile-provider terms and actual image availability.
+
+`Audible.png` shows the **Blast** tab selected and a settled blast. The green **Audible** view appears in `Additive Blasts.png`. `Vsible.png` is the supplied filename for the blue **Visible** view. Use the visible tab and rendered content when choosing a reference, not the filename alone.
+
+## Interaction requirements
+
+| ID | Requirement |
+| --- | --- |
+| R-01 | The map fills the viewport, supports pan, zoom, and pitched/rotated camera views, and keeps geographic overlays aligned during camera changes and resize. It initially shows the New York area in daylight satellite imagery. |
+| R-02 | The upper-left control panel shows the title **Nuke Simulator**, “Click Map to Launch,” Scenario and Device tabs, a selection control, Reset, Multi-Launch Mode, launch status, Night, and Hide. A separate cloud-profile panel sits below it. |
+| R-03 | Device selection contains the same catalog groups, ordering, names, and displayed yields as the prototype. A custom yield option accepts 0.000000001–1,000,000,000 Mt; commas, underscores, or spaces are accepted only as consistent three-digit groups. Out-of-range values and malformed grouping show an error instead of silently changing the yield. The default device is **Fat Man · 21 kt**. |
+| R-04 | Scenario selection contains the same historical and hypothetical scenarios as the prototype. Selecting a scenario selects its device and eases the camera to its location and suitable zoom. The user still clicks the map to launch; selecting a scenario does not detonate automatically. |
+| R-05 | Clicking an unobstructed map location immediately displays a red pulsing target crosshair at that geographic point, starts a visible incoming missile from the viewport edge, and then detonates at the chosen point. Controls, markers, and legends must not accidentally trigger a launch. |
+| R-06 | The default single-launch mode replaces the prior strike when the map is clicked again, including an in-flight or animating strike. After the animation settles, the mode displays effect divisions, a dashed distance ruler with endpoint label, colored markers, and popups. |
+| R-07 | Multi-Launch Mode can be enabled before or after a strike. Further clicks add strikes that remain visible; overlapping fields brighten and combine. Its presentation removes the single-strike ruler/dividing rings and uses a lower-left map-distance scale and a four-band effect legend with hover/focus popups. Turning the mode off retains the latest complete delivery group, including all warheads of a MIRV launch. |
+| R-08 | Reset cancels active animation, clears all strike graphics and effect annotations, resets the cloud profile to standby, and returns the phase to armed. It leaves the selected device, launch mode, and map camera available for the next launch. |
+| R-09 | Hide moves the left controls and cloud panel away; Show Controls restores them. The map, effect tabs, and any strikes remain usable. Night changes the imagery tone without changing effect geometry or data. |
+| R-10 | Once a launch finishes, the upper-right view selector offers Blast, Fallout when a nuclear strike is available, Audible, and Visible. Switching views updates field, ruler/legend, labels, markers, and framing. Launching again returns the current view to Blast. Conventional-only strikes do not offer nuclear fallout. |
+| R-11 | Markers expose the effect name, plain-language description, and quantitative span or reading on hover, keyboard focus, or selection. The tooltip stays legible near screen edges; markers remain attached to map locations while panning/zooming. |
+| R-12 | The cloud-profile monitor animates during detonation, shows a height scale and modeled peak height, and distinguishes a nuclear mushroom cloud from a conventional detonation plume. For MIRV systems, indicate per-warhead height. |
+| R-13 | The interface remains usable at desktop and narrow/mobile viewports. Controls do not block every launchable map area, essential actions are reachable by keyboard, status changes are announced accessibly, and reduced-motion preference shortens or simplifies intense animation while preserving sequence and final state. |
+| R-14 | Deliver the application as a published Site. The user reviews each completed roadmap increment at the same Site URL; they do not need to install dependencies or run a local server. Begin with the Site's private audience unless the user requests another audience. Preserve the Site identity and audience across updates. |
+
+## Catalog parity
+
+Preserve the prototype's ordering and labels. Store IDs, display yields, numeric yields, and scenario coordinates in typed catalog data, with tests for every entry. The data in `prototype-code/app/page.tsx` is the reference for exact numeric values and coordinates.
+
+| Group | Items, in prototype order |
+| --- | --- |
+| Conventional weapons (2) | GBU-43/B MOAB; FOAB (reported) |
+| Nuclear devices (34) | W54 / Davy Crockett; W48 artillery shell; W54 SADM; Little Boy; Trinity Gadget; Fat Man; RDS-1 / First Lightning; B61-12 (max); Gerboise Bleue; W76-1; Sedan Test Device; W80; Greenhouse George; W87; B61-7 (max); RDS-6s / Joe-4; W88; Ivy King; Orange Herald; W59; B83; Starfish Prime / W49; RDS-37 test yield; Grapple X / Round C; Canopus; Grapple Y; W39; B53; Hardtack Poplar; Ivy Mike; Castle Yankee; Castle Bravo; Mark 41; Tsar Bomba |
+| MIRV delivery systems (3) | RS-24 Yars / SS-29 (3 × 175 kt); RSM-56 Bulava / SS-NX-30 (10 × 120 kt); RS-28 Sarmat / Satan II (10 × 500 kt) |
+| Hypothetical scale studies (8) | 100 Mt scale study; 1 Gt scale study; 10 Gt regional extreme; 100 Gt regional extreme; 1.5 Tt small-continent study; 20 Tt large-continent study; 100 Tt hemisphere study; 1 Pt Earth-span stress test |
+| Custom | Custom yield… in Mt |
+
+Historical scenarios (11): Hiroshima · 1945; Nagasaki · 1945; Trinity · New Mexico, 1945; Sedan · Nevada, 1962; Castle Bravo · Bikini Atoll, 1954; Tsar Bomba · Novaya Zemlya, 1961; RDS-1 · Semipalatinsk, 1949; Gerboise Bleue · Reggane, 1960; Ivy Mike · Elugelab, 1952; Orange Herald · Malden Island, 1957; Canopus · Fangataufa, 1968.
+
+Hypothetical scenarios (9): What if: Tsar Bomba over Manhattan?; What if: 100 Mt over Tokyo?; Continent scale · Central Europe; Continent scale · North America; Large-continent scale · Africa; Large-continent scale · Asia; Continent scale · Australia; Hemisphere scale · Point Nemo; Earth-span stress test · 1 Pt.
+
+## Animation and presentation contract
+
+| ID | Requirement and prototype reference |
+| --- | --- |
+| V-01 | **Missile:** `Missile.jpeg` captures a small white-hot amber projectile with orange halo travelling toward a red target reticle over satellite imagery. The projectile follows a gently bent path from a viewport edge and leaves a narrow pale smoke/exhaust trail that lingers and disperses near its emission points. Its motion is continuous, without jumps when the map camera changes. Normal flight is about 6.5 seconds. This specific missile motion is a high-priority fidelity target. |
+| V-02 | **Impact and expansion:** At impact, a short white/yellow/orange flash blooms and fades over about 1.1 seconds. A circular shockwave and warm white fireball grow as the effect field expands over about 4.6 seconds, easing quickly at first and slowing near the final radius. The cloud-profile panel rises in step. See `Nuke Blast with Fireball.png`. |
+| V-03 | **Settled Blast:** The field remains attached to ground zero. Its center is white/yellow; inner zone orange/red; middle zone magenta; outer zone purple. The satellite texture remains visible through the translucent outer bands. Single mode uses circular boundary strokes and a white dashed radial ruler with color-coded points and a radius label. See `Nuke Blast Top.png`, `Nuke Blast with Fireball.png`, and `MarkersAnd Popups.jpeg`. |
+| V-04 | **Multi Blast:** Overlapping strikes accumulate, with a brighter yellow/orange combined center and a broader pink/purple field. Individual fireballs remain discernible. The lower-left map-distance and combined-damage legends replace the single ruler. See `Multi-Launch.png`. |
+| V-05 | **Fallout:** A warm bright core near ground zero leads into a long, irregular, curved downwind plume with yellow/orange core, pink middle, and purple outer deposit. The H+24 dashed downwind ruler and markers identify four bands: Contaminated, Acute Sickness, Critical Dose, Lethal Dose. Use a documented climatological prevailing-wind proxy, and state that this is not live meteorology. See `Fallout.png`. |
+| V-06 | **Audible:** A soft-edged green range field spans from pale mint/white center through saturated green to dark outer green, without hard band boundaries. Four bands read Faint, Loud, Painful, Deafening. The lower-left legend is visible in multi mode. See the selected Audible tab in `Additive Blasts.png`. |
+| V-07 | **Visible:** A soft-edged blue range field spans from white/ice-blue center through sky blue to dark navy edge. Four bands read Faint, Clear, Brilliant, Blinding. The radius is labeled Visible and reflects direct fireball line of sight from a 1.7 m observer under clear-air assumptions. See `Vsible.png`. |
+| V-08 | **Cloud monitor:** The dark instrument panel has a “CLOUD PROFILE” heading, orange status dot, amber peak-height value, smoky animated cloud silhouette, vertical height scale, and footer showing the modeled phase. It remains visually separate from the main controls. |
+
+## Visual design details
+
+- The map owns the entire background; effects render above imagery and below controls. Preserve a map cursor that signals targeting.
+- Desktop controls sit roughly 16–28 px from the upper-left edge; the narrow black/charcoal header has a clipped lower-right corner, faint border, dense spacing, coral-red title/actions, gray supporting text, and mostly uppercase compact mono labels. The primary selected effect tab is a vivid solid accent: orange Blast, pink Fallout, green Audible, blue Visible.
+- The effect selector floats near the upper-right edge. Map navigation controls and attribution stay near the lower-right edge. Multi-mode scales/legends sit at lower left. A small uppercase model qualification sits along the lower edge.
+- The single-strike ruler is a dashed white line from ground zero toward the upper-right in the supplied New York captures, with four circular color-coded markers and a compact black label box at the endpoint. Its geographic bearing may adapt to available screen space so it remains readable.
+- Marker tooltip styling uses an opaque black panel, thin colored side rule, uppercase title, descriptive text, a divider, and compact numerical facts. See `MarkersAnd Popups.jpeg`.
+- The map must support both top-down (`Nuke Blast Top.png`) and pitched (`Nuke Blast with Fireball.png`, `Fallout.png`, `Vsible.png`) composition without effects detaching from the ground.
+- Match the prototype's spacing, colors, text hierarchy, layering, glow, and motion at equivalent camera/view state. A screenshot match means the same state and viewport, not arbitrary map tiles captured on another date.
+
+## Model requirements
+
+| ID | Requirement |
+| --- | --- |
+| M-01 | Model all physical distances in kilometers and yields in megatons internally. Convert at input/output boundaries. Use geodesic distance and destination calculations, not fixed pixel radii. Clamp ranges to a valid Earth-surface distance and behave sensibly across latitude and the antimeridian. |
+| M-02 | Provide monotonically increasing effect radii with yield and ordered nested blast zones: fireball ≤ severe ≤ moderate ≤ light. A cube-root yield law is an acceptable baseline for blast zones; calibrate documented constants to the prototype's representative cases. |
+| M-03 | MIRV effects use each reentry vehicle's yield for its individual blast and range. A single launch generates the specified number of distinct impacts, sharing one carrier before a continuous separation into individual paths. |
+| M-04 | Fallout uses a deterministic location-dependent wind proxy and a 24-hour surface-burst screening envelope. The user sees plume direction, four modeled bands, and a clear qualification that weather, precipitation, terrain, fission fraction, and burst conditions can materially change reality. |
+| M-05 | Audible and visible ranges use distinct documented approximations. Visible means direct line of sight to the luminous fireball, not the later cloud. Audible is an outdoor estimate that varies in reality with weather and terrain. Color intensity is smooth from center to edge. |
+| M-06 | Multi-strike composition is order-independent and bounded. Overlap increases displayed intensity without silently summing device yields into a fictitious larger single weapon. Legends and markers use the same band definitions as the map renderer. |
+
+## Acceptance criteria
+
+The named tests are expected capabilities of the new test suite, not a request to preserve the prototype's test files. Acceptance is based mainly on passing deterministic unit tests, with a small browser and visual layer for behavior that unit tests cannot establish.
+
+1. **Catalog and model unit tests:** all 47 device entries and 20 scenarios retain IDs, labels, ordering, yields, and coordinates; custom-yield validation is bounded; representative 15 kt, 21 kt, 50 Mt, conventional, and MIRV cases pass; radius ordering/monotonicity, geodesic round trips, antimeridian behavior, wind reproducibility, range bounds, and overlap invariants pass.
+2. **Application unit tests:** fake-clock launch transitions pass for armed → inbound → detonating → complete; single replacement cancels stale frames; multi mode accumulates; disabling it retains the latest delivery group; Reset clears all effect state; view eligibility, scenario selection, hide/show, and day/night transitions pass.
+3. **Rendering contract tests:** projectile starts at a viewport edge, follows a continuous route, and reaches ground zero; smoke remains near its emission point and fades; MIRV branches have continuous position and velocity; fields and markers stay aligned under camera pan, zoom, pitch, resize, and view changes; cached fields invalidate when their inputs change.
+4. **Browser checks:** a user can select a device or scenario, launch by clicking the map, inspect markers with hover and keyboard focus, switch all available views, add overlapping strikes, toggle night and controls, and Reset. No control click causes an accidental launch. Test a desktop viewport matching 2208 × 1276 and at least one narrow viewport.
+5. **Visual checks:** compare deterministic captures of the incoming missile, impact flash, expanding and settled Blast, single marker popup, multi Blast, Fallout, Audible, Visible, and cloud panel against the corresponding supplied images. Use fixed camera, map tile fixture, device, launch angle, time, and browser environment. Review meaningful differences manually; automated snapshots guard against later regressions.
+6. **Quality gate:** strict type checking, lint, build, unit/integration tests, and browser tests all pass. Every module and test suite has the documentation required by `AGENTS.md`. A known difference from the prototype is recorded with the affected requirement ID and image reference before acceptance.
+7. **Hosted delivery:** Plan 01 publishes the first working map to a new Site. Every later completed plan publishes a verified update to that same Site and records its version and URL in `roadmap.md`. The live Site loads and supports that plan's visible user path. Local execution is for development and automated checks only.
