@@ -26,8 +26,6 @@ The implementation uses React, TypeScript, Vite, and MapLibre GL JS. Later plans
 
 Implement one roadmap plan at a time. Each plan must publish an observable visual change to the same Site after its code, documentation, and relevant tests pass. From the repository root, install dependencies with `npm ci --prefix site`, install the test browser with `npx --prefix site playwright install chromium`, and run `npm run verify`. Local execution is used for development and automated tests only. See the [Site source README](site/README.md) for its layout and [visual reference notes](site/docs/visual-reference.md) for reviewed differences. Use the roadmap's completion record to track Site versions and URLs.
 
-## GitHub and Site source
+## GitHub and Sites publishing
 
-[GitHub](https://github.com/hanegraaff/nuclear-sim) tracks the whole project, including the steering files, implementation, and read-only prototype references. Run Git commands from the project root to commit and push changes to its `main` branch. The `site/` directory also has a separate local Git checkout used by the Sites publishing workflow; its Git metadata is not part of the GitHub repository. Keep both source histories in sync when completing a plan.
-
-In a fresh GitHub clone, open the existing Site source with the Sites workflow in an empty directory, then reconcile that checkout with `site/` before publishing. Preserve the project ID in `site/.openai/hosting.json` and the existing Site audience.
+[GitHub](https://github.com/hanegraaff/nuclear-sim) is the project's source of truth. Run Git commands from the project root; `site/` is a normal directory in that repository. To publish, the Sites workflow copies a committed, pushed `site/` tree into a temporary release checkout, verifies and packages it, and deploys to the existing private Site. The temporary checkout is not part of the workspace. See [Sites publishing](docs/sites-publishing.md) for the exact steps.

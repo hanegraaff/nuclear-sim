@@ -19,7 +19,7 @@ catalog data ──> domain model ──> application state ──> React UI
 ## Proposed organization
 
 ```text
-site/                isolated Sites source checkout and static build project
+site/                static Site source within the GitHub project
   .openai/hosting.json  Site identity and static dist/ configuration
   src/
     catalog/        device and scenario data, lookup and validation
@@ -47,7 +47,9 @@ Each logical source area and `site/tests/` has a README as described in `AGENTS.
 
 Plan 01 creates a new Site with a private audience, stores its returned `project_id` in the tracked `site/.openai/hosting.json` manifest, and configures `dist/` as the static directory. The Sites source workflow packages the verified build, saves a version, and deploys it. Preserve the same `project_id` and audience for subsequent plans. Keep provider credentials out of source, command arguments, and documentation.
 
-Each roadmap plan ends with the appropriate Sites source sync, version save, and deployment after tests and build pass. A plan is complete only when the deployment reaches a successful terminal state and its URL and version are recorded in the roadmap. Validate the hosted result's visible path for that plan; automated browser tests may use a local deterministic fixture to avoid live-tile variability. Local commands and previews are engineering tools, not the way users receive the application. The root README should link directly to the live Site once Plan 01 publishes it.
+GitHub is the authoritative project repository. Commit and push the application source there before release. The Sites workflow opens its service-side source in an isolated temporary checkout, replaces its tracked files with the exact committed GitHub `site/` tree, verifies the tree and build, then packages and deploys it. The service-side commit identifies that release snapshot; it is not a second development repository. Follow [Sites publishing](docs/sites-publishing.md) and record both GitHub and Sites provenance.
+
+Each roadmap plan ends with the Sites version save and deployment after tests and build pass. A plan is complete only when the deployment reaches a successful terminal state and its URL and version are recorded in the roadmap. Validate the hosted result's visible path for that plan; automated browser tests may use a local deterministic fixture to avoid live-tile variability. Local commands and previews are engineering tools, not the way users receive the application. The root README should link directly to the live Site once Plan 01 publishes it.
 
 ## Domain model
 
