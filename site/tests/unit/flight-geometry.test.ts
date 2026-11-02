@@ -1,6 +1,6 @@
-/** Prototype flight geometry tests cover edge entry, continuity, antimeridian, and smoke age. */
+/** Prototype flight geometry tests cover edge entry, projected continuity, and smoke age. */
 import { describe, expect, it } from "vitest";
-import { flightPoint, smokeMotion, viewportFlightRoute } from "../../src/rendering/animation/flightGeometry";
+import { projectFlightRoute, screenFlightPoint, smokeMotion, smokeParticle, viewportFlightRoute } from "../../src/rendering/animation/flightGeometry";
 
 describe("prototype carrier trajectory", () => {
   it("starts 14 pixels inside a viewport edge for representative screen sizes and angles", () => {
@@ -18,21 +18,25 @@ describe("prototype carrier trajectory", () => {
   });
 
   it("arrives exactly at the target without a position jump", () => {
-    const route = { start: { longitude: -74.2, latitude: 41 }, control: { longitude: -74, latitude: 40.9 }, target: { longitude: -73.8, latitude: 40.7 } };
-    expect(flightPoint(route, 0)).toEqual(route.start);
-    expect(flightPoint(route, 1)).toEqual(route.target);
+    const route = { start: { x: 0, y: 0 }, control: { x: 400, y: 80 }, target: { x: 700, y: 450 } };
+    expect(screenFlightPoint(route, 0)).toEqual(route.start);
+    expect(screenFlightPoint(route, 1)).toEqual(route.target);
     for (let step = 1; step <= 100; step++) {
-      const previous = flightPoint(route, (step - 1) / 100);
-      const current = flightPoint(route, step / 100);
-      expect(Math.hypot(current.longitude - previous.longitude, current.latitude - previous.latitude)).toBeLessThan(0.01);
+      const previous = screenFlightPoint(route, (step - 1) / 100);
+      const current = screenFlightPoint(route, step / 100);
+      expect(Math.hypot(current.x - previous.x, current.y - previous.y)).toBeLessThan(14);
     }
   });
 
-  it("takes the short geographic arc across the antimeridian", () => {
-    const route = { start: { longitude: 179.7, latitude: 20 }, control: { longitude: -179.9, latitude: 20.1 }, target: { longitude: -179.5, latitude: 20.2 } };
-    const midpoint = flightPoint(route, 0.5);
-    expect(Math.abs(midpoint.longitude)).toBeGreaterThan(179);
-    expect(flightPoint(route, 1)).toEqual(route.target);
+  it("projects control points before curving under a nonlinear camera", () => {
+    const route = { start: { longitude: 1, latitude: 1 }, control: { longitude: 2, latitude: 2 }, target: { longitude: 3, latitude: 3 } };
+    const projector = { toScreen: (point: { longitude: number; latitude: number }) => ({ x: point.longitude * 10, y: point.latitude ** 2 * 10 }) };
+    const projected = projectFlightRoute(route, projector);
+    const midpoint = screenFlightPoint(projected, 0.5);
+    const eased = 0.5 ** 1.16;
+    const expectedY = (1 - eased) ** 2 * 10 + 2 * (1 - eased) * eased * 40 + eased ** 2 * 90;
+    expect(midpoint.y).toBeCloseTo(expectedY, 10);
+    expect(midpoint.y).not.toBeCloseTo((1 + 2 * eased) ** 2 * 10, 1);
   });
 });
 
@@ -45,5 +49,19 @@ describe("exhaust dispersion", () => {
     expect(Math.abs(old.x)).toBeLessThan(10);
     expect(smokeMotion(3, { x: 200, y: 0 }, 12).opacity).toBe(0);
     expect(smokeMotion(0.2, { x: 200, y: 0 }, 12)).toEqual(fresh);
+  });
+
+  it("uses the next puff's younger age and seed at the smoke segment endpoint", () => {
+    const route = { start: { x: 0, y: 0 }, control: { x: 500, y: 100 }, target: { x: 1000, y: 0 } };
+    const particle = smokeParticle(route, 600, 1000, 6500, 193);
+    const from = screenFlightPoint(route, 600 / 6500);
+    const after = screenFlightPoint(route, 620 / 6500);
+    const velocity = { x: (after.x - from.x) * 50, y: (after.y - from.y) * 50 };
+    const next = screenFlightPoint(route, 660 / 6500);
+    const nextMotion = smokeMotion(0.34, velocity, 193 + 660);
+    expect(particle.segmentEnd?.x).toBeCloseTo(next.x + nextMotion.x, 10);
+    expect(particle.segmentEnd?.y).toBeCloseTo(next.y + nextMotion.y, 10);
+    const oldMotion = smokeMotion(0.4, velocity, 193 + 600);
+    expect(Math.abs(particle.segmentEnd!.x - (next.x + oldMotion.x))).toBeGreaterThan(0.01);
   });
 });

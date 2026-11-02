@@ -9,12 +9,14 @@ import {
 } from "../rendering/map/SatelliteMapController";
 
 /** Full-viewport map mount that places controls above imagery and map feedback. */
-export function MapViewport({ children, cameraRequest, launch, onLaunch }: { readonly children?: ReactNode; readonly cameraRequest: ScenarioCameraRequest | null; readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs">; readonly onLaunch: (route: FlightRoute) => void }) {
+export function MapViewport({ children, cameraRequest, launch, onLaunch, launchAngle }: { readonly children?: ReactNode; readonly cameraRequest: ScenarioCameraRequest | null; readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs">; readonly onLaunch: (route: FlightRoute) => void; readonly launchAngle: () => number }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
   const controllerRef = useRef<SatelliteMapController | null>(null);
   const onLaunchRef = useRef(onLaunch);
   onLaunchRef.current = onLaunch;
+  const launchAngleRef = useRef(launchAngle);
+  launchAngleRef.current = launchAngle;
   const [loadState, setLoadState] = useState<MapLoadState>("loading");
   const [camera, setCamera] = useState({
     longitude: INITIAL_MAP_CENTER.longitude,
@@ -31,6 +33,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch }: { rea
         onStateChange: setLoadState,
         onCameraChange: setCamera,
         onLaunch: (route) => onLaunchRef.current(route),
+        launchAngle: () => launchAngleRef.current(),
       }, missileCanvasRef.current);
     } catch {
       setLoadState("map-error");

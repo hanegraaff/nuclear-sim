@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { geoPoint } from "../../src/domain/geodesy";
 import { MapCameraAdapter, type MapProjection } from "../../src/rendering/map/MapCameraAdapter";
+import { projectFlightRoute, screenFlightPoint } from "../../src/rendering/animation/flightGeometry";
 import { INITIAL_MAP_CENTER, INITIAL_MAP_ZOOM, satelliteStyle } from "../../src/rendering/map/createSatelliteMap";
 
 describe("map camera boundary", () => {
@@ -29,6 +30,15 @@ describe("map camera boundary", () => {
     };
     const camera = new MapCameraAdapter(fakeMap);
     expect(camera.toScreen(geoPoint(-179.9, 20)).x).toBeCloseTo(180.1, 10);
+    const route = projectFlightRoute({
+      start: geoPoint(179.7, 20),
+      control: geoPoint(-179.9, 20.1),
+      target: geoPoint(-179.5, 20.2),
+    }, camera);
+    expect(route.control.x).toBeCloseTo(180.1, 10);
+    expect(route.target.x).toBeCloseTo(180.5, 10);
+    expect(screenFlightPoint(route, 0.5).x).toBeGreaterThan(179.7);
+    expect(screenFlightPoint(route, 0.5).x).toBeLessThan(180.5);
   });
 
   it("declares a satellite raster source and visible attribution", () => {

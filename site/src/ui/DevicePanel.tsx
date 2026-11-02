@@ -2,10 +2,10 @@ import { DEVICE_GROUPS } from "../catalog/devices";
 import { SCENARIOS } from "../catalog/scenarios";
 import { CUSTOM_DEVICE_ID, type ResolvedDeviceSelection } from "../application/deviceSelection";
 import type { ScenarioSelectionState } from "../application/scenarioSelection";
-import type { KeyboardEvent } from "react";
+import { memo, type KeyboardEvent } from "react";
 
 interface DevicePanelProps {
-  readonly state: ScenarioSelectionState;
+  readonly state: Pick<ScenarioSelectionState, "tab" | "scenarioId" | "selectedId" | "customYieldInput">;
   readonly selection: ResolvedDeviceSelection;
   readonly launchPhase: "armed" | "inbound" | "complete";
   readonly onSelectTab: (tab: "scenario" | "device") => void;
@@ -15,7 +15,7 @@ interface DevicePanelProps {
 }
 
 /** Prototype-style selector; tab and input actions update application state. */
-export function DevicePanel({ state, selection, launchPhase, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -110,4 +110,4 @@ export function DevicePanel({ state, selection, launchPhase, onSelectTab, onSele
       </section>
     </aside>
   );
-}
+});

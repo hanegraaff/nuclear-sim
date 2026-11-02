@@ -1,4 +1,4 @@
-import { geoPoint, normalizeLongitude, type GeoPoint } from "../../domain/geodesy";
+import type { GeoPoint } from "../../domain/geodesy";
 import type { FlightRoute } from "../../application/launch";
 import type { ScreenPoint } from "../map/MapCameraAdapter";
 
@@ -6,6 +6,16 @@ import type { ScreenPoint } from "../map/MapCameraAdapter";
 export interface ScreenFlightRoute {
   readonly start: ScreenPoint;
   readonly control: ScreenPoint;
+}
+
+/** Projected carrier route in CSS pixels for one camera frame. */
+export interface ProjectedFlightRoute extends ScreenFlightRoute {
+  readonly target: ScreenPoint;
+}
+
+/** Geographic-to-screen projection supplied by the map adapter. */
+export interface FlightProjector {
+  toScreen(point: GeoPoint): ScreenPoint;
 }
 
 /**
@@ -34,20 +44,26 @@ export function viewportFlightRoute(width: number, height: number, aim: ScreenPo
   };
 }
 
-/** Sample a geographic quadratic route at normalized progress, crossing the antimeridian by the short arc. */
-export function flightPoint(route: FlightRoute, progress: number): GeoPoint {
+/** Project the stored geographic route through the current camera once per frame. */
+export function projectFlightRoute(route: FlightRoute, projector: FlightProjector): ProjectedFlightRoute {
+  return {
+    start: projector.toScreen(route.start),
+    control: projector.toScreen(route.control),
+    target: projector.toScreen(route.target),
+  };
+}
+
+/** Sample the prototype's eased quadratic curve in projected CSS pixels. */
+export function screenFlightPoint(route: ProjectedFlightRoute, progress: number): ScreenPoint {
   if (!Number.isFinite(progress)) throw new RangeError("Flight progress must be finite.");
   const t = Math.max(0, Math.min(1, progress)) ** 1.16;
   if (t === 0) return route.start;
   if (t === 1) return route.target;
-  const startLon = route.start.longitude;
-  const controlLon = startLon + normalizeLongitude(route.control.longitude - startLon);
-  const targetLon = controlLon + normalizeLongitude(route.target.longitude - controlLon);
   const inverse = 1 - t;
-  return geoPoint(
-    inverse * inverse * startLon + 2 * inverse * t * controlLon + t * t * targetLon,
-    inverse * inverse * route.start.latitude + 2 * inverse * t * route.control.latitude + t * t * route.target.latitude,
-  );
+  return {
+    x: inverse * inverse * route.start.x + 2 * inverse * t * route.control.x + t * t * route.target.x,
+    y: inverse * inverse * route.start.y + 2 * inverse * t * route.control.y + t * t * route.target.y,
+  };
 }
 
 /** Deterministic smoke offset in CSS pixels and opacity after emission age in seconds. */
@@ -71,5 +87,37 @@ export function smokeMotion(ageSeconds: number, velocity: ScreenPoint, seed: num
     y: velocity.y * retained * 0.025 - ageSeconds * 0.55 + (noise(seed + 7) - 0.5) * diffusion,
     radius: 0.9 + diffusion,
     opacity: 0.4 * Math.min(1, ageSeconds / 0.08) * Math.exp(-ageSeconds / 1.8) * dissipation * dissipation * (3 - 2 * dissipation),
+  };
+}
+
+/** One exhaust sample and its younger adjacent endpoint in CSS pixels. */
+export interface SmokeParticle {
+  readonly center: ScreenPoint;
+  readonly segmentEnd: ScreenPoint | null;
+  readonly radius: number;
+  readonly opacity: number;
+}
+
+/** Milliseconds between smoke emissions, matching the prototype's normal draw budget. */
+export const SMOKE_SAMPLE_STEP_MS = 60;
+
+/** Sample fixed-age smoke without using the previous puff's drift for the segment end. */
+export function smokeParticle(route: ProjectedFlightRoute, bornMs: number, elapsedMs: number, flightMs: number, seed: number): SmokeParticle {
+  const from = screenFlightPoint(route, bornMs / flightMs);
+  const after = screenFlightPoint(route, Math.min(1, (bornMs + 20) / flightMs));
+  const velocity = { x: (after.x - from.x) * 50, y: (after.y - from.y) * 50 };
+  const motion = smokeMotion((elapsedMs - bornMs) / 1000, velocity, seed + bornMs);
+  const nextMs = Math.min(elapsedMs - 70, flightMs, bornMs + SMOKE_SAMPLE_STEP_MS);
+  let segmentEnd: ScreenPoint | null = null;
+  if (nextMs > bornMs) {
+    const next = screenFlightPoint(route, nextMs / flightMs);
+    const nextMotion = smokeMotion((elapsedMs - nextMs) / 1000, velocity, seed + nextMs);
+    segmentEnd = { x: next.x + nextMotion.x, y: next.y + nextMotion.y };
+  }
+  return {
+    center: { x: from.x + motion.x, y: from.y + motion.y },
+    segmentEnd,
+    radius: motion.radius,
+    opacity: motion.opacity,
   };
 }

@@ -1,12 +1,6 @@
 import type { Launch } from "../../application/launch";
-import type { GeoPoint } from "../../domain/geodesy";
 import type { ScreenPoint } from "../map/MapCameraAdapter";
-import { flightPoint, smokeMotion } from "./flightGeometry";
-
-/** Map projection needed by the missile canvas; it is sampled on each camera change. */
-export interface FlightProjector {
-  toScreen(point: GeoPoint): ScreenPoint;
-}
+import { projectFlightRoute, screenFlightPoint, smokeParticle, SMOKE_SAMPLE_STEP_MS, type FlightProjector, type ProjectedFlightRoute } from "./flightGeometry";
 
 /** Draws the prototype target, smoke, and white-hot carrier on a transparent canvas. */
 export class MissileCanvasRenderer {
@@ -28,10 +22,10 @@ export class MissileCanvasRenderer {
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     context.clearRect(0, 0, width, height);
     if (!launch) return;
-    const target = this.projector.toScreen(launch.route.target);
-    this.drawTarget(context, target, elapsedMs);
-    this.drawSmoke(context, launch, elapsedMs);
-    if (elapsedMs < launch.flightMs) this.drawCore(context, this.projector.toScreen(flightPoint(launch.route, elapsedMs / launch.flightMs)));
+    const route = projectFlightRoute(launch.route, this.projector);
+    this.drawTarget(context, route.target, elapsedMs);
+    this.drawSmoke(context, launch, route, elapsedMs);
+    if (elapsedMs < launch.flightMs) this.drawCore(context, screenFlightPoint(route, elapsedMs / launch.flightMs));
   }
 
   private drawTarget(context: CanvasRenderingContext2D, point: ScreenPoint, elapsedMs: number): void {
@@ -64,36 +58,29 @@ export class MissileCanvasRenderer {
     context.restore();
   }
 
-  private drawSmoke(context: CanvasRenderingContext2D, launch: Launch, elapsedMs: number): void {
-    const stepMs = 60;
+  private drawSmoke(context: CanvasRenderingContext2D, launch: Launch, route: ProjectedFlightRoute, elapsedMs: number): void {
+    const stepMs = SMOKE_SAMPLE_STEP_MS;
     const startMs = Math.max(0, Math.ceil((elapsedMs - 3000) / stepMs) * stepMs);
     context.save();
     context.lineCap = "round";
     for (let bornMs = startMs; bornMs < Math.min(elapsedMs, launch.flightMs); bornMs += stepMs) {
-      const age = (elapsedMs - bornMs) / 1000;
-      const from = this.projector.toScreen(flightPoint(launch.route, bornMs / launch.flightMs));
-      const after = this.projector.toScreen(flightPoint(launch.route, Math.min(1, (bornMs + 20) / launch.flightMs)));
-      const velocity = { x: (after.x - from.x) * 50, y: (after.y - from.y) * 50 };
-      const motion = smokeMotion(age, velocity, launch.id * 193 + bornMs);
-      if (motion.opacity < 0.008) continue;
-      const x = from.x + motion.x;
-      const y = from.y + motion.y;
-      const nextMs = Math.min(elapsedMs - 70, launch.flightMs, bornMs + stepMs);
-      if (nextMs > bornMs) {
-        const next = this.projector.toScreen(flightPoint(launch.route, nextMs / launch.flightMs));
-        context.globalAlpha = motion.opacity * 0.28;
+      const particle = smokeParticle(route, bornMs, elapsedMs, launch.flightMs, launch.id * 193);
+      if (particle.opacity < 0.008) continue;
+      const { x, y } = particle.center;
+      if (particle.segmentEnd) {
+        context.globalAlpha = particle.opacity * 0.28;
         context.strokeStyle = "rgb(18,25,23)";
         context.lineWidth = 1.9;
-        context.beginPath(); context.moveTo(x, y); context.lineTo(next.x + motion.x, next.y + motion.y); context.stroke();
-        context.globalAlpha = motion.opacity;
+        context.beginPath(); context.moveTo(x, y); context.lineTo(particle.segmentEnd.x, particle.segmentEnd.y); context.stroke();
+        context.globalAlpha = particle.opacity;
         context.strokeStyle = "rgb(235,239,230)";
         context.lineWidth = 0.9;
         context.stroke();
       }
       if (Math.round(bornMs / stepMs) % 3 === 0) {
-        context.globalAlpha = motion.opacity * 0.3;
-        const size = motion.radius * 2;
-        context.drawImage(this.getSmokeSprite(), x - motion.radius, y - motion.radius, size, size);
+        context.globalAlpha = particle.opacity * 0.3;
+        const size = particle.radius * 2;
+        context.drawImage(this.getSmokeSprite(), x - particle.radius, y - particle.radius, size, size);
       }
     }
     context.restore();
