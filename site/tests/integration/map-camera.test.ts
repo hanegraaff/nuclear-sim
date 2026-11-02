@@ -20,6 +20,17 @@ describe("map camera boundary", () => {
     expect(camera.snapshot()).toEqual({ center: INITIAL_MAP_CENTER, zoom: INITIAL_MAP_ZOOM });
   });
 
+  it("projects an antimeridian target into the nearest visible world copy", () => {
+    const fakeMap: MapProjection = {
+      project: ([longitude, latitude]) => ({ x: longitude, y: latitude }),
+      unproject: ([x, y]) => ({ lng: x, lat: y }),
+      getCenter: () => ({ lng: 179.8, lat: 20 }),
+      getZoom: () => 4,
+    };
+    const camera = new MapCameraAdapter(fakeMap);
+    expect(camera.toScreen(geoPoint(-179.9, 20)).x).toBeCloseTo(180.1, 10);
+  });
+
   it("declares a satellite raster source and visible attribution", () => {
     const style = satelliteStyle();
     const source = style.sources.satellite;

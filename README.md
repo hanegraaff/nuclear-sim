@@ -4,7 +4,7 @@ This repository contains a production-quality reimplementation of the nuclear ef
 
 ## Project status
 
-[Plans 01–03 of the roadmap](roadmap.md) are complete. The published Site has a full-screen satellite map and prototype-style Scenario and Device controls. Choose from 47 devices or enter a custom yield; selecting one of 20 historical and hypothetical scenarios moves the map and prepares its device. Launches arrive in the next plan.
+[Plans 01–03 of the roadmap](roadmap.md) are published. Plan 04 is under review: clicking the map places a red target and sends a 6.5-second missile toward it. A second click replaces the flight. Blast animation, Reset, and effect views are planned next.
 
 **Open the private Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Access is limited to the Site owner. Users do not need to run the application locally.
 
@@ -20,7 +20,7 @@ This repository contains a production-quality reimplementation of the nuclear ef
 - `prototype-code/` contains the current reference application and its tests.
 - `prototype-screenshots/` contains nine visual references. The actual directory name is `prototype-screenshots/`.
 
-The implementation uses React, TypeScript, Vite, and MapLibre GL JS. Later plans add Canvas 2D and a MapLibre-aligned WebGL fireball layer. Its static build is published through Sites with a private audience. The map uses satellite imagery with visible provider attribution. Effect estimates will be illustrative; model assumptions and limits are documented in [the model notes](site/docs/model.md) as the model grows.
+The implementation uses React, TypeScript, Vite, MapLibre GL JS, and Canvas 2D for the missile. Later plans add effect fields and a MapLibre-aligned WebGL fireball layer. Its static build is published through Sites with a private audience. The map uses satellite imagery with visible provider attribution. Effect estimates will be illustrative; model assumptions and limits are documented in [the model notes](site/docs/model.md) as the model grows.
 
 ## Development and review
 

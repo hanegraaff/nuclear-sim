@@ -45,6 +45,23 @@ body { overflow: hidden; }
     radial-gradient(circle at 62% 50%, transparent 48%, rgba(2, 4, 3, 0.16) 140%);
 }
 
+.missile-canvas {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.launch-status {
+  margin: 0;
+  color: #a4aaa4;
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.3px;
+}
+
 .left-instrument-stack {
   position: absolute;
   z-index: 8;

@@ -18,7 +18,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–03 are published to the 
 | 01 | Published full-screen satellite map | Complete | — |
 | 02 | Device control panel | Complete | 01 |
 | 03 | Scenario navigation | Complete | 02 |
-| 04 | Target and incoming missile | Ready | 03 |
+| 04 | Target and incoming missile | In progress | 03 |
 | 05 | Single blast animation | Not started | 04 |
 | 06 | Blast ruler and inspection markers | Not started | 05 |
 | 07 | Blast field grounded in pitched views | Not started | 06 |
@@ -87,7 +87,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–03 are published to the 
 
 **Completion evidence.** The missile arrives at the chosen target; target and missile stay aligned through pan/zoom; the fixed-time capture is reviewed against `Missile.jpeg`.
 
-**Current status.** Ready; Plan 03 is complete.
+**Current status.** In progress on branch `plan-4`; implementation, verification, and review are underway.
 
 **Blocking decisioning.** None. The prototype's path, light, and smoke behavior take precedence over a physically realistic ballistic trajectory.
 

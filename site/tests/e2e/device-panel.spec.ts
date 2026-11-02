@@ -60,7 +60,7 @@ test("scenario selection moves the map, prepares its device, and supports keyboa
   await expect.poll(async () => Number(await map.getAttribute("data-center-latitude"))).toBeCloseTo(34.3947, 3);
   await expect.poll(async () => Number(await map.getAttribute("data-zoom"))).toBeGreaterThan(11);
   await expect(panel.getByRole("status")).toContainText("Little Boy · 15 kt");
-  await expect(page.locator("canvas")).toHaveCount(1);
+  await expect(page.locator("canvas")).toHaveCount(2);
   await deviceTab.click();
   await expect(panel.getByRole("combobox", { name: "Weapon or delivery system" })).toHaveValue("little-boy");
   await scenarioTab.click();
@@ -73,7 +73,7 @@ test("scenario selection moves the map, prepares its device, and supports keyboa
   await expect.poll(async () => Number(await map.getAttribute("data-center-longitude"))).toBeCloseTo(-106.4754, 3);
   await expect.poll(async () => Number(await map.getAttribute("data-center-latitude"))).toBeCloseTo(33.6773, 3);
   await expect(panel.getByRole("status")).toContainText("Trinity Gadget · 18.6 kt");
-  await expect(page.locator("canvas")).toHaveCount(1);
+  await expect(page.locator("canvas")).toHaveCount(2);
 });
 
 test("custom megaton input reports invalid values and resolves a valid selection", async ({ page }) => {
