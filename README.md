@@ -4,7 +4,7 @@ This repository contains a production-quality reimplementation of the nuclear ef
 
 ## Project status
 
-[Plans 01–04 of the roadmap](roadmap.md) are published. Plan 04's pull request is under review: clicking the map places a red target and sends a 6.5-second missile toward it. A second click replaces the flight. Blast animation, Reset, and effect views are planned next.
+[Plans 01–04 of the roadmap](roadmap.md) are published. Clicking the map places a red target and sends a 6.5-second missile toward it. A second click replaces the flight. Blast animation, Reset, and effect views are planned next.
 
 **Open the private Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Access is limited to the Site owner. Users do not need to run the application locally.
 
