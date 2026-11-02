@@ -1,3 +1,5 @@
 # Application
 
 This area owns simulator state transitions and validation independently of React and renderers. Plan 02 adds `deviceSelection.ts`: `reduceDeviceSelection` accepts semantic selection and custom-input actions, and `resolveDeviceSelection` returns a catalog or custom device only when its yield is valid. The initial choice is Fat Man; switching away from custom input preserves its draft. Unknown catalog IDs are rejected. Custom yields must be finite and fall between 0.000000001 and 1,000,000,000 Mt. Commas, underscores, or spaces are accepted only as consistent three-digit grouping separators; malformed grouping is rejected instead of silently changing the yield. The map's loading state remains local to its renderer and UI. Later plans add launch state and an injected clock here.
+
+`scenarioSelection.ts` composes device selection with the selected tab and scenario. A scenario action changes the device and produces a sequenced camera request containing only a geographic center and horizon in kilometers. Switching tabs preserves the selection; changing a device clears the scenario. No action creates a strike.

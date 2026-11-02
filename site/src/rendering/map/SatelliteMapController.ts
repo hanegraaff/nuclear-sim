@@ -1,6 +1,7 @@
 import type { ErrorEvent as MapErrorEvent, Map as MapLibreMap, MapSourceDataEvent } from "maplibre-gl";
 import { MapCameraAdapter } from "./MapCameraAdapter";
 import { createSatelliteMap } from "./createSatelliteMap";
+import type { GeoPoint } from "../../domain/geodesy";
 
 /** Visible map readiness states. An imagery error leaves camera interaction available. */
 export type MapLoadState = "loading" | "ready" | "imagery-error" | "map-error";
@@ -19,6 +20,15 @@ export interface SatelliteMapCallbacks {
 }
 
 const IMAGERY_SOURCE_ID = "satellite";
+
+/** Compute the prototype's map zoom for a horizon in km and viewport in CSS pixels. */
+export function scenarioZoom(horizonKm: number, latitude: number, width: number, height: number): number {
+  const usableWidth = width > 900 ? width - 380 : width;
+  const targetPixels = Math.max(100, Math.min(usableWidth, height) * 0.34);
+  const latitudeScale = Math.max(0.04, Math.cos(latitude * Math.PI / 180));
+  const zoom = Math.log2((156543.03392 * latitudeScale * targetPixels) / (Math.max(0.001, horizonKm) * 1000));
+  return Math.max(0.75, Math.min(13, zoom));
+}
 
 /**
  * Owns MapLibre's lifecycle, camera events, and satellite-source recovery.
@@ -46,6 +56,16 @@ export class SatelliteMapController {
   setPanelsVisible(visible: boolean): void {
     this.panelsVisible = visible;
     this.updateCameraPadding();
+  }
+
+  /** Ease to a geographic center and frame its supplied horizon without creating a strike. */
+  focusScenario(target: { readonly center: GeoPoint; readonly horizonKm: number }): void {
+    const container = this.map.getContainer();
+    const zoom = scenarioZoom(target.horizonKm, target.center.latitude, container.clientWidth, container.clientHeight);
+    this.map.stop();
+    // A distant destination may have no cached tiles; wait for its imagery to settle.
+    if (this.state !== "map-error") this.setState("loading");
+    this.map.easeTo({ center: [target.center.longitude, target.center.latitude], zoom, duration: 650 });
   }
 
   /** Retry only the satellite tiles, preserving future effect sources and layers. */

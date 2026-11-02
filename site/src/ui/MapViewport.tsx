@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import type { ScenarioCameraRequest } from "../application/scenarioSelection";
 import { INITIAL_MAP_CENTER, INITIAL_MAP_ZOOM } from "../rendering/map/createSatelliteMap";
 import {
   createSatelliteMapController,
@@ -7,7 +8,7 @@ import {
 } from "../rendering/map/SatelliteMapController";
 
 /** Full-viewport map mount that places controls above imagery and map feedback. */
-export function MapViewport({ children }: { readonly children?: ReactNode }) {
+export function MapViewport({ children, cameraRequest }: { readonly children?: ReactNode; readonly cameraRequest: ScenarioCameraRequest | null }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<SatelliteMapController | null>(null);
   const [loadState, setLoadState] = useState<MapLoadState>("loading");
@@ -36,6 +37,10 @@ export function MapViewport({ children }: { readonly children?: ReactNode }) {
       if (controllerRef.current === controller) controllerRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (cameraRequest) controllerRef.current?.focusScenario(cameraRequest);
+  }, [cameraRequest]);
 
   const retryImagery = () => {
     const controller = controllerRef.current;

@@ -4,7 +4,7 @@ This repository contains a production-quality reimplementation of the nuclear ef
 
 ## Project status
 
-[Plans 01 and 02 of the roadmap](roadmap.md) are complete. The published Site has a full-screen satellite map centered on Manhattan and the prototype-style Device panel. The selector contains all 47 prototype devices, including modeled MIRV loadouts, and accepts a validated custom yield in megatons. Scenario navigation and launches arrive in later plans.
+[Plans 01–03 of the roadmap](roadmap.md) are complete. The published Site has a full-screen satellite map and prototype-style Scenario and Device controls. Choose from 47 devices or enter a custom yield; selecting one of 20 historical and hypothetical scenarios moves the map and prepares its device. Launches arrive in the next plan.
 
 **Open the private Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Access is limited to the Site owner. Users do not need to run the application locally.
 

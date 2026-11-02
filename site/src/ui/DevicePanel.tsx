@@ -1,27 +1,60 @@
 import { DEVICE_GROUPS } from "../catalog/devices";
-import { CUSTOM_DEVICE_ID, type DeviceSelectionState, type ResolvedDeviceSelection } from "../application/deviceSelection";
+import { SCENARIOS } from "../catalog/scenarios";
+import { CUSTOM_DEVICE_ID, type ResolvedDeviceSelection } from "../application/deviceSelection";
+import type { ScenarioSelectionState } from "../application/scenarioSelection";
+import type { KeyboardEvent } from "react";
 
 interface DevicePanelProps {
-  readonly state: DeviceSelectionState;
+  readonly state: ScenarioSelectionState;
   readonly selection: ResolvedDeviceSelection;
+  readonly onSelectTab: (tab: "scenario" | "device") => void;
+  readonly onSelectScenario: (id: string) => void;
   readonly onSelectDevice: (id: string) => void;
   readonly onCustomYieldChange: (value: string) => void;
 }
 
-/** Prototype-style device panel; every visible input updates application state. */
-export function DevicePanel({ state, selection, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+/** Prototype-style selector; tab and input actions update application state. */
+export function DevicePanel({ state, selection, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+  const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const next = event.key === "Home" ? "scenario" : event.key === "End" ? "device" : state.tab === "device" ? "scenario" : "device";
+    onSelectTab(next);
+    document.getElementById(`${next}-tab`)?.focus();
+  };
   return (
     <aside className="left-instrument-stack" aria-label="Device controls">
       <section className="minimal-header">
         <div className="minimal-brand">
           <h1>Nuke Simulator</h1>
-          <p>Choose a device</p>
+          <p>{state.tab === "scenario" ? "Choose a scenario" : "Choose a device"}</p>
         </div>
 
         <div className="panel-controls">
-          <h2 className="selection-tab">DEVICE</h2>
-          <div className="payload-input">
+          <div className="selection-tabs" role="tablist" aria-label="Choose by scenario or device">
+            {(["scenario", "device"] as const).map((tab) => (
+              <button key={tab} type="button" role="tab" id={`${tab}-tab`} aria-controls="payload-selection-panel"
+                aria-selected={state.tab === tab} tabIndex={state.tab === tab ? 0 : -1}
+                onClick={() => onSelectTab(tab)} onKeyDown={handleTabKey}>{tab.toUpperCase()}</button>
+            ))}
+          </div>
+          <div className="payload-input" id="payload-selection-panel" role="tabpanel" aria-labelledby={`${state.tab}-tab`}>
             <div className="select-wrap">
+              {state.tab === "scenario" ? (
+                <select aria-label="Scenario" value={state.scenarioId} onChange={(event) => onSelectScenario(event.target.value)}>
+                  <option value="">Choose a location + device</option>
+                  <optgroup label="Historical locations + real devices">
+                    {SCENARIOS.filter((scenario) => scenario.kind === "historical").map((scenario) => (
+                      <option key={scenario.id} value={scenario.id}>{scenario.name}</option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="Hypothetical scale studies">
+                    {SCENARIOS.filter((scenario) => scenario.kind === "hypothetical").map((scenario) => (
+                      <option key={scenario.id} value={scenario.id}>{scenario.name}</option>
+                    ))}
+                  </optgroup>
+                </select>
+              ) : (
               <select
                 aria-label="Weapon or delivery system"
                 value={state.selectedId}
@@ -38,10 +71,11 @@ export function DevicePanel({ state, selection, onSelectDevice, onCustomYieldCha
                   </optgroup>
                 ))}
               </select>
+              )}
               <span className="select-chevron" aria-hidden="true" />
             </div>
 
-            {selection.custom && (
+            {state.tab === "device" && selection.custom && (
               <div className="custom-input">
                 <input
                   type="text"
@@ -61,10 +95,12 @@ export function DevicePanel({ state, selection, onSelectDevice, onCustomYieldCha
             <p className="selection-status" role="status" aria-live="polite">
               Selected device · {selection.label}
             </p>
-          ) : (
+          ) : state.tab === "device" ? (
             <p className="selection-status selection-error" id="custom-yield-error" role="alert">
               {selection.error}
             </p>
+          ) : (
+            <p className="selection-status" role="status" aria-live="polite">Choose a scenario to prepare a device.</p>
           )}
         </div>
       </section>

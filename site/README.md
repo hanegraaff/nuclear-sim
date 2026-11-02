@@ -1,6 +1,6 @@
 # Nuke Simulator Site source
 
-This directory contains the static Site source for the workspace roadmap. The published Site, rather than a local server, is the user-facing application. Plans 01–02 provide a full-screen satellite map centered on Midtown Manhattan and a prototype-style Device panel. Users can pan, zoom, choose any of the 47 fixed devices, or enter a positive custom yield in megatons. Launch and effect controls arrive in later plans.
+This directory contains the static Site source for the workspace roadmap. The published Site, rather than a local server, is the user-facing application. Plans 01–03 provide a full-screen satellite map and prototype-style Scenario and Device controls. Users can pan, zoom, choose any of the 47 fixed devices, enter a custom yield, or select one of 20 scenarios to move the map and prepare its device. Launch and effect controls arrive in later plans.
 
 ## Engineering setup
 

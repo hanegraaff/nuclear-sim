@@ -11,3 +11,7 @@ These formulas are appropriate for a map-scale illustrative simulator. They do n
 The fixed catalog preserves the prototype's 47 displayed choices. Internal yields are megatons of TNT equivalent. Conventional entries are labeled separately from nuclear entries; later effect models must not offer nuclear fallout for conventional-only strikes. MIRV entries store both displayed aggregate yield and explicit per-warhead yield, so each future impact is modeled at the latter value. The three modeled loadouts are 3 × 0.175 Mt, 10 × 0.12 Mt, and 10 × 0.5 Mt.
 
 Custom input accepts finite megatons from 0.000000001 Mt, the prototype's minimum, through 1,000,000,000 Mt, the catalog's 1 Pt upper study. These bounds keep future model calculations within a defined range. Group separators must divide three digits consistently; malformed text cannot resolve to a device profile and must not launch.
+
+## Scenario framing — Plan 03
+
+The camera estimates the prototype's light-effect radius as 4.8 km times the cube root of yield divided by 0.01 Mt, bounded to less than the antipodal surface distance. Its framing horizon is 1.08 times that radius for a single device or three times for a MIRV, subject to the same surface cap. The renderer converts this distance to a zoom using viewport dimensions and latitude. This estimate positions the camera; it is not a forecast or a rendered blast model.

@@ -21,7 +21,7 @@ test("the map fills the viewport and supports pan and zoom", async ({ page }, te
   expect(await simulator.boundingBox()).toMatchObject({ x: 0, y: 0, width: 2208, height: 1276 });
   await expect(page.getByText("Esri", { exact: false })).toBeVisible();
   expect(tileRequests).toBeGreaterThan(0);
-  await expect(page).toHaveScreenshot("plan-02-map-and-device-panel.png", { maxDiffPixelRatio: 0.01 });
+  await expect(page).toHaveScreenshot("plan-03-map-and-device-panel.png", { maxDiffPixelRatio: 0.01 });
   await page.screenshot({ path: testInfo.outputPath("plan-02-map-and-device-panel.png"), fullPage: true });
 
   const initialZoom = Number(await simulator.getAttribute("data-zoom"));

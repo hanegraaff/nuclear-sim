@@ -98,28 +98,29 @@ body { overflow: hidden; }
   margin-top: 13px;
 }
 
-.selection-tab {
-  min-height: 27px;
-  margin: 0;
-  padding: 0 0 7px;
+.selection-tabs {
+  display: flex;
+  gap: 18px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  color: var(--ink);
+}
+
+.selection-tabs button {
+  min-height: 27px;
+  padding: 0 0 7px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #7f8982;
   font-family: var(--mono);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.8px;
   line-height: 1;
+  cursor: pointer;
 }
 
-.selection-tab::after {
-  content: "";
-  display: block;
-  position: relative;
-  top: 8px;
-  width: 46px;
-  height: 2px;
-  background: var(--ink);
-}
+.selection-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--ink); }
+.selection-tabs button:focus-visible { outline: 2px solid #e4edda; outline-offset: 3px; }
 
 .payload-input { min-width: 0; display: grid; gap: 5px; }
 

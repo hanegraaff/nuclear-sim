@@ -1,7 +1,7 @@
 /** Map lifecycle tests exercise source-specific failures without a browser or live tiles. */
 import { describe, expect, it, vi } from "vitest";
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { SatelliteMapController, type MapLoadState } from "../../src/rendering/map/SatelliteMapController";
+import { SatelliteMapController, scenarioZoom, type MapLoadState } from "../../src/rendering/map/SatelliteMapController";
 
 function fakeMap() {
   const listeners = new Map<string, (event?: never) => void>();
@@ -9,32 +9,66 @@ function fakeMap() {
   const setStyle = vi.fn();
   const setPadding = vi.fn();
   const remove = vi.fn();
+  const stop = vi.fn();
+  const easeTo = vi.fn();
   let center = { lng: -73.9857, lat: 40.7484 };
   let viewportWidth = 2208;
+  let sourceLoaded = true;
   return {
     map: {
       on: (name: string, listener: (event?: never) => void) => listeners.set(name, listener),
       off: (name: string) => listeners.delete(name),
       getCenter: () => center,
       getZoom: () => 10.6,
-      getContainer: () => ({ clientWidth: viewportWidth }),
+      getContainer: () => ({ clientWidth: viewportWidth, clientHeight: 740 }),
       setPadding,
-      isSourceLoaded: () => true,
+      isSourceLoaded: () => sourceLoaded,
       refreshTiles,
       setStyle,
       remove,
+      stop,
+      easeTo,
     } as unknown as MapLibreMap,
     emit: (name: string, event?: object) => listeners.get(name)?.(event as never),
     setCenter: (lng: number, lat: number) => { center = { lng, lat }; },
     setViewportWidth: (width: number) => { viewportWidth = width; },
+    setSourceLoaded: (loaded: boolean) => { sourceLoaded = loaded; },
     refreshTiles,
     setStyle,
     setPadding,
     remove,
+    stop,
+    easeTo,
   };
 }
 
 describe("satellite map controller", () => {
+  it("keeps scenario imagery loading until the destination source is idle and loaded", () => {
+    const runtime = fakeMap();
+    const states: MapLoadState[] = [];
+    const controller = new SatelliteMapController(runtime.map, { onStateChange: (state) => states.push(state), onCameraChange: () => {} });
+    runtime.emit("load");
+    runtime.emit("idle");
+    runtime.setSourceLoaded(false);
+    controller.focusScenario({ center: { longitude: 132.4547, latitude: 34.3947 }, horizonKm: 5.934 });
+    runtime.emit("idle");
+    expect(states).toEqual(["ready", "loading"]);
+    runtime.setSourceLoaded(true);
+    runtime.emit("idle");
+    expect(states).toEqual(["ready", "loading", "ready"]);
+    controller.dispose();
+  });
+  it("stops a previous movement and eases to the scenario at a scale-dependent zoom", () => {
+    const runtime = fakeMap();
+    const controller = new SatelliteMapController(runtime.map, { onStateChange: () => {}, onCameraChange: () => {} });
+    controller.focusScenario({ center: { longitude: 132.4547, latitude: 34.3947 }, horizonKm: 5.934 });
+    expect(runtime.stop).toHaveBeenCalledOnce();
+    expect(runtime.easeTo).toHaveBeenCalledWith({ center: [132.4547, 34.3947], zoom: scenarioZoom(5.934, 34.3947, 2208, 740), duration: 650 });
+    expect(scenarioZoom(1000, 34, 2208, 740)).toBeLessThan(scenarioZoom(5, 34, 2208, 740));
+    expect(scenarioZoom(1e9, 0, 2208, 740)).toBe(0.75);
+    expect(scenarioZoom(0.001, 0, 2208, 740)).toBe(13);
+    controller.dispose();
+  });
   it("reports camera movement and ignores unrelated errors after load", () => {
     const runtime = fakeMap();
     const states: MapLoadState[] = [];

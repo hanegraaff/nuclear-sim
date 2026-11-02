@@ -11,14 +11,14 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-01**. Plans 01 and 02 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-02**. Plans 01–03 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
 | 01 | Published full-screen satellite map | Complete | — |
 | 02 | Device control panel | Complete | 01 |
-| 03 | Scenario navigation | Ready | 02 |
-| 04 | Target and incoming missile | Not started | 03 |
+| 03 | Scenario navigation | Complete | 02 |
+| 04 | Target and incoming missile | Ready | 03 |
 | 05 | Single blast animation | Not started | 04 |
 | 06 | Blast ruler and inspection markers | Not started | 05 |
 | 07 | Blast field grounded in pitched views | Not started | 06 |
@@ -71,7 +71,7 @@ The roadmap is current as of **2026-11-01**. Plans 01 and 02 are published to th
 
 **Completion evidence.** All scenario parity tests pass; a browser test verifies selection, map movement, and absence of an automatic strike. Compare the control tabs and dropdown with the prototype panel.
 
-**Current status.** Ready; Plan 02 is complete.
+**Current status.** Complete on 2026-11-01; review fixes were published on 2026-11-02 as private Site version 7 from source commit `7b7fd11b87d3efc7485f8ed671630c2e6b738440`. The full gate passed: type checking, lint, 106 unit tests, 7 integration tests, build, and 8 browser tests. All 20 scenarios and their device/coordinate mappings are covered. The [Scenario tab baseline](site/tests/e2e/device-panel.spec.ts-snapshots/plan-03-scenario-panel-darwin.png) and [Device tab baseline](site/tests/e2e/device-panel.spec.ts-snapshots/plan-03-device-panel-darwin.png) were reviewed against `Nuke Blast Top.png`; the [hosted Hiroshima view](docs/plan-03-hosted-hiroshima.png) records version 6. An authenticated version 7 browser check held destination tiles to confirm loading and readiness, and verified that an invalid custom draft and its error return on the Device tab.
 
 **Blocking decisioning.** None. Use the scenario coordinates and device mappings in `prototype-code/app/page.tsx`.
 
@@ -85,7 +85,7 @@ The roadmap is current as of **2026-11-01**. Plans 01 and 02 are published to th
 
 **Completion evidence.** The missile arrives at the chosen target; target and missile stay aligned through pan/zoom; the fixed-time capture is reviewed against `Missile.jpeg`.
 
-**Current status.** Not started; depends on Plan 03.
+**Current status.** Ready; Plan 03 is complete.
 
 **Blocking decisioning.** None. The prototype's path, light, and smoke behavior take precedence over a physically realistic ballistic trajectory.
 
@@ -279,7 +279,7 @@ Fill this table as plans finish. Record the deployed version and stable Site URL
 | --- | --- | --- | --- | --- |
 | 01 | 2026-11-01 | [Version 3](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | `npm run verify`: 3 unit, 5 integration, and 3 browser tests passed; [fixed-tile baseline](site/tests/e2e/map.spec.ts-snapshots/plan-01-map-initial-darwin.png), [authenticated hosted capture](docs/plan-01-hosted-v3.png); source commit `ff356abbecc9979dc1373b78c1552c7cf2d4f785` | Prototype controls and effects are scheduled for later plans. |
 | 02 | 2026-11-01 | [Version 5](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | `npm run verify`: 82 unit, 5 integration, and 5 browser tests passed; [fixed-tile panel baseline](site/tests/e2e/device-panel.spec.ts-snapshots/plan-02-device-panel-reference-darwin.png), [hosted panel capture from version 4](docs/plan-02-hosted.png), authenticated version 5 input check; source commit `ec8857f289838ae0cdd66f2bf1267e18bacc2e4b` | Scenario, launch, reset, mode, night, hide, and cloud controls are assigned to later plans. |
-| 03 | — | — | — | — |
+| 03 | 2026-11-01; review fixes 2026-11-02 | [Version 7](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | `npm run verify`: 106 unit, 7 integration, and 8 browser tests passed; [Scenario baseline](site/tests/e2e/device-panel.spec.ts-snapshots/plan-03-scenario-panel-darwin.png), [version 6 Hiroshima capture](docs/plan-03-hosted-hiroshima.png), authenticated version 7 interaction check; source commit `7b7fd11b87d3efc7485f8ed671630c2e6b738440` | Missile and launch behavior begin in Plan 04; the remaining controls and effects follow later. |
 | 04 | — | — | — | — |
 | 05 | — | — | — | — |
 | 06 | — | — | — | — |
