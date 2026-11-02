@@ -1,4 +1,4 @@
-import { geoPoint, type GeoPoint } from "../../domain/geodesy";
+import { geoPoint, normalizeLongitude, type GeoPoint } from "../../domain/geodesy";
 
 /** Point in CSS pixels relative to the map container's upper-left corner. */
 export interface ScreenPoint {
@@ -23,7 +23,8 @@ export class MapCameraAdapter {
 
   /** Project a geographic point in degrees to a CSS-pixel position. */
   toScreen(point: GeoPoint): ScreenPoint {
-    return this.map.project([point.longitude, point.latitude]);
+    const center = this.map.getCenter();
+    return this.map.project([center.lng + normalizeLongitude(point.longitude - center.lng), point.latitude]);
   }
 
   /** Unproject a CSS-pixel position to a validated geographic point in degrees. */

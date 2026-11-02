@@ -1,23 +1,41 @@
-import { useReducer } from "react";
+import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
+import { SimulatorStore, type AnimationClock } from "../application/SimulatorStore";
 import { resolveDeviceSelection } from "../application/deviceSelection";
-import { INITIAL_SCENARIO_SELECTION, reduceScenarioSelection } from "../application/scenarioSelection";
 import { DevicePanel } from "./DevicePanel";
 import { MapViewport } from "./MapViewport";
 
-/** Root application view: a map and device controls driven by a pure reducer. */
-export function App() {
-  const [state, dispatch] = useReducer(reduceScenarioSelection, INITIAL_SCENARIO_SELECTION);
-  const selection = resolveDeviceSelection(state);
+const browserClock: AnimationClock = {
+  now: () => performance.now(),
+  requestFrame: (callback) => requestAnimationFrame(callback),
+  cancelFrame: (id) => cancelAnimationFrame(id),
+};
+
+/** Root application view: controls dispatch semantic actions to a pure simulator reducer. */
+export function App({ clock = browserClock }: { readonly clock?: AnimationClock }) {
+  const [store] = useState(() => new SimulatorStore(clock));
+  const state = useSyncExternalStore(store.subscribe, store.getSnapshot);
+  const panelState = useMemo(() => ({
+    tab: state.tab,
+    scenarioId: state.scenarioId,
+    selectedId: state.selectedId,
+    customYieldInput: state.customYieldInput,
+  }), [state.tab, state.scenarioId, state.selectedId, state.customYieldInput]);
+  const selection = useMemo(() => resolveDeviceSelection(panelState), [panelState]);
+  const selectTab = useCallback((tab: "scenario" | "device") => store.dispatch({ type: "selectTab", tab }), [store]);
+  const selectScenario = useCallback((id: string) => store.dispatch({ type: "selectScenario", id }), [store]);
+  const selectDevice = useCallback((id: string) => store.dispatch({ type: "selectDevice", id }), [store]);
+  const setCustomYieldInput = useCallback((value: string) => store.dispatch({ type: "setCustomYieldInput", value }), [store]);
 
   return (
-    <MapViewport cameraRequest={state.cameraRequest}>
+    <MapViewport cameraRequest={state.cameraRequest} launch={state} onLaunch={store.launchAt} launchAngle={store.nextLaunchAngle}>
       <DevicePanel
-        state={state}
+        state={panelState}
         selection={selection}
-        onSelectTab={(tab) => dispatch({ type: "selectTab", tab })}
-        onSelectScenario={(id) => dispatch({ type: "selectScenario", id })}
-        onSelectDevice={(id) => dispatch({ type: "selectDevice", id })}
-        onCustomYieldChange={(value) => dispatch({ type: "setCustomYieldInput", value })}
+        launchPhase={state.phase}
+        onSelectTab={selectTab}
+        onSelectScenario={selectScenario}
+        onSelectDevice={selectDevice}
+        onCustomYieldChange={setCustomYieldInput}
       />
     </MapViewport>
   );

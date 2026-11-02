@@ -2,6 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { geoPoint } from "../../src/domain/geodesy";
 import { MapCameraAdapter, type MapProjection } from "../../src/rendering/map/MapCameraAdapter";
+import { projectFlightRoute, screenFlightPoint } from "../../src/rendering/animation/flightGeometry";
 import { INITIAL_MAP_CENTER, INITIAL_MAP_ZOOM, satelliteStyle } from "../../src/rendering/map/createSatelliteMap";
 
 describe("map camera boundary", () => {
@@ -18,6 +19,26 @@ describe("map camera boundary", () => {
     expect(roundTrip.longitude).toBeCloseTo(position.longitude, 10);
     expect(roundTrip.latitude).toBeCloseTo(position.latitude, 10);
     expect(camera.snapshot()).toEqual({ center: INITIAL_MAP_CENTER, zoom: INITIAL_MAP_ZOOM });
+  });
+
+  it("projects an antimeridian target into the nearest visible world copy", () => {
+    const fakeMap: MapProjection = {
+      project: ([longitude, latitude]) => ({ x: longitude, y: latitude }),
+      unproject: ([x, y]) => ({ lng: x, lat: y }),
+      getCenter: () => ({ lng: 179.8, lat: 20 }),
+      getZoom: () => 4,
+    };
+    const camera = new MapCameraAdapter(fakeMap);
+    expect(camera.toScreen(geoPoint(-179.9, 20)).x).toBeCloseTo(180.1, 10);
+    const route = projectFlightRoute({
+      start: geoPoint(179.7, 20),
+      control: geoPoint(-179.9, 20.1),
+      target: geoPoint(-179.5, 20.2),
+    }, camera);
+    expect(route.control.x).toBeCloseTo(180.1, 10);
+    expect(route.target.x).toBeCloseTo(180.5, 10);
+    expect(screenFlightPoint(route, 0.5).x).toBeGreaterThan(179.7);
+    expect(screenFlightPoint(route, 0.5).x).toBeLessThan(180.5);
   });
 
   it("declares a satellite raster source and visible attribution", () => {

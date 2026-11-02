@@ -1,4 +1,7 @@
-import type { ErrorEvent as MapErrorEvent, Map as MapLibreMap, MapSourceDataEvent } from "maplibre-gl";
+import type { ErrorEvent as MapErrorEvent, Map as MapLibreMap, MapMouseEvent, MapSourceDataEvent } from "maplibre-gl";
+import type { Launch, FlightRoute } from "../../application/launch";
+import { MissileCanvasRenderer } from "../animation/MissileCanvasRenderer";
+import { viewportFlightRoute } from "../animation/flightGeometry";
 import { MapCameraAdapter } from "./MapCameraAdapter";
 import { createSatelliteMap } from "./createSatelliteMap";
 import type { GeoPoint } from "../../domain/geodesy";
@@ -17,6 +20,8 @@ export interface MapCameraSnapshot {
 export interface SatelliteMapCallbacks {
   readonly onStateChange: (state: MapLoadState) => void;
   readonly onCameraChange: (camera: MapCameraSnapshot) => void;
+  readonly onLaunch?: (route: FlightRoute) => void;
+  readonly launchAngle?: () => number;
 }
 
 const IMAGERY_SOURCE_ID = "satellite";
@@ -39,8 +44,10 @@ export class SatelliteMapController {
   private state: MapLoadState = "loading";
   private mapLoaded = false;
   private panelsVisible = true;
+  private launch: Launch | null = null;
+  private elapsedMs = 0;
 
-  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks) {
+  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer) {
     this.camera = new MapCameraAdapter(map);
     map.on("load", this.handleLoad);
     map.on("idle", this.handleIdle);
@@ -48,6 +55,9 @@ export class SatelliteMapController {
     map.on("error", this.handleError);
     map.on("sourcedata", this.handleSourceData);
     map.on("resize", this.updateCameraPadding);
+    map.on("resize", this.repaintFlight);
+    map.on("move", this.repaintFlight);
+    map.on("click", this.handleMapClick);
     this.updateCameraPadding();
     this.emitCamera();
   }
@@ -56,6 +66,13 @@ export class SatelliteMapController {
   setPanelsVisible(visible: boolean): void {
     this.panelsVisible = visible;
     this.updateCameraPadding();
+  }
+
+  /** Draw a single launch at its injected age in milliseconds. */
+  setFlightFrame(launch: Launch | null, elapsedMs: number): void {
+    this.launch = launch;
+    this.elapsedMs = elapsedMs;
+    this.repaintFlight();
   }
 
   /** Ease to a geographic center and frame its supplied horizon without creating a strike. */
@@ -87,6 +104,9 @@ export class SatelliteMapController {
     this.map.off("error", this.handleError);
     this.map.off("sourcedata", this.handleSourceData);
     this.map.off("resize", this.updateCameraPadding);
+    this.map.off("resize", this.repaintFlight);
+    this.map.off("move", this.repaintFlight);
+    this.map.off("click", this.handleMapClick);
     this.map.remove();
   }
 
@@ -104,6 +124,27 @@ export class SatelliteMapController {
   private readonly emitCamera = (): void => {
     const { center, zoom } = this.camera.snapshot();
     this.callbacks.onCameraChange({ longitude: center.longitude, latitude: center.latitude, zoom });
+  };
+
+  private readonly repaintFlight = (): void => {
+    const container = this.map.getContainer();
+    this.missileRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
+  };
+
+  private readonly handleMapClick = (event: MapMouseEvent): void => {
+    const targetElement = event.originalEvent.target;
+    if (typeof Element !== "undefined" && targetElement instanceof Element && targetElement.closest(".maplibregl-ctrl, .maplibregl-control-container")) return;
+    const container = this.map.getContainer();
+    if (container.clientWidth <= 0 || container.clientHeight <= 0) return;
+    const aim = { x: event.point.x, y: event.point.y };
+    const angle = this.callbacks.launchAngle?.() ?? -Math.PI / 4;
+    if (!Number.isFinite(angle)) return;
+    const route = viewportFlightRoute(container.clientWidth, container.clientHeight, aim, angle);
+    this.callbacks.onLaunch?.({
+      start: this.camera.toGeo(route.start),
+      control: this.camera.toGeo(route.control),
+      target: this.camera.toGeo(aim),
+    });
   };
 
   private readonly updateCameraPadding = (): void => {
@@ -140,6 +181,9 @@ export class SatelliteMapController {
 export function createSatelliteMapController(
   container: HTMLElement,
   callbacks: SatelliteMapCallbacks,
+  missileCanvas?: HTMLCanvasElement,
 ): SatelliteMapController {
-  return new SatelliteMapController(createSatelliteMap(container), callbacks);
+  const map = createSatelliteMap(container);
+  const renderer = missileCanvas ? new MissileCanvasRenderer(missileCanvas, new MapCameraAdapter(map)) : undefined;
+  return new SatelliteMapController(map, callbacks, renderer);
 }

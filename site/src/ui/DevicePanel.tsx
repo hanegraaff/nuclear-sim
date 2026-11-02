@@ -2,11 +2,12 @@ import { DEVICE_GROUPS } from "../catalog/devices";
 import { SCENARIOS } from "../catalog/scenarios";
 import { CUSTOM_DEVICE_ID, type ResolvedDeviceSelection } from "../application/deviceSelection";
 import type { ScenarioSelectionState } from "../application/scenarioSelection";
-import type { KeyboardEvent } from "react";
+import { memo, type KeyboardEvent } from "react";
 
 interface DevicePanelProps {
-  readonly state: ScenarioSelectionState;
+  readonly state: Pick<ScenarioSelectionState, "tab" | "scenarioId" | "selectedId" | "customYieldInput">;
   readonly selection: ResolvedDeviceSelection;
+  readonly launchPhase: "armed" | "inbound" | "complete";
   readonly onSelectTab: (tab: "scenario" | "device") => void;
   readonly onSelectScenario: (id: string) => void;
   readonly onSelectDevice: (id: string) => void;
@@ -14,7 +15,7 @@ interface DevicePanelProps {
 }
 
 /** Prototype-style selector; tab and input actions update application state. */
-export function DevicePanel({ state, selection, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -27,7 +28,7 @@ export function DevicePanel({ state, selection, onSelectTab, onSelectScenario, o
       <section className="minimal-header">
         <div className="minimal-brand">
           <h1>Nuke Simulator</h1>
-          <p>{state.tab === "scenario" ? "Choose a scenario" : "Choose a device"}</p>
+          <p>Click Map to Launch</p>
         </div>
 
         <div className="panel-controls">
@@ -102,8 +103,11 @@ export function DevicePanel({ state, selection, onSelectTab, onSelectScenario, o
           ) : (
             <p className="selection-status" role="status" aria-live="polite">Choose a scenario to prepare a device.</p>
           )}
+          <p className="launch-status" aria-live="polite">
+            {launchPhase === "inbound" ? "MISSILE INBOUND" : launchPhase === "complete" ? "TARGET REACHED" : "READY TO LAUNCH"}
+          </p>
         </div>
       </section>
     </aside>
   );
-}
+});

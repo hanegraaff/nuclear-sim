@@ -4,7 +4,7 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { SatelliteMapController, scenarioZoom, type MapLoadState } from "../../src/rendering/map/SatelliteMapController";
 
 function fakeMap() {
-  const listeners = new Map<string, (event?: never) => void>();
+  const listeners = new Map<string, Set<(event?: never) => void>>();
   const refreshTiles = vi.fn();
   const setStyle = vi.fn();
   const setPadding = vi.fn();
@@ -16,10 +16,16 @@ function fakeMap() {
   let sourceLoaded = true;
   return {
     map: {
-      on: (name: string, listener: (event?: never) => void) => listeners.set(name, listener),
-      off: (name: string) => listeners.delete(name),
+      on: (name: string, listener: (event?: never) => void) => {
+        const callbacks = listeners.get(name) ?? new Set();
+        callbacks.add(listener);
+        listeners.set(name, callbacks);
+      },
+      off: (name: string, listener: (event?: never) => void) => listeners.get(name)?.delete(listener),
       getCenter: () => center,
       getZoom: () => 10.6,
+      project: ([lng, lat]: [number, number]) => ({ x: lng * 10 + 1200, y: lat * -10 + 800 }),
+      unproject: ([x, y]: [number, number]) => ({ lng: (x - 1200) / 10, lat: (800 - y) / 10 }),
       getContainer: () => ({ clientWidth: viewportWidth, clientHeight: 740 }),
       setPadding,
       isSourceLoaded: () => sourceLoaded,
@@ -29,7 +35,7 @@ function fakeMap() {
       stop,
       easeTo,
     } as unknown as MapLibreMap,
-    emit: (name: string, event?: object) => listeners.get(name)?.(event as never),
+    emit: (name: string, event?: object) => listeners.get(name)?.forEach((listener) => listener(event as never)),
     setCenter: (lng: number, lat: number) => { center = { lng, lat }; },
     setViewportWidth: (width: number) => { viewportWidth = width; },
     setSourceLoaded: (loaded: boolean) => { sourceLoaded = loaded; },
@@ -43,6 +49,18 @@ function fakeMap() {
 }
 
 describe("satellite map controller", () => {
+  it("turns a bare map click into one geographic route and ignores a control click", () => {
+    const runtime = fakeMap();
+    const launches: unknown[] = [];
+    const controller = new SatelliteMapController(runtime.map, {
+      onStateChange: () => {}, onCameraChange: () => {}, onLaunch: (route) => launches.push(route), launchAngle: () => Math.PI,
+    });
+    runtime.emit("click", { point: { x: 900, y: 450 }, originalEvent: { target: {} } });
+    expect(launches).toHaveLength(1);
+    expect(launches[0]).toMatchObject({ target: { longitude: -30, latitude: 35 } });
+    expect((launches[0] as { start: { longitude: number } }).start.longitude).toBeLessThan(-30);
+    controller.dispose();
+  });
   it("keeps scenario imagery loading until the destination source is idle and loaded", () => {
     const runtime = fakeMap();
     const states: MapLoadState[] = [];

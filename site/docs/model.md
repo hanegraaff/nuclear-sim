@@ -1,4 +1,4 @@
-# Model notes — Plans 01–02
+# Model notes — Plans 01–04
 
 Plan 01 includes geographic calculations only; blast, fallout, and range models arrive in later plans.
 
@@ -15,3 +15,7 @@ Custom input accepts finite megatons from 0.000000001 Mt, the prototype's minimu
 ## Scenario framing — Plan 03
 
 The camera estimates the prototype's light-effect radius as 4.8 km times the cube root of yield divided by 0.01 Mt, bounded to less than the antipodal surface distance. Its framing horizon is 1.08 times that radius for a single device or three times for a MIRV, subject to the same surface cap. The renderer converts this distance to a zoom using viewport dimensions and latitude. This estimate positions the camera; it is not a forecast or a rendered blast model.
+
+## Incoming missile — Plan 04
+
+The incoming path is a visual reconstruction of `prototype-code/app/missile-flight.mjs`, not a ballistic trajectory or travel-time prediction. At launch, the camera supplies a viewport-edge start and one bent control point; all three are stored as geographic coordinates. On each frame the renderer projects those points through the current camera, then samples their quadratic screen-space curve with progress raised to 1.16 over 6.5 seconds. The camera adapter selects the nearest world copy at the antimeridian. Smoke emission points stay on this projected route; their decorative CSS-pixel drift is damped over 0.22 seconds and fades within 3 seconds. Adjacent puffs use their own ages and seeds. None of these screen-space optical choices changes physical distance or future effect calculations. Launch angles vary by a deterministic golden-angle sequence: the first enters from the upper right for a reproducible reference frame, and each later launch uses a different edge direction.

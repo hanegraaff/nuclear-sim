@@ -15,3 +15,7 @@ The Plan 02 panel intentionally shows only the working Device selector and custo
 ## Plan 03 scenario controls
 
 The Scenario and Device tabs and grouped dropdown follow `Nuke Blast Top.png` and the prototype's selector styling. Fixed-tile captures at 1280 × 740 CSS pixels cover both tabs; a keyboard-focused tab has an additional visible focus outline. For R-02/R-04, the subtitle says “Choose a scenario” or “Choose a device” until launch exists. Reset, Multi-Launch, Night, Hide, and the cloud panel remain scheduled for later plans.
+
+## Plan 04 target and missile
+
+`Missile.jpeg` is the visual reference for R-05/V-01. The reviewed [fixed-time capture](../tests/e2e/missile.spec.ts-snapshots/plan-04-missile-3200ms-darwin.png) uses a 1508 × 1080 CSS-pixel viewport, synthetic tiles, the first launch's upper-right entry angle, and 3200 ms of browser clock time. The red reticle, compact amber-white missile, and thin pale trail match the reference's shapes, approximate scale, and layer order. The source screenshot has its left controls hidden and real Esri imagery; this staged Plan 04 capture shows the panel and fixed tile fixture. Hide/Show is assigned to Plan 15. The smoke is a deterministic approximation of the prototype's small drifting puffs. At arrival, this plan keeps the reticle and reports target reached; the flash and blast begin in Plan 05. The review fix projects the route before sampling its curve, so pitch and zoom now follow the prototype's drawing order; the inspected first-launch frame remains within the approved baseline threshold.
