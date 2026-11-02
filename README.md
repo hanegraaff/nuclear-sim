@@ -15,6 +15,8 @@ This repository contains a production-quality reimplementation of the nuclear ef
 3. [Architecture](architecture.md) — chosen stack, package boundaries, model approach, and test strategy.
 4. [Agent instructions](AGENTS.md) — coding, documentation, testing, and prototype-read-only rules.
 
+To run a plan through implementation, Sites publication, a GitHub PR, and a separate review before your merge decision, invoke the repository skill [`$development-loop-skill`](.agents/skills/development-loop-skill/SKILL.md).
+
 ## Reference material
 
 - `prototype-code/` contains the current reference application and its tests.
