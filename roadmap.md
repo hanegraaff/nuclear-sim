@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-02**. Plans 01–04 are published to the same private Site. The Plan 04 review findings are resolved. The prototype directories remain read only.
+The roadmap is current as of **2026-11-02**. Plans 01–05 are published to the same private Site. The Plan 05 review findings are resolved. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -20,7 +20,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–04 are published to the 
 | 03 | Scenario navigation | Complete | 02 |
 | 04 | Target and incoming missile | Complete | 03 |
 | 05 | Single blast animation | Complete | 04 |
-| 06 | Blast ruler and inspection markers | Not started | 05 |
+| 06 | Blast ruler and inspection markers | Ready | 05 |
 | 07 | Blast field grounded in pitched views | Not started | 06 |
 | 08 | 3D fireball | Not started | 07 |
 | 09 | Animated cloud-profile monitor | Not started | 08 |
@@ -115,7 +115,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–04 are published to the 
 
 **Completion evidence.** Model and placement tests pass; a desktop capture is reviewed against `Nuke Blast Top.png` and `MarkersAnd Popups.jpeg`.
 
-**Current status.** Not started; depends on Plan 05.
+**Current status.** Ready; Plan 05 is complete.
 
 **Blocking decisioning.** None. Allow ruler bearing to adjust for screen space while preserving the supplied New York composition where possible.
 
