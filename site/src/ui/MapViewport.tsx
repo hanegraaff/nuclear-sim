@@ -18,13 +18,14 @@ interface MapViewportProps {
   readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "activeZoneId" | "pinnedZoneId">;
   readonly onLaunch: (route: FlightRoute) => void;
   readonly launchAngle: () => number;
-  readonly onInspectZone: (zoneId: BlastZoneId | null) => void;
+  readonly onHoverZone: (zoneId: BlastZoneId | null) => void;
+  readonly onFocusZone: (zoneId: BlastZoneId | null) => void;
   readonly onPinZone: (zoneId: BlastZoneId) => void;
   readonly onClearZoneInspection: () => void;
 }
 
 /** Full-viewport map mount that places controls above imagery and map feedback. */
-export function MapViewport({ children, cameraRequest, launch, onLaunch, launchAngle, onInspectZone, onPinZone, onClearZoneInspection }: MapViewportProps) {
+export function MapViewport({ children, cameraRequest, launch, onLaunch, launchAngle, onHoverZone, onFocusZone, onPinZone, onClearZoneInspection }: MapViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
   const blastCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -69,8 +70,8 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
   }, [cameraRequest]);
 
   useEffect(() => {
-    controllerRef.current?.setFlightFrame(launch.launch, launch.elapsedMs);
-  }, [launch.launch, launch.elapsedMs]);
+    controllerRef.current?.setFlightFrame(launch.launch, launch.elapsedMs, launch.activeZoneId);
+  }, [launch.launch, launch.elapsedMs, launch.activeZoneId]);
 
   const retryImagery = () => {
     const controller = controllerRef.current;
@@ -98,7 +99,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
       <div className="map-tone" aria-hidden="true" />
       <canvas className="blast-canvas" ref={blastCanvasRef} aria-hidden="true" />
       <canvas className="missile-canvas" ref={missileCanvasRef} aria-hidden="true" />
-      <BlastInspectionOverlay geometry={inspection} activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onInspect={onInspectZone} onPin={onPinZone} onClear={onClearZoneInspection} />
+      <BlastInspectionOverlay geometry={inspection} activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onHover={onHoverZone} onFocusZone={onFocusZone} onPin={onPinZone} onClear={onClearZoneInspection} />
       <p className="model-qualification">IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE</p>
       {children}
       {loadState === "loading" && (

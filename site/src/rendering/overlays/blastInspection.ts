@@ -1,4 +1,4 @@
-import type { BlastRadii } from "../../domain/blast";
+import { MAX_SURFACE_DISTANCE_KM, type BlastRadii } from "../../domain/blast";
 import { blastZones, type BlastZone, type BlastZoneId } from "../../domain/blastZones";
 import { destinationPoint, type GeoPoint } from "../../domain/geodesy";
 import type { ScreenPoint } from "../map/MapCameraAdapter";
@@ -45,8 +45,8 @@ function projectRing(camera: InspectionCamera, origin: GeoPoint, radiusKm: numbe
   }
 }
 
-/** Keep the prototype's northeast ruler when it fits, then choose another visible quadrant. */
-function rulerBearing(camera: InspectionCamera, origin: GeoPoint, radiusKm: number, width: number, height: number): number {
+/** Select a ruler bearing once for a strike, preferring the prototype's northeast direction. */
+export function selectBlastRulerBearing(camera: InspectionCamera, origin: GeoPoint, radiusKm: number, width: number, height: number): number {
   const candidates = width <= 900 ? [126, 54, 234, 306] : [54, 306, 126, 234];
   let best = candidates[0]!;
   let bestScore = Number.NEGATIVE_INFINITY;
@@ -75,35 +75,27 @@ export function buildBlastInspection(
   radii: BlastRadii,
   width: number,
   height: number,
+  bearingDegrees: number,
 ): BlastInspectionGeometry | null {
   if (width <= 0 || height <= 0) return null;
-  const bearing = rulerBearing(camera, origin, radii.light, width, height);
   let ruler: ScreenPoint[];
   try {
-    ruler = Array.from({ length: 37 }, (_, index) => camera.toScreen(destinationPoint(origin, radii.light * index / 36, bearing)));
+    ruler = Array.from({ length: 37 }, (_, index) => camera.toScreen(destinationPoint(origin, radii.light * index / 36, bearingDegrees)));
   } catch {
     return null;
   }
   if (!ruler.every((point) => Number.isFinite(point.x) && Number.isFinite(point.y))) return null;
-  const start = ruler[0]!;
   const endpoint = ruler[ruler.length - 1]!;
-  const length = Math.hypot(endpoint.x - start.x, endpoint.y - start.y) || 1;
-  const normal = { x: -(endpoint.y - start.y) / length, y: (endpoint.x - start.x) / length };
-  let previous: ScreenPoint | null = null;
-  let overlapRun = 0;
   const zones = blastZones(radii).map((zone): ProjectedBlastZone => {
-    const geographicMarker = destinationPoint(origin, (zone.innerKm + zone.outerKm) / 2, bearing);
+    const geographicMarker = destinationPoint(origin, (zone.innerKm + zone.outerKm) / 2, bearingDegrees);
     let point: ScreenPoint;
     try {
       point = camera.toScreen(geographicMarker);
     } catch {
       point = { x: Number.NaN, y: Number.NaN };
     }
-    const overlaps = previous !== null && Math.hypot(point.x - previous.x, point.y - previous.y) < 16;
-    overlapRun = overlaps ? overlapRun + 1 : 0;
-    previous = point;
-    const offset = overlapRun === 0 ? 0 : (overlapRun % 2 ? 1 : -1) * Math.ceil(overlapRun / 2) * 19;
-    const marker = { x: point.x + normal.x * offset, y: point.y + normal.y * offset };
+    // Keep marker artwork on its physical midpoint; collision offsets changed as zoom crossed thresholds.
+    const marker = point;
     return {
       zone,
       color: ZONE_COLORS[zone.id],
@@ -119,6 +111,7 @@ export function buildBlastInspection(
 
 /** Format physical distance for the ruler and tooltip without changing model units. */
 export function formatDistance(km: number): string {
+  if (!Number.isFinite(km) || km >= MAX_SURFACE_DISTANCE_KM) return "20,000 km+";
   if (km < 1) return `${Math.round(km * 1000)} m`;
   if (km < 100) return `${km.toFixed(km < 10 ? 2 : 1)} km`;
   return `${Math.round(km).toLocaleString()} km`;
@@ -132,8 +125,8 @@ export function formatArea(areaKm2: number): string {
   return `${(areaKm2 / 1_000_000).toFixed(1)}M km²`;
 }
 
-/** Paint the four geographic outlines and dashed radius over a settled field. */
-export function drawBlastInspection(context: CanvasRenderingContext2D, geometry: BlastInspectionGeometry): void {
+/** Paint geographic outlines, ruler, and visible markers in one camera frame. */
+export function drawBlastInspection(context: CanvasRenderingContext2D, geometry: BlastInspectionGeometry, highlightedZoneId: BlastZoneId | null): void {
   context.save();
   for (const projected of geometry.zones) {
     if (projected.ring.length === 0) continue;
@@ -169,6 +162,19 @@ export function drawBlastInspection(context: CanvasRenderingContext2D, geometry:
       context.beginPath(); context.moveTo(rulerPoint.x, rulerPoint.y); context.lineTo(marker.x, marker.y); context.stroke();
     }
     context.beginPath(); context.arc(rulerPoint.x, rulerPoint.y, 3.4, 0, Math.PI * 2); context.fill();
+    context.save();
+    context.globalAlpha = 1;
+    context.shadowColor = projected.color;
+    context.shadowBlur = projected.zone.id === highlightedZoneId ? 17 : 10;
+    context.fillStyle = "rgba(5,7,7,.82)";
+    context.beginPath(); context.arc(marker.x, marker.y, projected.zone.id === highlightedZoneId ? 9 : 8, 0, Math.PI * 2); context.fill();
+    context.shadowBlur = 0;
+    context.strokeStyle = "rgba(255,255,255,.94)";
+    context.lineWidth = 2;
+    context.beginPath(); context.arc(marker.x, marker.y, projected.zone.id === highlightedZoneId ? 7 : 6, 0, Math.PI * 2); context.stroke();
+    context.fillStyle = projected.color;
+    context.beginPath(); context.arc(marker.x, marker.y, projected.zone.id === highlightedZoneId ? 4.5 : 3.5, 0, Math.PI * 2); context.fill();
+    context.restore();
   }
   context.shadowBlur = 0;
   const before = geometry.ruler[geometry.ruler.length - 2]!;
@@ -180,8 +186,7 @@ export function drawBlastInspection(context: CanvasRenderingContext2D, geometry:
   const label = `RADIUS  ${formatDistance(geometry.radiusKm)}`;
   context.font = "700 10px monospace";
   const labelWidth = context.measureText(label).width + 16;
-  const labelX = geometry.endpoint.x + labelWidth + 18 < geometry.width
-    ? geometry.endpoint.x + 9 : geometry.endpoint.x - labelWidth - 9;
+  const labelX = Math.max(9, Math.min(geometry.width - labelWidth - 9, geometry.endpoint.x + 9));
   const labelY = Math.max(18, Math.min(geometry.height - 12, geometry.endpoint.y - 10));
   context.fillStyle = "rgba(7,9,9,.9)";
   context.fillRect(labelX, labelY - 13, labelWidth, 22);

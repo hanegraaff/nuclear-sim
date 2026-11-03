@@ -27,12 +27,13 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   const selectDevice = useCallback((id: string) => store.dispatch({ type: "selectDevice", id }), [store]);
   const setCustomYieldInput = useCallback((value: string) => store.dispatch({ type: "setCustomYieldInput", value }), [store]);
   const reset = useCallback(() => store.dispatch({ type: "reset" }), [store]);
-  const inspectZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "inspectZone", zoneId }), [store]);
+  const hoverZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "hoverZone", zoneId }), [store]);
+  const focusZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "focusZone", zoneId }), [store]);
   const pinZone = useCallback((zoneId: BlastZoneId) => store.dispatch({ type: "pinZone", zoneId }), [store]);
   const clearZoneInspection = useCallback(() => store.dispatch({ type: "clearZoneInspection" }), [store]);
 
   return (
-    <MapViewport cameraRequest={state.cameraRequest} launch={state} onLaunch={store.launchAt} launchAngle={store.nextLaunchAngle} onInspectZone={inspectZone} onPinZone={pinZone} onClearZoneInspection={clearZoneInspection}>
+    <MapViewport cameraRequest={state.cameraRequest} launch={state} onLaunch={store.launchAt} launchAngle={store.nextLaunchAngle} onHoverZone={hoverZone} onFocusZone={focusZone} onPinZone={pinZone} onClearZoneInspection={clearZoneInspection}>
       <DevicePanel
         state={panelState}
         selection={selection}

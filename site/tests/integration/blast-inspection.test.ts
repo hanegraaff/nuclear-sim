@@ -1,8 +1,8 @@
 /** Fake-camera tests verify that rings and markers follow geographic distance through camera changes. */
 import { describe, expect, it } from "vitest";
-import { blastRadiiForYield } from "../../src/domain/blast";
+import { blastRadiiForYield, MAX_SURFACE_DISTANCE_KM } from "../../src/domain/blast";
 import { geoPoint, normalizeLongitude, type GeoPoint } from "../../src/domain/geodesy";
-import { buildBlastInspection, type InspectionCamera } from "../../src/rendering/overlays/blastInspection";
+import { buildBlastInspection, formatDistance, selectBlastRulerBearing, type InspectionCamera } from "../../src/rendering/overlays/blastInspection";
 
 /** Equirectangular fake centered on an impact; scale and offset stand in for pan and zoom. */
 function cameraAt(origin: GeoPoint, pixelsPerKm: number, centerX: number, centerY: number): InspectionCamera {
@@ -18,7 +18,9 @@ describe("blast inspection projection", () => {
   const radii = blastRadiiForYield(0.021);
 
   it("projects four ring boundaries and marker midpoints at the current map scale", () => {
-    const geometry = buildBlastInspection(cameraAt(origin, 40, 900, 550), origin, radii, 1508, 1080)!;
+    const camera = cameraAt(origin, 40, 900, 550);
+    const bearing = selectBlastRulerBearing(camera, origin, radii.light, 1508, 1080);
+    const geometry = buildBlastInspection(camera, origin, radii, 1508, 1080, bearing)!;
     expect(geometry.zones).toHaveLength(4);
     expect(geometry.zones.every((zone) => zone.ring.length === 120)).toBe(true);
     expect(geometry.zones.every((zone) => zone.visible)).toBe(true);
@@ -29,14 +31,15 @@ describe("blast inspection projection", () => {
   });
 
   it("moves markers with pan and scales their distance from ground zero with zoom", () => {
-    const first = buildBlastInspection(cameraAt(origin, 25, 800, 500), origin, radii, 1508, 1080)!;
-    const panned = buildBlastInspection(cameraAt(origin, 25, 900, 570), origin, radii, 1508, 1080)!;
-    const zoomed = buildBlastInspection(cameraAt(origin, 50, 800, 500), origin, radii, 1508, 1080)!;
+    const bearing = selectBlastRulerBearing(cameraAt(origin, 25, 800, 500), origin, radii.light, 1508, 1080);
+    const first = buildBlastInspection(cameraAt(origin, 25, 800, 500), origin, radii, 1508, 1080, bearing)!;
+    const panned = buildBlastInspection(cameraAt(origin, 25, 900, 570), origin, radii, 1508, 1080, bearing)!;
+    const zoomed = buildBlastInspection(cameraAt(origin, 50, 800, 500), origin, radii, 1508, 1080, bearing)!;
     for (let index = 0; index < 4; index++) {
       const a = first.zones[index]!.rulerPoint;
       const b = panned.zones[index]!.rulerPoint;
       const c = zoomed.zones[index]!.rulerPoint;
-      // A changed quadrant can alter positions; the test viewport keeps northeast available.
+      // The bearing is fixed for this strike, even if the optimal viewport quadrant changes.
       expect(Math.abs((b.x - a.x) - 100)).toBeLessThan(0.5);
       expect(Math.abs((b.y - a.y) - 70)).toBeLessThan(0.5);
       expect(Math.abs(Math.hypot(c.x - 800, c.y - 500) / Math.hypot(a.x - 800, a.y - 500) - 2)).toBeLessThan(0.01);
@@ -45,7 +48,11 @@ describe("blast inspection projection", () => {
 
   it("keeps the marker line continuous across the antimeridian", () => {
     const island = geoPoint(179.98, 0);
-    const geometry = buildBlastInspection(cameraAt(island, 20, 500, 400), island, radii, 1000, 800)!;
+    const geometry = buildBlastInspection(cameraAt(island, 20, 500, 400), island, radii, 1000, 800, 54)!;
     expect(geometry.ruler.every((point) => Number.isFinite(point.x) && point.x > 0 && point.x < 1000)).toBe(true);
+  });
+
+  it("keeps the prototype overflow label at the physical distance cap", () => {
+    expect(formatDistance(MAX_SURFACE_DISTANCE_KM)).toBe("20,000 km+");
   });
 });

@@ -15,7 +15,8 @@ export interface BlastInspectionOverlayProps {
   readonly geometry: BlastInspectionGeometry | null;
   readonly activeZoneId: BlastZoneId | null;
   readonly pinnedZoneId: BlastZoneId | null;
-  readonly onInspect: (zoneId: BlastZoneId | null) => void;
+  readonly onHover: (zoneId: BlastZoneId | null) => void;
+  readonly onFocusZone: (zoneId: BlastZoneId | null) => void;
   readonly onPin: (zoneId: BlastZoneId) => void;
   readonly onClear: () => void;
 }
@@ -29,33 +30,33 @@ function tooltipPosition(x: number, y: number, width: number, height: number): C
 }
 
 /** Show projected zone markers and one hover, focus, or pinned inspection tooltip. */
-export function BlastInspectionOverlay({ geometry, activeZoneId, pinnedZoneId, onInspect, onPin, onClear }: BlastInspectionOverlayProps) {
+export function BlastInspectionOverlay({ geometry, activeZoneId, pinnedZoneId, onHover, onFocusZone, onPin, onClear }: BlastInspectionOverlayProps) {
   if (!geometry) return null;
   const visible = geometry.zones.filter((projected) => projected.visible);
   const active = visible.find((projected) => projected.zone.id === activeZoneId);
   return (
     <div className="blast-inspection-layer" aria-label="Blast-zone inspection markers">
-      {visible.map(({ zone, color, marker }) => {
+      {visible.map(({ zone, marker }) => {
         const copy = ZONE_COPY[zone.id];
         return (
           <button
             type="button"
             key={zone.id}
-            className={`blast-zone-marker${pinnedZoneId === zone.id ? " pinned" : ""}`}
-            style={{ left: marker.x, top: marker.y, "--zone-color": color } as CSSProperties}
+            className="blast-zone-marker"
+            style={{ left: marker.x, top: marker.y }}
             aria-label={`${copy.label} destruction. ${copy.description} Zone span ${formatDistance(zone.innerKm)} to ${formatDistance(zone.outerKm)}. Damage area ${formatArea(zone.areaKm2)}.`}
             aria-expanded={activeZoneId === zone.id}
+            aria-pressed={pinnedZoneId === zone.id}
             aria-describedby={activeZoneId === zone.id ? `blast-tooltip-${zone.id}` : undefined}
-            onPointerEnter={() => onInspect(zone.id)}
-            onPointerLeave={() => onInspect(null)}
-            onFocus={() => onInspect(zone.id)}
-            onBlur={() => onInspect(null)}
+            onPointerEnter={() => onHover(zone.id)}
+            onPointerLeave={() => onHover(null)}
+            onFocus={() => onFocusZone(zone.id)}
+            onBlur={() => onFocusZone(null)}
             onClick={() => onPin(zone.id)}
             onKeyDown={(event) => {
               if (event.key === "Escape") { event.preventDefault(); onClear(); event.currentTarget.blur(); }
             }}
           >
-            <span className="blast-zone-marker-core" aria-hidden="true" />
           </button>
         );
       })}

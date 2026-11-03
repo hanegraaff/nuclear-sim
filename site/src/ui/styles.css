@@ -68,24 +68,6 @@ body { overflow: hidden; }
   pointer-events: auto;
   cursor: pointer;
 }
-.blast-zone-marker-core {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 12px; height: 12px;
-  border: 2px solid rgba(255,255,255,.94);
-  border-radius: 50%;
-  background: var(--zone-color);
-  box-shadow: 0 0 0 3px rgba(5,7,7,.78), 0 0 11px var(--zone-color);
-  transform: translate(-50%, -50%);
-  transition: width .14s ease, height .14s ease, box-shadow .14s ease;
-}
-.blast-zone-marker:hover .blast-zone-marker-core,
-.blast-zone-marker:focus-visible .blast-zone-marker-core,
-.blast-zone-marker.pinned .blast-zone-marker-core {
-  width: 16px; height: 16px;
-  box-shadow: 0 0 0 3px rgba(5,7,7,.86), 0 0 17px var(--zone-color);
-}
-.blast-zone-marker:focus-visible .blast-zone-marker-core { outline: 2px solid white; outline-offset: 3px; }
 .blast-zone-tooltip {
   position: absolute;
   display: grid;

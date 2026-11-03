@@ -48,9 +48,16 @@ test("keyboard focus and pinning inspect a zone without launching another strike
   const simulator = page.locator("main.simulator");
   const target = await simulator.getAttribute("data-target-longitude");
   const moderate = page.getByRole("button", { name: /^MODERATE destruction/ });
+  await page.mouse.move(1450, 900);
   await moderate.focus();
   await expect(page.getByRole("tooltip")).toContainText("MODERATE DESTRUCTION");
   await expect(moderate).toHaveAttribute("aria-expanded", "true");
+  const light = page.getByRole("button", { name: /^LIGHT destruction/ });
+  await light.hover();
+  await expect(moderate).toBeFocused();
+  await expect(page.getByRole("tooltip")).toContainText("LIGHT DESTRUCTION");
+  await page.mouse.move(1450, 900);
+  await expect(page.getByRole("tooltip")).toContainText("MODERATE DESTRUCTION");
   await moderate.click();
   await page.mouse.move(1450, 900);
   await expect(page.getByRole("tooltip")).toContainText("MODERATE DESTRUCTION");
@@ -60,6 +67,30 @@ test("keyboard focus and pinning inspect a zone without launching another strike
   await expect(simulator).toHaveAttribute("data-launch-phase", "complete");
   await page.getByRole("button", { name: "Reset map" }).click();
   await expect(page.locator(".blast-zone-marker")).toHaveCount(0);
+});
+
+test("measure keeps its bearing and visible markers use the same canvas as the ruler through zoom", async ({ page }) => {
+  const fireball = page.getByRole("button", { name: /^FIREBALL destruction/ });
+  const moderate = page.getByRole("button", { name: /^MODERATE destruction/ });
+  const direction = async () => {
+    const center = await fireball.boundingBox();
+    const marker = await moderate.boundingBox();
+    expect(center).not.toBeNull();
+    expect(marker).not.toBeNull();
+    return Math.sign(marker!.x - center!.x);
+  };
+  const originalDirection = await direction();
+  expect(originalDirection).not.toBe(0);
+  await page.getByRole("button", { name: "Zoom in" }).click();
+  await page.clock.runFor(250);
+  expect(await direction()).toBe(originalDirection);
+  await page.clock.runFor(300);
+  expect(await direction()).toBe(originalDirection);
+  await page.getByRole("button", { name: "Zoom out" }).click();
+  await page.clock.runFor(500);
+  expect(await direction()).toBe(originalDirection);
+  await expect(moderate.locator("*" )).toHaveCount(0);
+  await expect(moderate).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
 });
 
 test("panning moves a marker with the map and keeps the strike target", async ({ page }) => {
