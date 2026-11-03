@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-02**. Plans 01–05 are published to the same private Site. The Plan 05 review findings are resolved. The prototype directories remain read only.
+The roadmap is current as of **2026-11-02**. Plans 01–06 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -20,8 +20,8 @@ The roadmap is current as of **2026-11-02**. Plans 01–05 are published to the 
 | 03 | Scenario navigation | Complete | 02 |
 | 04 | Target and incoming missile | Complete | 03 |
 | 05 | Single blast animation | Complete | 04 |
-| 06 | Blast ruler and inspection markers | In progress | 05 |
-| 07 | Blast field grounded in pitched views | Not started | 06 |
+| 06 | Blast ruler and inspection markers | Complete | 05 |
+| 07 | Blast field grounded in pitched views | Ready | 06 |
 | 08 | 3D fireball | Not started | 07 |
 | 09 | Animated cloud-profile monitor | Not started | 08 |
 | 10 | Additive multi launch | Not started | 09 |
@@ -115,7 +115,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–05 are published to the 
 
 **Completion evidence.** Model and placement tests pass; a desktop capture is reviewed against `Nuke Blast Top.png` and `MarkersAnd Popups.jpeg`.
 
-**Current status.** In progress on branch `plan-6`; implementing settled blast measurement and marker inspection.
+**Current status.** Complete on 2026-11-02 from branch `plan-6`. Private [Site version 12](https://nuke-simulator-rebuild.maquaman.chatgpt.site) is deployed from GitHub source commit `4152d78b311c49c80098340a12196e416f36d7e4` and Sites source commit `100d5333d6e626c315cbc0b716848464c1d1edfa`. The full gate passed both in the workspace and after a clean install in the release checkout: type checking, lint, 128 unit tests, 16 integration tests, build, and 20 browser tests. The fixed-tile [settled measurement](site/tests/e2e/blast-inspection.spec.ts-snapshots/plan-06-settled-darwin.png) and [Light popup](site/tests/e2e/blast-inspection.spec.ts-snapshots/plan-06-light-tooltip-darwin.png) were inspected against `Nuke Blast Top.png` and `MarkersAnd Popups.jpeg`; launch, impact, and expansion frames were also re-inspected after the camera fixture was stabilized. An authenticated Chromium check of version 12 returned HTTP 200, completed a strike, found four markers, opened the Light tooltip with 105.5 km², and reported no page errors. Remaining staged visual differences are recorded in [visual reference notes](site/docs/visual-reference.md).
 
 **Blocking decisioning.** None. Allow ruler bearing to adjust for screen space while preserving the supplied New York composition where possible.
 
@@ -129,7 +129,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–05 are published to the 
 
 **Completion evidence.** Camera alignment tests pass and browser captures are reviewed against the ground fields in `Nuke Blast with Fireball.png` and `Nuke Blast Top.png`.
 
-**Current status.** Not started; depends on Plan 06.
+**Current status.** Ready; Plan 06 is complete.
 
 **Blocking decisioning.** None. Keep geographic distance in the model; camera projection belongs to rendering.
 
