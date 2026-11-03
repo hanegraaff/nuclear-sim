@@ -12,6 +12,7 @@ import {
 export function MapViewport({ children, cameraRequest, launch, onLaunch, launchAngle }: { readonly children?: ReactNode; readonly cameraRequest: ScenarioCameraRequest | null; readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs">; readonly onLaunch: (route: FlightRoute) => void; readonly launchAngle: () => number }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
+  const blastCanvasRef = useRef<HTMLCanvasElement>(null);
   const controllerRef = useRef<SatelliteMapController | null>(null);
   const onLaunchRef = useRef(onLaunch);
   onLaunchRef.current = onLaunch;
@@ -26,7 +27,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || !missileCanvasRef.current) return;
+    if (!container || !missileCanvasRef.current || !blastCanvasRef.current) return;
     let controller: SatelliteMapController;
     try {
       controller = createSatelliteMapController(container, {
@@ -34,7 +35,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
         onCameraChange: setCamera,
         onLaunch: (route) => onLaunchRef.current(route),
         launchAngle: () => launchAngleRef.current(),
-      }, missileCanvasRef.current);
+      }, missileCanvasRef.current, blastCanvasRef.current);
     } catch {
       setLoadState("map-error");
       return;
@@ -78,7 +79,9 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
     >
       <div className="map-surface" ref={containerRef} aria-label="Interactive satellite map" />
       <div className="map-tone" aria-hidden="true" />
+      <canvas className="blast-canvas" ref={blastCanvasRef} aria-hidden="true" />
       <canvas className="missile-canvas" ref={missileCanvasRef} aria-hidden="true" />
+      <p className="model-qualification">IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE</p>
       {children}
       {loadState === "loading" && (
         <div className="map-message" role="status">Loading satellite map…</div>

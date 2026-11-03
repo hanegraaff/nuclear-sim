@@ -7,7 +7,8 @@ import { memo, type KeyboardEvent } from "react";
 interface DevicePanelProps {
   readonly state: Pick<ScenarioSelectionState, "tab" | "scenarioId" | "selectedId" | "customYieldInput">;
   readonly selection: ResolvedDeviceSelection;
-  readonly launchPhase: "armed" | "inbound" | "complete";
+  readonly launchPhase: "armed" | "inbound" | "detonating" | "complete";
+  readonly onReset: () => void;
   readonly onSelectTab: (tab: "scenario" | "device") => void;
   readonly onSelectScenario: (id: string) => void;
   readonly onSelectDevice: (id: string) => void;
@@ -15,7 +16,7 @@ interface DevicePanelProps {
 }
 
 /** Prototype-style selector; tab and input actions update application state. */
-export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, onReset, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -103,8 +104,11 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, launchP
           ) : (
             <p className="selection-status" role="status" aria-live="polite">Choose a scenario to prepare a device.</p>
           )}
+          <button className="reset-map" type="button" onClick={onReset} disabled={launchPhase === "armed"} aria-label="Reset map">
+            <span aria-hidden="true">↶</span> RESET
+          </button>
           <p className="launch-status" aria-live="polite">
-            {launchPhase === "inbound" ? "MISSILE INBOUND" : launchPhase === "complete" ? "TARGET REACHED" : "READY TO LAUNCH"}
+            {launchPhase === "inbound" ? "MISSILE INBOUND" : launchPhase === "detonating" ? "BLAST EXPANDING" : launchPhase === "complete" ? "BLAST COMPLETE" : "READY TO LAUNCH"}
           </p>
         </div>
       </section>

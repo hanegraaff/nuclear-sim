@@ -59,7 +59,7 @@ export class SimulatorStore {
   private scheduleFrame(): void {
     if (this.frameId !== null || this.listeners.size === 0) return;
     const launch = this.state.launch;
-    if (!launch || this.state.elapsedMs >= launch.flightMs + 3000) return;
+    if (!launch || this.state.elapsedMs >= launch.flightMs + launch.blastMs) return;
     this.frameId = this.clock.requestFrame(() => {
       this.frameId = null;
       this.dispatch({ type: "tick", nowMs: this.clock.now(), launchId: launch.id });

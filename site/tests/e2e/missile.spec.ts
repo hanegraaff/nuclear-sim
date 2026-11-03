@@ -27,8 +27,8 @@ test("a map click displays a geographic red target and an incoming missile at fi
   await page.screenshot({ path: testInfo.outputPath("plan-04-missile-3200ms.png") });
   await expect(page).toHaveScreenshot("plan-04-missile-3200ms.png", { maxDiffPixelRatio: 0.01 });
   await page.clock.runFor(3300);
-  await expect(simulator).toHaveAttribute("data-launch-phase", "complete");
-  await expect(page.locator(".launch-status")).toHaveText("TARGET REACHED");
+  await expect(simulator).toHaveAttribute("data-launch-phase", "detonating");
+  await expect(page.locator(".launch-status")).toHaveText("BLAST EXPANDING");
 });
 
 test("controls do not launch, and a second click cancels the first inbound flight", async ({ page }) => {

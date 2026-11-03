@@ -1,6 +1,6 @@
 # Nuke Simulator Site source
 
-This directory contains the static Site source for the workspace roadmap. The published Site, rather than a local server, is the user-facing application. Plans 01–03 provide a full-screen satellite map and prototype-style Scenario and Device controls. Plan 04 adds map targeting, a red crosshair, and an incoming missile. Users can pan, zoom, choose any of the 47 fixed devices, enter a custom yield, or select one of 20 scenarios to move the map and prepare its device. Each new click replaces the previous flight. Blast and effect controls arrive in later plans.
+This directory contains the static Site source for the workspace roadmap. The published Site is the user-facing application. Plans 01–03 provide a full-screen satellite map and prototype-style Scenario and Device controls. Plan 04 adds map targeting, a red crosshair, and an incoming missile. Plan 05 adds an impact flash, expanding single blast, and Reset. Users can pan, zoom, choose any of the 47 fixed devices, enter a custom yield, or select one of 20 scenarios to move the map and prepare its device. Each new click replaces the previous strike. Effect measurements and alternate views arrive in later plans.
 
 ## Engineering setup
 
@@ -9,9 +9,9 @@ Requires Node.js 22.13 or newer. In this directory, run `npm ci`, then `npx play
 ## Source layout
 
 - `src/catalog/`: exact grouped device choices and per-warhead MIRV data.
-- `src/domain/`: pure geographic and later physical model calculations.
-- `src/application/`: pure selection and single-launch timeline.
-- `src/rendering/`: MapLibre setup, camera projection, and Canvas missile animation.
+- `src/domain/`: pure geographic and blast-radius calculations in kilometers.
+- `src/application/`: pure selection and single-strike timeline.
+- `src/rendering/`: MapLibre setup, camera projection, and Canvas missile and blast effects.
 - `src/ui/`: React mount and user-facing map states.
 - `tests/`: deterministic unit, integration, and browser checks.
 

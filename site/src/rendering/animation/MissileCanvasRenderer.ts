@@ -23,7 +23,7 @@ export class MissileCanvasRenderer {
     context.clearRect(0, 0, width, height);
     if (!launch) return;
     const route = projectFlightRoute(launch.route, this.projector);
-    this.drawTarget(context, route.target, elapsedMs);
+    if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
     this.drawSmoke(context, launch, route, elapsedMs);
     if (elapsedMs < launch.flightMs) this.drawCore(context, screenFlightPoint(route, elapsedMs / launch.flightMs));
   }

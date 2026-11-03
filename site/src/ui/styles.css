@@ -45,13 +45,28 @@ body { overflow: hidden; }
     radial-gradient(circle at 62% 50%, transparent 48%, rgba(2, 4, 3, 0.16) 140%);
 }
 
-.missile-canvas {
+.blast-canvas, .missile-canvas {
   position: absolute;
-  z-index: 5;
   inset: 0;
   width: 100%;
   height: 100%;
   pointer-events: none;
+}
+.blast-canvas { z-index: 4; }
+.missile-canvas { z-index: 5; }
+
+.model-qualification {
+  position: absolute;
+  z-index: 6;
+  right: 112px;
+  bottom: 15px;
+  margin: 0;
+  color: rgba(239, 241, 236, 0.7);
+  font-family: var(--mono);
+  font-size: 8px;
+  letter-spacing: 0.55px;
+  pointer-events: none;
+  text-shadow: 0 1px 3px #111;
 }
 
 .launch-status {
@@ -226,6 +241,28 @@ body { overflow: hidden; }
   line-height: 1.5;
 }
 .selection-error { color: #ff9999; }
+
+.reset-map {
+  width: 100%;
+  min-height: 35px;
+  border: 1px solid #ff694e;
+  border-radius: 2px;
+  color: #ff6b6b;
+  background: rgba(60, 14, 13, 0.48);
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  cursor: pointer;
+}
+.reset-map span { padding-right: 8px; font-size: 20px; vertical-align: -2px; }
+.reset-map:hover:not(:disabled) { background: rgba(87, 22, 19, 0.7); }
+.reset-map:disabled { opacity: 0.52; cursor: default; }
+.reset-map:focus-visible { outline: 2px solid #e4edda; outline-offset: 2px; }
+
+@media (max-width: 700px) {
+  .model-qualification { right: 75px; bottom: 8px; max-width: 52vw; font-size: 6px; text-align: right; }
+}
 
 .map-message {
   position: absolute;

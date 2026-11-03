@@ -25,6 +25,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   const selectScenario = useCallback((id: string) => store.dispatch({ type: "selectScenario", id }), [store]);
   const selectDevice = useCallback((id: string) => store.dispatch({ type: "selectDevice", id }), [store]);
   const setCustomYieldInput = useCallback((value: string) => store.dispatch({ type: "setCustomYieldInput", value }), [store]);
+  const reset = useCallback(() => store.dispatch({ type: "reset" }), [store]);
 
   return (
     <MapViewport cameraRequest={state.cameraRequest} launch={state} onLaunch={store.launchAt} launchAngle={store.nextLaunchAngle}>
@@ -32,6 +33,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
         state={panelState}
         selection={selection}
         launchPhase={state.phase}
+        onReset={reset}
         onSelectTab={selectTab}
         onSelectScenario={selectScenario}
         onSelectDevice={selectDevice}

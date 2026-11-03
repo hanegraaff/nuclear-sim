@@ -4,7 +4,7 @@ This repository contains a production-quality reimplementation of the nuclear ef
 
 ## Project status
 
-[Plans 01–04 of the roadmap](roadmap.md) are published. Clicking the map places a red target and sends a 6.5-second missile toward it. A second click replaces the flight. Blast animation, Reset, and effect views are planned next.
+[Plans 01–05 of the roadmap](roadmap.md) are published. Clicking the map sends a 6.5-second missile toward a geographic target, then produces a flash and expanding single blast. A second click replaces the strike, and Reset clears it while retaining the map camera and device. Effect measurements and alternate views follow in later plans.
 
 **Open the private Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Access is limited to the Site owner. Users do not need to run the application locally.
 
@@ -22,7 +22,7 @@ To run a plan through implementation, Sites publication, a GitHub PR, and a sepa
 - `prototype-code/` contains the current reference application and its tests.
 - `prototype-screenshots/` contains nine visual references. The actual directory name is `prototype-screenshots/`.
 
-The implementation uses React, TypeScript, Vite, MapLibre GL JS, and Canvas 2D for the missile. Later plans add effect fields and a MapLibre-aligned WebGL fireball layer. Its static build is published through Sites with a private audience. The map uses satellite imagery with visible provider attribution. Effect estimates will be illustrative; model assumptions and limits are documented in [the model notes](site/docs/model.md) as the model grows.
+The implementation uses React, TypeScript, Vite, MapLibre GL JS, and Canvas 2D for the missile and blast field. A later plan adds a MapLibre-aligned WebGL fireball dome. Its static build is published through Sites with a private audience. The map uses Esri satellite imagery with visible provider attribution. Blast radii are illustrative estimates, not measured forecasts; assumptions and limits are documented in [the model notes](site/docs/model.md).
 
 ## Development and review
 
