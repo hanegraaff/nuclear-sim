@@ -19,7 +19,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–04 are published to the 
 | 02 | Device control panel | Complete | 01 |
 | 03 | Scenario navigation | Complete | 02 |
 | 04 | Target and incoming missile | Complete | 03 |
-| 05 | Single blast animation | Not started | 04 |
+| 05 | Single blast animation | Complete | 04 |
 | 06 | Blast ruler and inspection markers | Not started | 05 |
 | 07 | Blast field grounded in pitched views | Not started | 06 |
 | 08 | 3D fireball | Not started | 07 |
