@@ -1,6 +1,6 @@
 # Nuke Simulator Site source
 
-This directory contains the static Site source for the workspace roadmap. The published Site is the user-facing application. Plans 01–03 provide a full-screen satellite map and prototype-style Scenario and Device controls. Plan 04 adds map targeting, a red crosshair, and an incoming missile. Plan 05 adds an impact flash, expanding single blast, and Reset. Plan 06 adds the settled blast ruler, zone outlines, and inspection markers. Plan 07 grounds the center glow on pitched map views. Users can pan, zoom, right-drag upward to pitch, choose any of the 47 fixed devices, enter a custom yield, or select one of 20 scenarios to move the map and prepare its device. Each new click replaces the previous strike. Hover or focus a zone marker for its description and modeled span; click to pin its popup and press Escape to clear it. Alternate views arrive in later plans.
+This directory contains the static Site source for the workspace roadmap. The published Site is the user-facing application. Plans 01–03 provide a full-screen satellite map and prototype-style Scenario and Device controls. Plan 04 adds map targeting, a red crosshair, and an incoming missile. Plan 05 adds an impact flash, expanding single blast, and Reset. Plan 06 adds the settled blast ruler, zone outlines, and inspection markers. Plan 07 grounds the center glow on pitched map views. Plan 08 adds a textured fireball dome that grows from the modeled impact and follows the map camera. Users can pan, zoom, right-drag upward to pitch, choose any of the 47 fixed devices, enter a custom yield, or select one of 20 scenarios to move the map and prepare its device. Each new click replaces the previous strike. Hover or focus a zone marker for its description and modeled span; click to pin its popup and press Escape to clear it. Alternate views arrive in later plans.
 
 ## Engineering setup
 
@@ -11,7 +11,7 @@ Requires Node.js 22.13 or newer. In this directory, run `npm ci`, then `npx play
 - `src/catalog/`: exact grouped device choices and per-warhead MIRV data.
 - `src/domain/`: pure geographic, blast-radius, and annular area calculations in kilometers and square kilometers.
 - `src/application/`: pure selection and single-strike timeline.
-- `src/rendering/`: MapLibre setup, camera projection, Canvas effects, and geographic inspection overlays.
+- `src/rendering/`: MapLibre setup, camera projection, Canvas effects, WebGL fireball, and geographic inspection overlays.
 - `src/ui/`: React mount, map states, and accessible marker popups.
 - `tests/`: deterministic unit, integration, and browser checks.
 
