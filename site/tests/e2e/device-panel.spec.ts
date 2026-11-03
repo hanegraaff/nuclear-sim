@@ -1,4 +1,4 @@
-/** Plan 02 browser paths cover the prototype device list and custom validation. */
+/** Panel browser paths cover device/scenario selection, custom validation, and the current compact controls. */
 import { expect, test } from "@playwright/test";
 import path from "node:path";
 
@@ -27,7 +27,7 @@ test("the complete grouped catalog selects a device and survives map interaction
   expect(await selector.locator("optgroup").evaluateAll((groups) => groups.map((group) => (group as HTMLOptGroupElement).label))).toEqual([
     "Conventional weapons", "Nuclear devices", "MIRV delivery systems", "Hypothetical scale studies",
   ]);
-  await expect(page).toHaveScreenshot("plan-03-device-panel.png", { maxDiffPixelRatio: 0.01 });
+  await expect(page).toHaveScreenshot("plan-05-device-panel.png", { maxDiffPixelRatio: 0.01 });
 
   await selector.selectOption("rs-24-yars");
   await expect(panel.getByRole("status")).toContainText("RS-24 Yars / SS-29 · 3 × 175 kt · modeled");
@@ -54,13 +54,14 @@ test("scenario selection moves the map, prepares its device, and supports keyboa
     "Historical locations + real devices", "Hypothetical scale studies",
   ]);
   await page.screenshot({ path: testInfo.outputPath("scenario-panel-review.png") });
-  await expect(page).toHaveScreenshot("plan-03-scenario-panel.png", { maxDiffPixelRatio: 0.01 });
+  await expect(page).toHaveScreenshot("plan-05-scenario-panel.png", { maxDiffPixelRatio: 0.01 });
   await selector.selectOption("hiroshima");
   await expect.poll(async () => Number(await map.getAttribute("data-center-longitude"))).toBeCloseTo(132.4547, 3);
   await expect.poll(async () => Number(await map.getAttribute("data-center-latitude"))).toBeCloseTo(34.3947, 3);
   await expect.poll(async () => Number(await map.getAttribute("data-zoom"))).toBeGreaterThan(11);
   await expect(panel.getByRole("status")).toContainText("Little Boy · 15 kt");
-  await expect(page.locator("canvas")).toHaveCount(2);
+  await expect(page.locator("canvas")).toHaveCount(3);
+  await expect(map).toHaveAttribute("data-launch-phase", "armed");
   await deviceTab.click();
   await expect(panel.getByRole("combobox", { name: "Weapon or delivery system" })).toHaveValue("little-boy");
   await scenarioTab.click();
@@ -73,7 +74,7 @@ test("scenario selection moves the map, prepares its device, and supports keyboa
   await expect.poll(async () => Number(await map.getAttribute("data-center-longitude"))).toBeCloseTo(-106.4754, 3);
   await expect.poll(async () => Number(await map.getAttribute("data-center-latitude"))).toBeCloseTo(33.6773, 3);
   await expect(panel.getByRole("status")).toContainText("Trinity Gadget · 18.6 kt");
-  await expect(page.locator("canvas")).toHaveCount(2);
+  await expect(page.locator("canvas")).toHaveCount(3);
 });
 
 test("custom megaton input reports invalid values and resolves a valid selection", async ({ page }) => {

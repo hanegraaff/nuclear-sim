@@ -1,6 +1,6 @@
-# Model notes — Plans 01–04
+# Model notes — Plans 01–05
 
-Plan 01 includes geographic calculations only; blast, fallout, and range models arrive in later plans.
+Plan 01 introduces geographic calculations; Plan 05 adds the first blast-radius model. Fallout and range models arrive in later plans.
 
 `src/domain/geodesy.ts` uses a spherical Earth with mean radius **6371 km**, matching the reference prototype. Great-circle distance uses the haversine formula. Destination calculations use a spherical bearing formula. Longitudes are normalized to [−180°, 180°), so a route crossing the antimeridian remains short. Inputs with non-finite coordinates, latitude outside [−90°, 90°], negative distance, or travel beyond the antipodal surface distance are rejected.
 
@@ -19,3 +19,11 @@ The camera estimates the prototype's light-effect radius as 4.8 km times the cub
 ## Incoming missile — Plan 04
 
 The incoming path is a visual reconstruction of `prototype-code/app/missile-flight.mjs`, not a ballistic trajectory or travel-time prediction. At launch, the camera supplies a viewport-edge start and one bent control point; all three are stored as geographic coordinates. On each frame the renderer projects those points through the current camera, then samples their quadratic screen-space curve with progress raised to 1.16 over 6.5 seconds. The camera adapter selects the nearest world copy at the antimeridian. Smoke emission points stay on this projected route; their decorative CSS-pixel drift is damped over 0.22 seconds and fades within 3 seconds. Adjacent puffs use their own ages and seeds. None of these screen-space optical choices changes physical distance or future effect calculations. Launch angles vary by a deterministic golden-angle sequence: the first enters from the upper right for a reproducible reference frame, and each later launch uses a different edge direction.
+
+## Single blast — Plan 05
+
+`src/domain/blast.ts` reproduces the prototype's `radiiForYield` screening scale for one impact. For yield `Y` in Mt and the 10 kt reference `Y₀ = 0.01 Mt`, light, moderate, and severe radii are respectively `4.8`, `1.6`, and `0.8 km × (Y/Y₀)^(1/3)`. The fireball radius is `0.14 km × (Y/Y₀)^0.4`, bounded by the severe radius. All zones are nested and capped at the half-circumference of the 6371 km spherical Earth; the same prototype floor of 0.001 km prevents a zero-size effect. At 21 kt, the light radius is about 6.15 km, matching the rounded label in `Nuke Blast Top.png`.
+
+These constants are transcribed from `prototype-code/app/page.tsx` and calibrated to its imagery, not derived from a validated damage calculation. Yield scaling omits burst height, terrain, shielding, building type, weather, and uncertainty. The conventional catalog entries use the same visual scale for now; their inclusion does not imply nuclear fallout. The field is a visual screening estimate and must not be used as emergency guidance.
+
+The application stores radii with the strike, so subsequent device changes cannot resize an existing blast. A 6.5-second carrier flight leads into a 4.6-second expansion; the flash lasts 1.1 seconds. The field uses `1 − (1 − t)^2.15` for fast-first growth, with `t` normalized to the expansion duration. Color stops and the shock ring are visual reconstructions, not physical wave-front predictions. The current canvas uses a local camera projection derivative to size circular fields and caps far-offscreen radii. A ground-sampled, pitched projection is scheduled for Plan 07.

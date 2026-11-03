@@ -101,7 +101,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–04 are published to the 
 
 **Completion evidence.** Model and state tests pass; fixed-time screenshots show impact, mid-expansion, and final field. Compare with `Nuke Blast with Fireball.png` and `Nuke Blast Top.png`, noting that the 3D dome arrives in Plan 08.
 
-**Current status.** Not started; depends on Plan 04.
+**Current status.** In progress on branch `plan-5`; Plan 04 is complete.
 
 **Blocking decisioning.** None. Keep physical constants documented in `docs/model.md`; changes must preserve the nested zone order and visible scale.
 

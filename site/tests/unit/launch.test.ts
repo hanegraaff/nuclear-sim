@@ -1,6 +1,6 @@
-/** Plan 04 reducer tests use explicit monotonic milliseconds so flight cancellation is repeatable. */
+/** Launch reducer tests use explicit milliseconds to verify the flight-to-blast state sequence and cancellation. */
 import { describe, expect, it } from "vitest";
-import { INITIAL_SIMULATOR_STATE, reduceSimulator, FLIGHT_MS, type FlightRoute } from "../../src/application/launch";
+import { INITIAL_SIMULATOR_STATE, reduceSimulator, FLIGHT_MS, BLAST_MS, type FlightRoute } from "../../src/application/launch";
 
 const firstRoute: FlightRoute = {
   start: { longitude: -74.1, latitude: 40.9 },
@@ -10,7 +10,7 @@ const firstRoute: FlightRoute = {
 const secondRoute: FlightRoute = { ...firstRoute, target: { longitude: -73.7, latitude: 40.6 } };
 
 describe("single launch phase and cancellation", () => {
-  it("starts a selected device at the clicked geographic target and reaches it after 6.5 seconds", () => {
+  it("starts a selected device at the clicked geographic target and detonates after 6.5 seconds", () => {
     const inbound = reduceSimulator(INITIAL_SIMULATOR_STATE, { type: "launchAt", route: firstRoute, deviceId: "fat-man", yieldMt: 0.021, nowMs: 100 });
     expect(inbound.phase).toBe("inbound");
     expect(inbound.launch).toMatchObject({ id: 1, route: firstRoute, deviceId: "fat-man", yieldMt: 0.021, flightMs: FLIGHT_MS });
@@ -18,9 +18,12 @@ describe("single launch phase and cancellation", () => {
     expect(midpoint.elapsedMs).toBe(3250);
     expect(midpoint.phase).toBe("inbound");
     const arrived = reduceSimulator(midpoint, { type: "tick", nowMs: 6600, launchId: 1 });
-    expect(arrived.phase).toBe("complete");
+    expect(arrived.phase).toBe("detonating");
     expect(arrived.elapsedMs).toBe(6500);
-    expect(reduceSimulator(arrived, { type: "tick", nowMs: 10000, launchId: 1 }).elapsedMs).toBe(9500);
+    const expanding = reduceSimulator(arrived, { type: "tick", nowMs: 10000, launchId: 1 });
+    expect(expanding).toMatchObject({ phase: "detonating", elapsedMs: 9900 });
+    const settled = reduceSimulator(expanding, { type: "tick", nowMs: 100 + FLIGHT_MS + BLAST_MS, launchId: 1 });
+    expect(settled).toMatchObject({ phase: "complete", elapsedMs: FLIGHT_MS + BLAST_MS });
   });
 
   it("replaces an active flight and ignores its already scheduled frame", () => {
@@ -31,6 +34,18 @@ describe("single launch phase and cancellation", () => {
     expect(reduceSimulator(second, { type: "tick", nowMs: 4000, launchId: 1 })).toBe(second);
     expect(reduceSimulator(second, { type: "tick", nowMs: 4100, launchId: 2 }).elapsedMs).toBe(2900);
     expect(reduceSimulator(second, { type: "tick", nowMs: 1000, launchId: 2 })).toBe(second);
+  });
+
+  it("replaces an expanding or settled blast with a new inbound strike", () => {
+    const first = reduceSimulator(INITIAL_SIMULATOR_STATE, { type: "launchAt", route: firstRoute, deviceId: "fat-man", yieldMt: 0.021, nowMs: 100 });
+    const exploding = reduceSimulator(first, { type: "tick", nowMs: 7100, launchId: 1 });
+    const second = reduceSimulator(exploding, { type: "launchAt", route: secondRoute, deviceId: "moab", yieldMt: 0.000011, nowMs: 7100 });
+    expect(exploding.phase).toBe("detonating");
+    expect(second).toMatchObject({ phase: "inbound", elapsedMs: 0, launch: { id: 2, route: secondRoute } });
+    expect(reduceSimulator(second, { type: "tick", nowMs: 9000, launchId: 1 })).toBe(second);
+    const settled = reduceSimulator(first, { type: "tick", nowMs: 12000, launchId: 1 });
+    expect(settled.phase).toBe("complete");
+    expect(reduceSimulator(settled, { type: "launchAt", route: secondRoute, deviceId: "moab", yieldMt: 0.000011, nowMs: 12000 }).phase).toBe("inbound");
   });
 
   it("clears the flight while preserving selection and ignores an old frame after reset", () => {

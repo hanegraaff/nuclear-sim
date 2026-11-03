@@ -1,6 +1,7 @@
 import type { ErrorEvent as MapErrorEvent, Map as MapLibreMap, MapMouseEvent, MapSourceDataEvent } from "maplibre-gl";
 import type { Launch, FlightRoute } from "../../application/launch";
 import { MissileCanvasRenderer } from "../animation/MissileCanvasRenderer";
+import { BlastCanvasRenderer } from "../effects/BlastCanvasRenderer";
 import { viewportFlightRoute } from "../animation/flightGeometry";
 import { MapCameraAdapter } from "./MapCameraAdapter";
 import { createSatelliteMap } from "./createSatelliteMap";
@@ -47,7 +48,7 @@ export class SatelliteMapController {
   private launch: Launch | null = null;
   private elapsedMs = 0;
 
-  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer) {
+  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer) {
     this.camera = new MapCameraAdapter(map);
     map.on("load", this.handleLoad);
     map.on("idle", this.handleIdle);
@@ -128,6 +129,7 @@ export class SatelliteMapController {
 
   private readonly repaintFlight = (): void => {
     const container = this.map.getContainer();
+    this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
     this.missileRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
   };
 
@@ -182,8 +184,11 @@ export function createSatelliteMapController(
   container: HTMLElement,
   callbacks: SatelliteMapCallbacks,
   missileCanvas?: HTMLCanvasElement,
+  blastCanvas?: HTMLCanvasElement,
 ): SatelliteMapController {
   const map = createSatelliteMap(container);
-  const renderer = missileCanvas ? new MissileCanvasRenderer(missileCanvas, new MapCameraAdapter(map)) : undefined;
-  return new SatelliteMapController(map, callbacks, renderer);
+  const camera = new MapCameraAdapter(map);
+  const missile = missileCanvas ? new MissileCanvasRenderer(missileCanvas, camera) : undefined;
+  const blast = blastCanvas ? new BlastCanvasRenderer(blastCanvas, camera) : undefined;
+  return new SatelliteMapController(map, callbacks, missile, blast);
 }

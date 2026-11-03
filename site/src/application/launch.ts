@@ -1,9 +1,12 @@
 import type { GeoPoint } from "../domain/geodesy";
 import type { ScenarioSelectionAction, ScenarioSelectionState } from "./scenarioSelection";
 import { INITIAL_SCENARIO_SELECTION, reduceScenarioSelection } from "./scenarioSelection";
+import { blastRadiiForYield, type BlastRadii } from "../domain/blast";
 
 /** Normal carrier travel time in milliseconds, taken from the prototype. */
 export const FLIGHT_MS = 6500;
+/** Prototype's blast expansion duration in milliseconds. */
+export const BLAST_MS = 4600;
 
 /** One geographically anchored carrier route, with a quadratic control point. */
 export interface FlightRoute {
@@ -20,11 +23,13 @@ export interface Launch {
   readonly route: FlightRoute;
   readonly launchedAtMs: number;
   readonly flightMs: number;
+  readonly blastMs: number;
+  readonly radii: BlastRadii;
 }
 
-/** Current single-launch state; detonation artwork is added in Plan 05. */
+/** Current single-strike phase, effect age, and immutable selected device. */
 export interface SimulatorState extends ScenarioSelectionState {
-  readonly phase: "armed" | "inbound" | "complete";
+  readonly phase: "armed" | "inbound" | "detonating" | "complete";
   readonly launch: Launch | null;
   readonly elapsedMs: number;
   readonly nextLaunchId: number;
@@ -54,16 +59,18 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     return {
       ...state,
       phase: "inbound",
-      launch: { id: state.nextLaunchId, deviceId: action.deviceId, yieldMt: action.yieldMt, route: action.route, launchedAtMs: action.nowMs, flightMs },
+      launch: { id: state.nextLaunchId, deviceId: action.deviceId, yieldMt: action.yieldMt, route: action.route, launchedAtMs: action.nowMs, flightMs, blastMs: BLAST_MS, radii: blastRadiiForYield(action.yieldMt) },
       elapsedMs: 0,
       nextLaunchId: state.nextLaunchId + 1,
     };
   }
   if (action.type === "tick") {
     if (!state.launch || state.launch.id !== action.launchId || !Number.isFinite(action.nowMs)) return state;
-    const elapsedMs = Math.min(state.launch.flightMs + 3000, Math.max(state.elapsedMs, action.nowMs - state.launch.launchedAtMs));
+    const elapsedMs = Math.min(state.launch.flightMs + state.launch.blastMs, Math.max(state.elapsedMs, action.nowMs - state.launch.launchedAtMs));
     if (elapsedMs === state.elapsedMs) return state;
-    return { ...state, elapsedMs, phase: elapsedMs >= state.launch.flightMs ? "complete" : "inbound" };
+    const phase = elapsedMs >= state.launch.flightMs + state.launch.blastMs ? "complete"
+      : elapsedMs >= state.launch.flightMs ? "detonating" : "inbound";
+    return { ...state, elapsedMs, phase };
   }
   if (action.type === "reset") return { ...state, phase: "armed", launch: null, elapsedMs: 0 };
   return { ...state, ...reduceScenarioSelection(state, action) };

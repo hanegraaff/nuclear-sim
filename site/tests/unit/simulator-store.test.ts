@@ -56,7 +56,7 @@ describe("application launch scheduling", () => {
     expect(notifications).toBeGreaterThan(2);
   });
 
-  it("does not schedule an invalid custom yield and stops after the smoke lifetime", () => {
+  it("does not schedule an invalid custom yield and stops after the blast settles", () => {
     const time = fakeClock();
     const store = new SimulatorStore(time.clock);
     const unsubscribe = store.subscribe(() => {});
@@ -68,7 +68,24 @@ describe("application launch scheduling", () => {
     store.dispatch({ type: "setCustomYieldInput", value: "2.5" });
     store.launchAt(route);
     time.advance(9500);
-    expect(store.getSnapshot()).toMatchObject({ phase: "complete", elapsedMs: 9500 });
+    expect(store.getSnapshot()).toMatchObject({ phase: "detonating", elapsedMs: 9500 });
+    expect(time.pending).toBe(1);
+    time.advance(1600);
+    expect(store.getSnapshot()).toMatchObject({ phase: "complete", elapsedMs: 11100 });
+    expect(time.pending).toBe(0);
+    unsubscribe();
+  });
+
+  it("cancels expansion frames on Reset and preserves the selected device", () => {
+    const time = fakeClock();
+    const store = new SimulatorStore(time.clock);
+    const unsubscribe = store.subscribe(() => {});
+    store.dispatch({ type: "selectDevice", id: "moab" });
+    store.launchAt(route);
+    time.advance(7000);
+    expect(store.getSnapshot().phase).toBe("detonating");
+    store.dispatch({ type: "reset" });
+    expect(store.getSnapshot()).toMatchObject({ phase: "armed", launch: null, elapsedMs: 0, selectedId: "moab" });
     expect(time.pending).toBe(0);
     unsubscribe();
   });
