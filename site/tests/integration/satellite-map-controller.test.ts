@@ -24,6 +24,8 @@ function fakeMap() {
       off: (name: string, listener: (event?: never) => void) => listeners.get(name)?.delete(listener),
       getCenter: () => center,
       getZoom: () => 10.6,
+      getPitch: () => 0,
+      getBearing: () => 0,
       project: ([lng, lat]: [number, number]) => ({ x: lng * 10 + 1200, y: lat * -10 + 800 }),
       unproject: ([x, y]: [number, number]) => ({ lng: (x - 1200) / 10, lat: (800 - y) / 10 }),
       getContainer: () => ({ clientWidth: viewportWidth, clientHeight: 740 }),
@@ -90,7 +92,7 @@ describe("satellite map controller", () => {
   it("reports camera movement and ignores unrelated errors after load", () => {
     const runtime = fakeMap();
     const states: MapLoadState[] = [];
-    const cameras: Array<{ longitude: number; latitude: number; zoom: number }> = [];
+    const cameras: Array<{ longitude: number; latitude: number; zoom: number; pitch: number; bearing: number }> = [];
     const log = vi.spyOn(console, "error").mockImplementation(() => {});
     try {
       const controller = new SatelliteMapController(runtime.map, {
@@ -105,7 +107,7 @@ describe("satellite map controller", () => {
       runtime.setCenter(-74, 41);
       runtime.emit("moveend");
       expect(states).toEqual(["ready"]);
-      expect(cameras.at(-1)).toEqual({ longitude: -74, latitude: 41, zoom: 10.6 });
+      expect(cameras.at(-1)).toEqual({ longitude: -74, latitude: 41, zoom: 10.6, pitch: 0, bearing: 0 });
       expect(runtime.setPadding).toHaveBeenCalledWith({ top: 0, right: 0, bottom: 0, left: 380 });
       runtime.setViewportWidth(800);
       runtime.emit("resize");

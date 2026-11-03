@@ -12,13 +12,15 @@ describe("map camera boundary", () => {
       unproject: ([x, y]) => ({ lng: (x - 500) / 4, lat: (300 - y) / 4 }),
       getCenter: () => ({ lng: -73.9857, lat: 40.7484 }),
       getZoom: () => 10.6,
+      getPitch: () => 0,
+      getBearing: () => 0,
     };
     const camera = new MapCameraAdapter(fakeMap);
     const position = geoPoint(-73.9, 40.7);
     const roundTrip = camera.toGeo(camera.toScreen(position));
     expect(roundTrip.longitude).toBeCloseTo(position.longitude, 10);
     expect(roundTrip.latitude).toBeCloseTo(position.latitude, 10);
-    expect(camera.snapshot()).toEqual({ center: INITIAL_MAP_CENTER, zoom: INITIAL_MAP_ZOOM });
+    expect(camera.snapshot()).toEqual({ center: INITIAL_MAP_CENTER, zoom: INITIAL_MAP_ZOOM, pitch: 0, bearing: 0 });
   });
 
   it("projects an antimeridian target into the nearest visible world copy", () => {
@@ -27,8 +29,11 @@ describe("map camera boundary", () => {
       unproject: ([x, y]) => ({ lng: x, lat: y }),
       getCenter: () => ({ lng: 179.8, lat: 20 }),
       getZoom: () => 4,
+      getPitch: () => 50,
+      getBearing: () => 25,
     };
     const camera = new MapCameraAdapter(fakeMap);
+    expect(camera.snapshot()).toMatchObject({ pitch: 50, bearing: 25 });
     expect(camera.toScreen(geoPoint(-179.9, 20)).x).toBeCloseTo(180.1, 10);
     const route = projectFlightRoute({
       start: geoPoint(179.7, 20),

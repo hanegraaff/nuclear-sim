@@ -4,6 +4,7 @@ import type { BlastZoneId } from "../../domain/blastZones";
 import { destinationPoint, type GeoPoint } from "../../domain/geodesy";
 import type { MapCameraAdapter, ScreenPoint } from "../map/MapCameraAdapter";
 import { buildBlastDistanceGrid, type BlastDistanceGrid } from "./blastFieldGeometry";
+import { groundGlowColor } from "./groundGlow";
 import { buildBlastInspection, drawBlastInspection, selectBlastRulerBearing, type BlastInspectionGeometry } from "../overlays/blastInspection";
 
 const FLASH_MS = 1100;
@@ -21,6 +22,7 @@ interface CachedBlastField {
   readonly canvas: HTMLCanvasElement;
   readonly context: CanvasRenderingContext2D;
   readonly image: ImageData;
+  groundSunCanvas?: HTMLCanvasElement;
 }
 
 /** Ease used by the prototype's expanding field: fast initially, slow near the edge. */
@@ -94,10 +96,11 @@ export class BlastCanvasRenderer {
     const blastAge = Math.max(0, elapsedMs - launch.flightMs);
     const progress = Math.min(1, blastAge / launch.blastMs);
     const travelledKm = launch.radii.light * blastExpansion(progress);
+    let field: CachedBlastField | null = null;
     if (travelledKm > 0) {
-      const field = this.ensureField(launch, width, height);
+      field = this.ensureField(launch, width, height);
       if (field) this.drawField(context, field, travelledKm, launch.radii);
-      if (progress < 1) this.drawSun(context, center, launch.route.target, launch.radii, Math.min(1, blastAge / 650));
+      if (progress < 1) this.drawOpticalSun(context, center, launch.route.target, launch.radii, Math.min(1, blastAge / 650), field);
     }
     if (progress > 0 && progress < 1) this.drawShockwave(context, launch.route.target, travelledKm);
     if (blastAge < FLASH_MS) this.drawFlash(context, center, blastAge, Math.min(width, height));
@@ -109,7 +112,7 @@ export class BlastCanvasRenderer {
       };
     }
     const inspection = buildBlastInspection(this.camera, launch.route.target, launch.radii, width, height, this.inspectionBearing.degrees);
-    this.drawSun(context, center, launch.route.target, launch.radii, 1);
+    this.drawOpticalSun(context, center, launch.route.target, launch.radii, 1, field);
     if (inspection) drawBlastInspection(context, inspection, highlightedZoneId);
     return inspection;
   }
@@ -185,6 +188,54 @@ export class BlastCanvasRenderer {
     context.shadowColor = "#ff2b18"; context.shadowBlur = 22; context.stroke();
     context.strokeStyle = "#fffdf4"; context.lineWidth = 3.2; context.shadowBlur = 0; context.stroke();
     context.restore();
+  }
+
+  /** Keep top-down light unchanged; sample its glow on geographic ground in pitched views. */
+  private drawOpticalSun(context: CanvasRenderingContext2D, center: ScreenPoint, origin: GeoPoint, radii: BlastRadii, reveal: number, field: CachedBlastField | null): void {
+    if (this.camera.snapshot().pitch > 0.01 && field && this.drawGroundSun(context, center, origin, radii, reveal, field)) return;
+    this.drawSun(context, center, origin, radii, reveal);
+  }
+
+  /** Rasterize light from the same geodesic distance grid as the damage field. */
+  private drawGroundSun(context: CanvasRenderingContext2D, center: ScreenPoint, origin: GeoPoint, radii: BlastRadii, reveal: number, field: CachedBlastField): boolean {
+    if (!field.groundSunCanvas) {
+      let shortProbe: ScreenPoint;
+      let kilometerProbe: ScreenPoint;
+      try {
+        shortProbe = this.camera.toScreen(destinationPoint(origin, Math.min(radii.fireball, 1), 90));
+        kilometerProbe = this.camera.toScreen(destinationPoint(origin, 1, 90));
+      } catch {
+        return false;
+      }
+      const pixelsPerKm = Math.hypot(kilometerProbe.x - center.x, kilometerProbe.y - center.y);
+      if (!Number.isFinite(pixelsPerKm) || pixelsPerKm < 0.001) return false;
+      const fireballPixels = Math.min(160, Math.hypot(shortProbe.x - center.x, shortProbe.y - center.y) * Math.max(1, radii.fireball));
+      const haloKm = Math.max(38, Math.min(210, fireballPixels * 7)) / pixelsPerKm;
+      const coreKm = Math.max(8, Math.min(90, fireballPixels * 1.45)) / pixelsPerKm;
+      const canvas = document.createElement("canvas");
+      canvas.width = field.grid.width;
+      canvas.height = field.grid.height;
+      const target = canvas.getContext("2d");
+      if (!target) return false;
+      const image = target.createImageData(canvas.width, canvas.height);
+      for (let index = 0; index < field.grid.distancesKm.length; index++) {
+        const glow = groundGlowColor(field.grid.distancesKm[index]!, coreKm, haloKm);
+        const offset = index * 4;
+        image.data[offset] = glow.red;
+        image.data[offset + 1] = glow.green;
+        image.data[offset + 2] = glow.blue;
+        image.data[offset + 3] = Math.round(glow.alpha * 255);
+      }
+      target.putImageData(image, 0, 0);
+      field.groundSunCanvas = canvas;
+    }
+    context.save();
+    context.globalAlpha = reveal;
+    context.globalCompositeOperation = "screen";
+    context.imageSmoothingEnabled = true;
+    context.drawImage(field.groundSunCanvas, 0, 0, field.viewportWidth, field.viewportHeight);
+    context.restore();
+    return true;
   }
 
   /** Keep a white-hot corona visible after the impact flash without changing the modeled field. */

@@ -17,6 +17,8 @@ export interface MapCameraSnapshot {
   readonly longitude: number;
   readonly latitude: number;
   readonly zoom: number;
+  readonly pitch: number;
+  readonly bearing: number;
 }
 
 /** Notifications from the map renderer; the UI does not receive MapLibre objects. */
@@ -129,8 +131,8 @@ export class SatelliteMapController {
   };
 
   private readonly emitCamera = (): void => {
-    const { center, zoom } = this.camera.snapshot();
-    this.callbacks.onCameraChange({ longitude: center.longitude, latitude: center.latitude, zoom });
+    const { center, zoom, pitch, bearing } = this.camera.snapshot();
+    this.callbacks.onCameraChange({ longitude: center.longitude, latitude: center.latitude, zoom, pitch, bearing });
   };
 
   private readonly repaintFlight = (): void => {

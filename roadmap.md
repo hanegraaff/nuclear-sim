@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-02**. Plans 01–06 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-03**. Plans 01–07 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -21,8 +21,8 @@ The roadmap is current as of **2026-11-02**. Plans 01–06 are published to the 
 | 04 | Target and incoming missile | Complete | 03 |
 | 05 | Single blast animation | Complete | 04 |
 | 06 | Blast ruler and inspection markers | Complete | 05 |
-| 07 | Blast field grounded in pitched views | Ready | 06 |
-| 08 | 3D fireball | Not started | 07 |
+| 07 | Blast field grounded in pitched views | Complete | 06 |
+| 08 | 3D fireball | Ready | 07 |
 | 09 | Animated cloud-profile monitor | Not started | 08 |
 | 10 | Additive multi launch | Not started | 09 |
 | 11 | MIRV separation and multiple impacts | Not started | 10 |
@@ -129,7 +129,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–06 are published to the 
 
 **Completion evidence.** Camera alignment tests pass and browser captures are reviewed against the ground fields in `Nuke Blast with Fireball.png` and `Nuke Blast Top.png`.
 
-**Current status.** Ready; Plan 06 is complete.
+**Current status.** Complete on 2026-11-03 from branch `plan-7`, published as private [Site version 14](https://nuke-simulator-rebuild.maquaman.chatgpt.site). The geographic blast field, white-hot ground light, ruler, and markers remain attached to the map while pitching, bearing, panning, zooming, and resizing. Overhead appearance retains its Plan 06 baseline. The full gate passed in the workspace and a clean release checkout: type checking, lint, 130 unit tests, 19 integration tests, production build, and 24 browser tests. Fixed-tile [overhead](site/tests/e2e/pitched-blast.spec.ts-snapshots/plan-07-top-down-darwin.png), [pitched settled](site/tests/e2e/pitched-blast.spec.ts-snapshots/plan-07-pitched-darwin.png), and [pitched expansion](site/tests/e2e/pitched-blast.spec.ts-snapshots/plan-07-pitched-expansion-darwin.png) captures, plus launch and impact frames, were inspected against `Nuke Blast Top.png` and `Nuke Blast with Fireball.png`. The authenticated hosted Chromium check returned HTTP 200, reached a 60° camera pitch, completed a strike with four inspection markers, and reported no page errors. GitHub application source is commit `5d99380f0ceedf950113fa1df3fcf5d4f5fb5a80`; Sites source is commit `65f494af38a9a5d95776fb5a71aa84a57b9faba1`.
 
 **Blocking decisioning.** None. Keep geographic distance in the model; camera projection belongs to rendering.
 
@@ -143,7 +143,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–06 are published to the 
 
 **Completion evidence.** Fireball geometry and fallback tests pass; compare angled captures with `Nuke Blast with Fireball.png`.
 
-**Current status.** Not started; depends on Plan 07.
+**Current status.** Ready; Plan 07 is complete.
 
 **Blocking decisioning.** None. The architecture selects WebGL with a 2D fallback. If a supported browser cannot sustain the dome, record the measured constraint and proposed visual compromise before changing the design.
 
@@ -285,7 +285,7 @@ Fill this table as plans finish. Record the deployed version and stable Site URL
 | 04 | 2026-11-02; review fixes 2026-11-02 | [Version 9](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-install `npm run verify`: 117 unit, 9 integration, 12 browser tests; [fixed-time missile capture](site/tests/e2e/missile.spec.ts-snapshots/plan-04-missile-3200ms-darwin.png); hosted launch smoke with HTTP 200 and no page errors; GitHub source `fa11464e2e07995c28e2bf8ca55532e2e160e0e7`, Sites source `72cc4fa6cd5921b6b170cd45ada04e1f9e2fb0fb` | The prototype capture hides controls and uses live imagery; Hide/Show arrives in Plan 15. Impact flash and blast arrive in Plan 05. |
 | 05 | 2026-11-02; review fixes 2026-11-02 | [Version 11](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-install `npm run verify`: 124 unit, 13 integration, 16 browser tests; revised [impact](site/tests/e2e/blast.spec.ts-snapshots/plan-05-impact-50ms-darwin.png), [expansion](site/tests/e2e/blast.spec.ts-snapshots/plan-05-expansion-2300ms-darwin.png), [settled](site/tests/e2e/blast.spec.ts-snapshots/plan-05-settled-darwin.png); authenticated hosted HTTP 200, ready map, completed white-hot blast, no page errors; GitHub source `a9d3e1ccd5188bf0c63dbedf62e5aaac6453fb48`, Sites source `f2bdbb295875f7273a91b3a5c05125d2f0eb019a` | Zone divisions/ruler/markers arrive in Plan 06; pitched terrain refinement in Plan 07; 3D fireball in Plan 08; cloud monitor in Plan 09. |
 | 06 | 2026-11-02; user-testing fixes 2026-11-02 | [Version 13](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-install `npm run verify`: 128 unit, 17 integration, 21 browser tests; reviewed [settled measure](site/tests/e2e/blast-inspection.spec.ts-snapshots/plan-06-settled-darwin.png) and [Light tooltip](site/tests/e2e/blast-inspection.spec.ts-snapshots/plan-06-light-tooltip-darwin.png); authenticated hosted HTTP 200, completed strike, four markers, no page errors; GitHub source `8e290f95a9b5d78192b7426e826177d47ecfeca8`, Sites source `eb365f205946b0096c12025c8b0e6aa575eaeac9` | Pitched-ground alignment arrives in Plan 07; 3D fireball in Plan 08; cloud monitor in Plan 09. |
-| 07 | — | — | — | — |
+| 07 | 2026-11-03 | [Version 14](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-install `npm run verify`: 130 unit, 19 integration, 24 browser tests; reviewed [overhead](site/tests/e2e/pitched-blast.spec.ts-snapshots/plan-07-top-down-darwin.png), [pitched settled](site/tests/e2e/pitched-blast.spec.ts-snapshots/plan-07-pitched-darwin.png), and [pitched expansion](site/tests/e2e/pitched-blast.spec.ts-snapshots/plan-07-pitched-expansion-darwin.png); authenticated hosted HTTP 200, 60° pitch, complete strike, four markers, no page errors; GitHub source `5d99380f0ceedf950113fa1df3fcf5d4f5fb5a80`, Sites source `65f494af38a9a5d95776fb5a71aa84a57b9faba1` | The prototype's raised dome and cloud instrument remain assigned to Plans 08 and 09. |
 | 08 | — | — | — | — |
 | 09 | — | — | — | — |
 | 10 | — | — | — | — |

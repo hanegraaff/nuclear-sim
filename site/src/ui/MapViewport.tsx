@@ -40,6 +40,8 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
     longitude: INITIAL_MAP_CENTER.longitude,
     latitude: INITIAL_MAP_CENTER.latitude,
     zoom: INITIAL_MAP_ZOOM,
+    pitch: 0,
+    bearing: 0,
   });
 
   useEffect(() => {
@@ -90,6 +92,8 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
       data-center-longitude={camera.longitude.toFixed(6)}
       data-center-latitude={camera.latitude.toFixed(6)}
       data-zoom={camera.zoom.toFixed(3)}
+      data-pitch={camera.pitch.toFixed(3)}
+      data-bearing={camera.bearing.toFixed(3)}
       data-launch-phase={launch.phase}
       data-launch-elapsed={Math.round(launch.elapsedMs)}
       data-target-longitude={launch.launch?.route.target.longitude.toFixed(6) ?? ""}
