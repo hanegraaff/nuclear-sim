@@ -1,8 +1,10 @@
 import type { Launch } from "../../application/launch";
 import type { BlastRadii } from "../../domain/blast";
+import type { BlastZoneId } from "../../domain/blastZones";
 import { destinationPoint, type GeoPoint } from "../../domain/geodesy";
 import type { MapCameraAdapter, ScreenPoint } from "../map/MapCameraAdapter";
 import { buildBlastDistanceGrid, type BlastDistanceGrid } from "./blastFieldGeometry";
+import { buildBlastInspection, drawBlastInspection, selectBlastRulerBearing, type BlastInspectionGeometry } from "../overlays/blastInspection";
 
 const FLASH_MS = 1100;
 const FALLOFF_FACTOR = 1.24;
@@ -61,6 +63,7 @@ export function blastColor(distanceKm: number, radii: BlastRadii): BlastColor {
 /** Paints one geographic blast on a transparent Canvas 2D overlay. */
 export class BlastCanvasRenderer {
   private field: CachedBlastField | null = null;
+  private inspectionBearing: { readonly launchId: number; readonly degrees: number } | null = null;
 
   constructor(private readonly canvas: HTMLCanvasElement, private readonly camera: MapCameraAdapter) {}
 
@@ -69,8 +72,8 @@ export class BlastCanvasRenderer {
     this.field = null;
   }
 
-  /** Reproject and repaint at the launch age in ms; an absent launch clears the layer. */
-  render(launch: Launch | null, elapsedMs: number, width: number, height: number): void {
+  /** Reproject and repaint at the launch age in ms; return settled marker geometry. */
+  render(launch: Launch | null, elapsedMs: number, width: number, height: number, highlightedZoneId: BlastZoneId | null): BlastInspectionGeometry | null {
     const ratio = window.devicePixelRatio || 1;
     const pixelWidth = Math.max(1, Math.round(width * ratio));
     const pixelHeight = Math.max(1, Math.round(height * ratio));
@@ -79,12 +82,12 @@ export class BlastCanvasRenderer {
       this.canvas.height = pixelHeight;
     }
     const context = this.canvas.getContext("2d");
-    if (!context) return;
+    if (!context) return null;
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, width, height);
     if (!launch || elapsedMs < launch.flightMs || width <= 0 || height <= 0) {
-      if (!launch) this.field = null;
-      return;
+      if (!launch) { this.field = null; this.inspectionBearing = null; }
+      return null;
     }
 
     const center = this.camera.toScreen(launch.route.target);
@@ -94,10 +97,21 @@ export class BlastCanvasRenderer {
     if (travelledKm > 0) {
       const field = this.ensureField(launch, width, height);
       if (field) this.drawField(context, field, travelledKm, launch.radii);
-      this.drawSun(context, center, launch.route.target, launch.radii, Math.min(1, blastAge / 650));
+      if (progress < 1) this.drawSun(context, center, launch.route.target, launch.radii, Math.min(1, blastAge / 650));
     }
     if (progress > 0 && progress < 1) this.drawShockwave(context, launch.route.target, travelledKm);
     if (blastAge < FLASH_MS) this.drawFlash(context, center, blastAge, Math.min(width, height));
+    if (progress < 1) return null;
+    if (this.inspectionBearing?.launchId !== launch.id) {
+      this.inspectionBearing = {
+        launchId: launch.id,
+        degrees: selectBlastRulerBearing(this.camera, launch.route.target, launch.radii.light, width, height),
+      };
+    }
+    const inspection = buildBlastInspection(this.camera, launch.route.target, launch.radii, width, height, this.inspectionBearing.degrees);
+    this.drawSun(context, center, launch.route.target, launch.radii, 1);
+    if (inspection) drawBlastInspection(context, inspection, highlightedZoneId);
+    return inspection;
   }
 
   /** Build the visible geographic distance mask once per strike and camera state. */
@@ -190,15 +204,6 @@ export class BlastCanvasRenderer {
     halo.addColorStop(1, "rgba(255,70,16,0)");
     context.fillStyle = halo;
     context.beginPath(); context.arc(center.x, center.y, haloRadius, 0, Math.PI * 2); context.fill();
-    context.strokeStyle = "rgba(255,251,215,.36)";
-    context.lineWidth = Math.max(1, Math.min(3, coreRadius * 0.11));
-    for (let index = 0; index < 8; index++) {
-      const angle = index * Math.PI / 4;
-      context.beginPath();
-      context.moveTo(center.x + Math.cos(angle) * coreRadius * 0.6, center.y + Math.sin(angle) * coreRadius * 0.6);
-      context.lineTo(center.x + Math.cos(angle) * haloRadius * 0.58, center.y + Math.sin(angle) * haloRadius * 0.58);
-      context.stroke();
-    }
     const core = context.createRadialGradient(center.x, center.y, 0, center.x, center.y, coreRadius);
     core.addColorStop(0, "rgba(255,255,255,1)");
     core.addColorStop(0.48, "rgba(255,255,249,.99)");

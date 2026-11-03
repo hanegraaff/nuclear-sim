@@ -2,6 +2,7 @@ import type { GeoPoint } from "../domain/geodesy";
 import type { ScenarioSelectionAction, ScenarioSelectionState } from "./scenarioSelection";
 import { INITIAL_SCENARIO_SELECTION, reduceScenarioSelection } from "./scenarioSelection";
 import { blastRadiiForYield, type BlastRadii } from "../domain/blast";
+import type { BlastZoneId } from "../domain/blastZones";
 
 /** Normal carrier travel time in milliseconds, taken from the prototype. */
 export const FLIGHT_MS = 6500;
@@ -33,13 +34,21 @@ export interface SimulatorState extends ScenarioSelectionState {
   readonly launch: Launch | null;
   readonly elapsedMs: number;
   readonly nextLaunchId: number;
+  readonly activeZoneId: BlastZoneId | null;
+  readonly hoveredZoneId: BlastZoneId | null;
+  readonly focusedZoneId: BlastZoneId | null;
+  readonly pinnedZoneId: BlastZoneId | null;
 }
 
 /** Semantic state changes. A tick uses injected monotonic milliseconds. */
 export type SimulatorAction = ScenarioSelectionAction
   | { readonly type: "launchAt"; readonly route: FlightRoute; readonly deviceId: string; readonly yieldMt: number; readonly nowMs: number; readonly flightMs?: number }
   | { readonly type: "tick"; readonly nowMs: number; readonly launchId: number }
-  | { readonly type: "reset" };
+  | { readonly type: "reset" }
+  | { readonly type: "hoverZone"; readonly zoneId: BlastZoneId | null }
+  | { readonly type: "focusZone"; readonly zoneId: BlastZoneId | null }
+  | { readonly type: "pinZone"; readonly zoneId: BlastZoneId }
+  | { readonly type: "clearZoneInspection" };
 
 /** Armed simulator with the prototype's initial device selection. */
 export const INITIAL_SIMULATOR_STATE: SimulatorState = {
@@ -48,6 +57,10 @@ export const INITIAL_SIMULATOR_STATE: SimulatorState = {
   launch: null,
   elapsedMs: 0,
   nextLaunchId: 1,
+  activeZoneId: null,
+  hoveredZoneId: null,
+  focusedZoneId: null,
+  pinnedZoneId: null,
 };
 
 /** Pure launch and selection transitions; stale ticks cannot advance a replacement flight. */
@@ -61,6 +74,10 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       phase: "inbound",
       launch: { id: state.nextLaunchId, deviceId: action.deviceId, yieldMt: action.yieldMt, route: action.route, launchedAtMs: action.nowMs, flightMs, blastMs: BLAST_MS, radii: blastRadiiForYield(action.yieldMt) },
       elapsedMs: 0,
+      activeZoneId: null,
+      hoveredZoneId: null,
+      focusedZoneId: null,
+      pinnedZoneId: null,
       nextLaunchId: state.nextLaunchId + 1,
     };
   }
@@ -72,6 +89,27 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       : elapsedMs >= state.launch.flightMs ? "detonating" : "inbound";
     return { ...state, elapsedMs, phase };
   }
-  if (action.type === "reset") return { ...state, phase: "armed", launch: null, elapsedMs: 0 };
+  if (action.type === "hoverZone") {
+    if (action.zoneId === state.hoveredZoneId) return state;
+    return updateInspection(state, action.zoneId, state.focusedZoneId, state.pinnedZoneId);
+  }
+  if (action.type === "focusZone") {
+    if (action.zoneId === state.focusedZoneId) return state;
+    return updateInspection(state, state.hoveredZoneId, action.zoneId, state.pinnedZoneId);
+  }
+  if (action.type === "pinZone") {
+    const pinnedZoneId = state.pinnedZoneId === action.zoneId ? null : action.zoneId;
+    return updateInspection(state, state.hoveredZoneId, state.focusedZoneId, pinnedZoneId);
+  }
+  if (action.type === "clearZoneInspection") {
+    return state.activeZoneId === null && state.hoveredZoneId === null && state.focusedZoneId === null && state.pinnedZoneId === null
+      ? state : updateInspection(state, null, null, null);
+  }
+  if (action.type === "reset") return { ...state, phase: "armed", launch: null, elapsedMs: 0, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
   return { ...state, ...reduceScenarioSelection(state, action) };
+}
+
+/** Recompute visible inspection from pointer, keyboard focus, and pinned selection. */
+function updateInspection(state: SimulatorState, hoveredZoneId: BlastZoneId | null, focusedZoneId: BlastZoneId | null, pinnedZoneId: BlastZoneId | null): SimulatorState {
+  return { ...state, hoveredZoneId, focusedZoneId, pinnedZoneId, activeZoneId: hoveredZoneId ?? focusedZoneId ?? pinnedZoneId };
 }

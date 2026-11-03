@@ -60,4 +60,20 @@ describe("single launch phase and cancellation", () => {
     expect(reduceSimulator(INITIAL_SIMULATOR_STATE, { type: "launchAt", route: firstRoute, deviceId: "fat-man", yieldMt: 0, nowMs: 100 })).toBe(INITIAL_SIMULATOR_STATE);
     expect(reduceSimulator(INITIAL_SIMULATOR_STATE, { type: "launchAt", route: firstRoute, deviceId: "fat-man", yieldMt: 1, nowMs: NaN })).toBe(INITIAL_SIMULATOR_STATE);
   });
+
+  it("pins a settled inspection zone and clears it on replacement or Reset", () => {
+    const launched = reduceSimulator(INITIAL_SIMULATOR_STATE, { type: "launchAt", route: firstRoute, deviceId: "fat-man", yieldMt: 0.021, nowMs: 0 });
+    const complete = reduceSimulator(launched, { type: "tick", nowMs: FLIGHT_MS + BLAST_MS, launchId: 1 });
+    const focused = reduceSimulator(complete, { type: "focusZone", zoneId: "light" });
+    expect(focused).toMatchObject({ activeZoneId: "light", focusedZoneId: "light", pinnedZoneId: null });
+    const hovered = reduceSimulator(focused, { type: "hoverZone", zoneId: "moderate" });
+    expect(hovered.activeZoneId).toBe("moderate");
+    expect(reduceSimulator(hovered, { type: "hoverZone", zoneId: null }).activeZoneId).toBe("light");
+    const pinned = reduceSimulator(focused, { type: "pinZone", zoneId: "light" });
+    expect(reduceSimulator(pinned, { type: "focusZone", zoneId: null }).activeZoneId).toBe("light");
+    const cleared = reduceSimulator(pinned, { type: "clearZoneInspection" });
+    expect(cleared).toMatchObject({ activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null });
+    expect(reduceSimulator(pinned, { type: "launchAt", route: secondRoute, deviceId: "fat-man", yieldMt: 0.021, nowMs: 12000 })).toMatchObject({ activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null });
+    expect(reduceSimulator(pinned, { type: "reset" })).toMatchObject({ activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null });
+  });
 });

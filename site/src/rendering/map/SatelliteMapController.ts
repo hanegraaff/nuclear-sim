@@ -6,6 +6,8 @@ import { viewportFlightRoute } from "../animation/flightGeometry";
 import { MapCameraAdapter } from "./MapCameraAdapter";
 import { createSatelliteMap } from "./createSatelliteMap";
 import type { GeoPoint } from "../../domain/geodesy";
+import type { BlastZoneId } from "../../domain/blastZones";
+import type { BlastInspectionGeometry } from "../overlays/blastInspection";
 
 /** Visible map readiness states. An imagery error leaves camera interaction available. */
 export type MapLoadState = "loading" | "ready" | "imagery-error" | "map-error";
@@ -23,6 +25,7 @@ export interface SatelliteMapCallbacks {
   readonly onCameraChange: (camera: MapCameraSnapshot) => void;
   readonly onLaunch?: (route: FlightRoute) => void;
   readonly launchAngle?: () => number;
+  readonly onInspectionChange?: (geometry: BlastInspectionGeometry | null) => void;
 }
 
 const IMAGERY_SOURCE_ID = "satellite";
@@ -47,6 +50,8 @@ export class SatelliteMapController {
   private panelsVisible = true;
   private launch: Launch | null = null;
   private elapsedMs = 0;
+  private highlightedZoneId: BlastZoneId | null = null;
+  private inspection: BlastInspectionGeometry | null = null;
 
   constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer) {
     this.camera = new MapCameraAdapter(map);
@@ -70,9 +75,10 @@ export class SatelliteMapController {
   }
 
   /** Draw a single launch at its injected age in milliseconds. */
-  setFlightFrame(launch: Launch | null, elapsedMs: number): void {
+  setFlightFrame(launch: Launch | null, elapsedMs: number, highlightedZoneId: BlastZoneId | null = null): void {
     this.launch = launch;
     this.elapsedMs = elapsedMs;
+    this.highlightedZoneId = highlightedZoneId;
     this.repaintFlight();
   }
 
@@ -129,7 +135,11 @@ export class SatelliteMapController {
 
   private readonly repaintFlight = (): void => {
     const container = this.map.getContainer();
-    this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
+    const inspection = this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, this.highlightedZoneId) ?? null;
+    if (inspection !== this.inspection) {
+      this.inspection = inspection;
+      this.callbacks.onInspectionChange?.(inspection);
+    }
     this.missileRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
   };
 

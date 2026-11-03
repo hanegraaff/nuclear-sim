@@ -1,15 +1,31 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import type { FlightRoute, SimulatorState } from "../application/launch";
 import type { ScenarioCameraRequest } from "../application/scenarioSelection";
+import type { BlastZoneId } from "../domain/blastZones";
+import type { BlastInspectionGeometry } from "../rendering/overlays/blastInspection";
 import { INITIAL_MAP_CENTER, INITIAL_MAP_ZOOM } from "../rendering/map/createSatelliteMap";
 import {
   createSatelliteMapController,
   type MapLoadState,
   type SatelliteMapController,
 } from "../rendering/map/SatelliteMapController";
+import { BlastInspectionOverlay } from "./BlastInspectionOverlay";
+
+/** UI inputs and semantic callbacks; no MapLibre object crosses this boundary. */
+interface MapViewportProps {
+  readonly children?: ReactNode;
+  readonly cameraRequest: ScenarioCameraRequest | null;
+  readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "activeZoneId" | "pinnedZoneId">;
+  readonly onLaunch: (route: FlightRoute) => void;
+  readonly launchAngle: () => number;
+  readonly onHoverZone: (zoneId: BlastZoneId | null) => void;
+  readonly onFocusZone: (zoneId: BlastZoneId | null) => void;
+  readonly onPinZone: (zoneId: BlastZoneId) => void;
+  readonly onClearZoneInspection: () => void;
+}
 
 /** Full-viewport map mount that places controls above imagery and map feedback. */
-export function MapViewport({ children, cameraRequest, launch, onLaunch, launchAngle }: { readonly children?: ReactNode; readonly cameraRequest: ScenarioCameraRequest | null; readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs">; readonly onLaunch: (route: FlightRoute) => void; readonly launchAngle: () => number }) {
+export function MapViewport({ children, cameraRequest, launch, onLaunch, launchAngle, onHoverZone, onFocusZone, onPinZone, onClearZoneInspection }: MapViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
   const blastCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,6 +35,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
   const launchAngleRef = useRef(launchAngle);
   launchAngleRef.current = launchAngle;
   const [loadState, setLoadState] = useState<MapLoadState>("loading");
+  const [inspection, setInspection] = useState<BlastInspectionGeometry | null>(null);
   const [camera, setCamera] = useState({
     longitude: INITIAL_MAP_CENTER.longitude,
     latitude: INITIAL_MAP_CENTER.latitude,
@@ -33,6 +50,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
       controller = createSatelliteMapController(container, {
         onStateChange: setLoadState,
         onCameraChange: setCamera,
+        onInspectionChange: setInspection,
         onLaunch: (route) => onLaunchRef.current(route),
         launchAngle: () => launchAngleRef.current(),
       }, missileCanvasRef.current, blastCanvasRef.current);
@@ -52,8 +70,8 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
   }, [cameraRequest]);
 
   useEffect(() => {
-    controllerRef.current?.setFlightFrame(launch.launch, launch.elapsedMs);
-  }, [launch.launch, launch.elapsedMs]);
+    controllerRef.current?.setFlightFrame(launch.launch, launch.elapsedMs, launch.activeZoneId);
+  }, [launch.launch, launch.elapsedMs, launch.activeZoneId]);
 
   const retryImagery = () => {
     const controller = controllerRef.current;
@@ -81,6 +99,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
       <div className="map-tone" aria-hidden="true" />
       <canvas className="blast-canvas" ref={blastCanvasRef} aria-hidden="true" />
       <canvas className="missile-canvas" ref={missileCanvasRef} aria-hidden="true" />
+      <BlastInspectionOverlay geometry={inspection} activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onHover={onHoverZone} onFocusZone={onFocusZone} onPin={onPinZone} onClear={onClearZoneInspection} />
       <p className="model-qualification">IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE</p>
       {children}
       {loadState === "loading" && (

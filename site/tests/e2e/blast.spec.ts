@@ -16,29 +16,37 @@ test.beforeEach(async ({ page }) => {
 test("impact blooms, field expands, and one settled blast remains", async ({ page }, testInfo) => {
   const simulator = page.locator("main.simulator");
   const canvas = page.locator(".blast-canvas");
-  await page.getByRole("button", { name: "Zoom in" }).click();
-  await page.getByRole("button", { name: "Zoom in" }).click();
   await page.clock.install();
+  await page.getByRole("button", { name: "Zoom in" }).click();
+  await page.clock.runFor(500);
+  await expect(simulator).toHaveAttribute("data-zoom", "11.600");
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 10_000);
   await page.mouse.click(1000, 580);
   await page.clock.runFor(6550);
   await expect(simulator).toHaveAttribute("data-launch-phase", "detonating");
   await expect.poll(() => canvas.evaluate((element) => (element as HTMLCanvasElement).getContext("2d")!.getImageData(1000, 580, 1, 1).data[3])).toBeGreaterThan(150);
-  await page.screenshot({ path: testInfo.outputPath("plan-05-impact-50ms.png") });
-  await expect(page).toHaveScreenshot("plan-05-impact-50ms.png", { maxDiffPixelRatio: 0.01 });
+  const impact = await page.screenshot({ path: testInfo.outputPath("plan-05-impact-50ms.png") });
+  expect(impact).toMatchSnapshot("plan-05-impact-50ms.png", { maxDiffPixelRatio: 0.01 });
   await page.clock.runFor(2250);
   await expect(simulator).toHaveAttribute("data-launch-phase", "detonating");
-  await page.screenshot({ path: testInfo.outputPath("plan-05-expansion-2300ms.png") });
-  await expect(page).toHaveScreenshot("plan-05-expansion-2300ms.png", { maxDiffPixelRatio: 0.01 });
+  const expansion = await page.screenshot({ path: testInfo.outputPath("plan-05-expansion-2300ms.png") });
+  expect(expansion).toMatchSnapshot("plan-05-expansion-2300ms.png", { maxDiffPixelRatio: 0.01 });
   await page.clock.runFor(2350);
   await expect(simulator).toHaveAttribute("data-launch-phase", "complete");
   await expect(page.locator(".launch-status")).toHaveText("BLAST COMPLETE");
-  const hotCenter = await canvas.evaluate((element) => [...(element as HTMLCanvasElement).getContext("2d")!.getImageData(1000, 580, 1, 1).data]);
-  expect(hotCenter[0]).toBeGreaterThan(245);
-  expect(hotCenter[1]).toBeGreaterThan(245);
-  expect(hotCenter[2]).toBeGreaterThan(230);
-  expect(hotCenter[3]).toBeGreaterThan(240);
-  await page.screenshot({ path: testInfo.outputPath("plan-05-settled.png") });
-  await expect(page).toHaveScreenshot("plan-05-settled.png", { maxDiffPixelRatio: 0.01 });
+  const whiteHotPixels = await canvas.evaluate((element) => {
+    const { data } = (element as HTMLCanvasElement).getContext("2d")!.getImageData(985, 565, 30, 30);
+    let count = 0;
+    for (let offset = 0; offset < data.length; offset += 4) {
+      if (data[offset]! > 245 && data[offset + 1]! > 245 && data[offset + 2]! > 230 && data[offset + 3]! > 240) count++;
+    }
+    return count;
+  });
+  // A ruler marker covers ground zero; nearby core pixels still retain the white-hot optical highlight.
+  expect(whiteHotPixels).toBeGreaterThan(30);
+  await page.mouse.move(1450, 900);
+  const settled = await page.screenshot({ path: testInfo.outputPath("plan-05-settled.png") });
+  expect(settled).toMatchSnapshot("plan-05-settled.png", { maxDiffPixelRatio: 0.01 });
 });
 
 test("a new click replaces an expanding blast and Reset clears it without changing camera or device", async ({ page }) => {

@@ -4,7 +4,7 @@ This repository contains a production-quality reimplementation of the nuclear ef
 
 ## Project status
 
-[Plans 01–05 of the roadmap](roadmap.md) are published. Clicking the map sends a 6.5-second missile toward a geographic target, then produces a flash and expanding single blast. A second click replaces the strike, and Reset clears it while retaining the map camera and device. Effect measurements and alternate views follow in later plans.
+[Plans 01–06 of the roadmap](roadmap.md) are published. Clicking the map sends a 6.5-second missile toward a geographic target, then produces a flash and expanding single blast. The settled effect has four zone boundaries, a dashed distance ruler, and markers with hover, focus, and pinned inspection popups. A second click replaces the strike, and Reset clears it while retaining the map camera and device. Alternate views follow in later plans.
 
 **Open the private Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Access is limited to the Site owner. Users do not need to run the application locally.
 
