@@ -129,7 +129,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–06 are published to the 
 
 **Completion evidence.** Camera alignment tests pass and browser captures are reviewed against the ground fields in `Nuke Blast with Fireball.png` and `Nuke Blast Top.png`.
 
-**Current status.** Ready; Plan 06 is complete.
+**Current status.** In progress on branch `plan-7`. Ground-field projection, camera alignment, and fixed-camera visual evidence are being implemented.
 
 **Blocking decisioning.** None. Keep geographic distance in the model; camera projection belongs to rendering.
 

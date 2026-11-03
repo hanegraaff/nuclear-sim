@@ -12,6 +12,8 @@ export interface MapProjection {
   unproject(coordinates: [number, number]): { lng: number; lat: number };
   getCenter(): { lng: number; lat: number };
   getZoom(): number;
+  getPitch(): number;
+  getBearing(): number;
 }
 
 /**
@@ -33,9 +35,9 @@ export class MapCameraAdapter {
     return geoPoint(coordinate.lng, coordinate.lat);
   }
 
-  /** Read the current center and zoom for UI state and camera tests. */
-  snapshot(): { center: GeoPoint; zoom: number } {
+  /** Read the current center, zoom, pitch, and bearing in geographic/map degrees. */
+  snapshot(): { center: GeoPoint; zoom: number; pitch: number; bearing: number } {
     const center = this.map.getCenter();
-    return { center: geoPoint(center.lng, center.lat), zoom: this.map.getZoom() };
+    return { center: geoPoint(center.lng, center.lat), zoom: this.map.getZoom(), pitch: this.map.getPitch(), bearing: this.map.getBearing() };
   }
 }

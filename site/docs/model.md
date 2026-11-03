@@ -1,4 +1,4 @@
-# Model notes — Plans 01–06
+# Model notes — Plans 01–07
 
 Plan 01 introduces geographic calculations; Plan 05 adds the first blast-radius model. Fallout and range models arrive in later plans.
 
@@ -26,7 +26,11 @@ The incoming path is a visual reconstruction of `prototype-code/app/missile-flig
 
 These constants are transcribed from `prototype-code/app/page.tsx` and calibrated to its imagery, not derived from a validated damage calculation. Yield scaling omits burst height, terrain, shielding, building type, weather, and uncertainty. The conventional catalog entries use the same visual scale for now; their inclusion does not imply nuclear fallout. The field is a visual screening estimate and must not be used as emergency guidance.
 
-The application stores radii with the strike, so subsequent device changes cannot resize an existing blast. A 6.5-second carrier flight leads into a 4.6-second expansion; the flash lasts 1.1 seconds. The field uses `1 − (1 − t)^2.15` for fast-first growth, with `t` normalized to the expansion duration. The renderer unprojects each visible mask sample and measures great-circle distance from ground zero in kilometers, so the surface radius remains meaningful across zoom, latitude, and longitude wrapping. The distance grid is cached between animation frames and rebuilt after camera or viewport changes. The mask is capped to roughly 640 × 420 samples and smoothed on display; a dedicated pitched-ground treatment is scheduled for Plan 07. Color anchors, the shock ring, and the brighter white-gold corona are visual reconstructions, not physical wave-front or radiation predictions.
+The application stores radii with the strike, so subsequent device changes cannot resize an existing blast. A 6.5-second carrier flight leads into a 4.6-second expansion; the flash lasts 1.1 seconds. The field uses `1 − (1 − t)^2.15` for fast-first growth, with `t` normalized to the expansion duration. The renderer unprojects each visible mask sample and measures great-circle distance from ground zero in kilometers, so the surface radius remains meaningful across zoom, latitude, longitude wrapping, and camera pitch. The distance grid is cached between animation frames and rebuilt after camera or viewport changes. The mask is capped to roughly 640 × 420 samples and smoothed on display. Color anchors, the shock ring, and the brighter white-gold corona are visual reconstructions, not physical wave-front or radiation predictions.
+
+## Pitched ground presentation — Plan 07
+
+The same geodesic distance grid drives both damage color and the warm center glow when the map is pitched. Each displayed sample is unprojected through the current MapLibre camera to a surface coordinate before evaluating distance. Boundary rings, ruler points, and markers are projected from spherical destinations. Thus the field and inspection graphics use one geographic ground plane even when perspective changes their screen shape. At zero pitch the original radial Canvas glow is retained for visual continuity. The glow's kilometer radii are converted from the prior screen-light size at ground zero; they are optical presentation choices, not additional physical effects. Mask resolution can soften a steep pitched edge by a few CSS pixels. Terrain elevation, occlusion by buildings, and atmospheric scattering are not modeled. The raised fireball remains a separate Plan 08 rendering task.
 
 ## Blast inspection — Plan 06
 
