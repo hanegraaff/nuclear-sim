@@ -76,54 +76,70 @@ void main() {
 function compileShader(gl: WebGL2RenderingContext, type: number, source: string): WebGLShader {
   const shader = gl.createShader(type);
   if (!shader) throw new Error("Unable to allocate a fireball shader.");
-  gl.shaderSource(shader, source);
-  gl.compileShader(shader);
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    const reason = gl.getShaderInfoLog(shader) ?? "unknown shader error";
+  try {
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      const reason = gl.getShaderInfoLog(shader) ?? "unknown shader error";
+      throw new Error(`Fireball shader failed: ${reason}`);
+    }
+    return shader;
+  } catch (error) {
     gl.deleteShader(shader);
-    throw new Error(`Fireball shader failed: ${reason}`);
+    throw error;
   }
-  return shader;
 }
 
-/** Create the small shared program and two bounded geometry buffers. */
+/** Create the shared program and bounded buffers, releasing partial allocations on failure. */
 function createResources(gl: WebGL2RenderingContext): Resources {
-  const vertex = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SOURCE);
-  const fragment = compileShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SOURCE);
-  const program = gl.createProgram();
-  if (!program) throw new Error("Unable to allocate the fireball program.");
-  gl.attachShader(program, vertex);
-  gl.attachShader(program, fragment);
-  gl.linkProgram(program);
-  gl.deleteShader(vertex);
-  gl.deleteShader(fragment);
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    const reason = gl.getProgramInfoLog(program) ?? "unknown program error";
-    gl.deleteProgram(program);
-    throw new Error(`Fireball program failed: ${reason}`);
+  const shaders: WebGLShader[] = [];
+  const buffers: WebGLBuffer[] = [];
+  let program: WebGLProgram | null = null;
+  try {
+    const vertex = compileShader(gl, gl.VERTEX_SHADER, VERTEX_SOURCE);
+    shaders.push(vertex);
+    const fragment = compileShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SOURCE);
+    shaders.push(fragment);
+    const linkedProgram = gl.createProgram();
+    if (!linkedProgram) throw new Error("Unable to allocate the fireball program.");
+    program = linkedProgram;
+    gl.attachShader(linkedProgram, vertex);
+    gl.attachShader(linkedProgram, fragment);
+    gl.linkProgram(linkedProgram);
+    if (!gl.getProgramParameter(linkedProgram, gl.LINK_STATUS)) {
+      const reason = gl.getProgramInfoLog(linkedProgram) ?? "unknown program error";
+      throw new Error(`Fireball program failed: ${reason}`);
+    }
+    const mesh = (rings: number, slices: number): Mesh => {
+      const vertices = hemisphereVertices(rings, slices);
+      const buffer = gl.createBuffer();
+      if (!buffer) throw new Error("Unable to allocate fireball geometry.");
+      buffers.push(buffer);
+      gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+      gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+      return { buffer, vertexCount: vertices.length / 3 };
+    };
+    const uniform = (name: string): WebGLUniformLocation => {
+      const location = gl.getUniformLocation(linkedProgram, name);
+      if (!location) throw new Error(`Missing fireball uniform ${name}.`);
+      return location;
+    };
+    return {
+      program: linkedProgram,
+      meshes: { compact: mesh(10, 20), full: mesh(22, 44) },
+      position: gl.getAttribLocation(linkedProgram, "a_position"),
+      matrix: uniform("u_matrix"),
+      time: uniform("u_time"),
+      cooling: uniform("u_cooling"),
+      opacity: uniform("u_opacity"),
+    };
+  } catch (error) {
+    for (const buffer of buffers) gl.deleteBuffer(buffer);
+    if (program) gl.deleteProgram(program);
+    throw error;
+  } finally {
+    for (const shader of shaders) gl.deleteShader(shader);
   }
-  const mesh = (rings: number, slices: number): Mesh => {
-    const vertices = hemisphereVertices(rings, slices);
-    const buffer = gl.createBuffer();
-    if (!buffer) throw new Error("Unable to allocate fireball geometry.");
-    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
-    return { buffer, vertexCount: vertices.length / 3 };
-  };
-  const uniform = (name: string): WebGLUniformLocation => {
-    const location = gl.getUniformLocation(program, name);
-    if (!location) throw new Error(`Missing fireball uniform ${name}.`);
-    return location;
-  };
-  return {
-    program,
-    meshes: { compact: mesh(10, 20), full: mesh(22, 44) },
-    position: gl.getAttribLocation(program, "a_position"),
-    matrix: uniform("u_matrix"),
-    time: uniform("u_time"),
-    cooling: uniform("u_cooling"),
-    opacity: uniform("u_opacity"),
-  };
 }
 
 /** Render one map-aligned hemisphere without owning launch state or a clock. */
