@@ -1,4 +1,4 @@
-# Model notes — Plans 01–07
+# Model notes — Plans 01–08
 
 Plan 01 introduces geographic calculations; Plan 05 adds the first blast-radius model. Fallout and range models arrive in later plans.
 
@@ -31,6 +31,12 @@ The application stores radii with the strike, so subsequent device changes canno
 ## Pitched ground presentation — Plan 07
 
 The same geodesic distance grid drives both damage color and the warm center glow when the map is pitched. Each displayed sample is unprojected through the current MapLibre camera to a surface coordinate before evaluating distance. Boundary rings, ruler points, and markers are projected from spherical destinations. Thus the field and inspection graphics use one geographic ground plane even when perspective changes their screen shape. At zero pitch the original radial Canvas glow is retained for visual continuity. The glow's kilometer radii are converted from the prior screen-light size at ground zero; they are optical presentation choices, not additional physical effects. Mask resolution can soften a steep pitched edge by a few CSS pixels. Terrain elevation, occlusion by buildings, and atmospheric scattering are not modeled. The raised fireball remains a separate Plan 08 rendering task.
+
+## Raised fireball — Plan 08
+
+`prototype-code/app/fireball-renderer.mjs` supplies the visual timing and procedural flame reference. The dome's horizontal radius and height each equal the strike's modeled `fireball` radius in kilometers. Its radius grows with the same fast-first blast-front fraction as the ground field and reaches full size when that front reaches the fireball boundary; visibility rises over the first 14% of that local growth. The surface cools from white-yellow to mottled gold/orange by 42% of the total blast expansion. These are optical curves, not measured temperature or pressure histories.
+
+The GPU mesh is a hemisphere in local Web Mercator coordinates. Its center is the geographic strike target, its size is converted from kilometers to local Mercator units at the target latitude, and its world copy follows the camera across the antimeridian. Equal horizontal and vertical Mercator scale approximates a local hemisphere; curvature, terrain elevation, building occlusion, atmospheric scattering, and physically calibrated luminance are omitted. Very large hypothetical yields therefore remain illustrative. A separate 2D field and flash remain visible if WebGL fails. The texture stops at the completed blast age for deterministic settled rendering.
 
 ## Blast inspection — Plan 06
 

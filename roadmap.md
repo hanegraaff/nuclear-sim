@@ -22,7 +22,7 @@ The roadmap is current as of **2026-11-03**. Plans 01–07 are published to the 
 | 05 | Single blast animation | Complete | 04 |
 | 06 | Blast ruler and inspection markers | Complete | 05 |
 | 07 | Blast field grounded in pitched views | Complete | 06 |
-| 08 | 3D fireball | Ready | 07 |
+| 08 | 3D fireball | In progress | 07 |
 | 09 | Animated cloud-profile monitor | Not started | 08 |
 | 10 | Additive multi launch | Not started | 09 |
 | 11 | MIRV separation and multiple impacts | Not started | 10 |
@@ -143,7 +143,7 @@ The roadmap is current as of **2026-11-03**. Plans 01–07 are published to the 
 
 **Completion evidence.** Fireball geometry and fallback tests pass; compare angled captures with `Nuke Blast with Fireball.png`.
 
-**Current status.** Ready; Plan 07 is complete.
+**Current status.** In progress on branch `plan-8`. The ground-anchored dome, fallback behavior, visual evidence, and release verification are being implemented.
 
 **Blocking decisioning.** None. The architecture selects WebGL with a 2D fallback. If a supported browser cannot sustain the dome, record the measured constraint and proposed visual compromise before changing the design.
 

@@ -7,3 +7,5 @@
 At zero pitch, the white-gold center keeps its established screen-space gradient. At nonzero pitch, `groundGlowColor` samples the same geographic kilometer grid as the field; the renderer caches its offscreen light mask alongside the field. This makes the optical core lie on the ground plane without changing physical damage radii. The light is still a 2D illustration; Plan 08 adds the raised 3D dome.
 
 This area depends on immutable application launch data, the pure domain model, and the map camera adapter. It never computes yields or owns the animation clock.
+
+Plan 08 moves settled inspection strokes into a second Canvas above the WebGL dome. The field and optical ground glow stay on the lower Canvas; both canvases use the same camera frame and viewport size. If the separate inspection context is unavailable, the renderer falls back to its original single-canvas path.

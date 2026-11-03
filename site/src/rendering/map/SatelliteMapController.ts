@@ -1,7 +1,8 @@
-import type { ErrorEvent as MapErrorEvent, Map as MapLibreMap, MapMouseEvent, MapSourceDataEvent } from "maplibre-gl";
+import type { CustomLayerInterface, ErrorEvent as MapErrorEvent, Map as MapLibreMap, MapMouseEvent, MapSourceDataEvent } from "maplibre-gl";
 import type { Launch, FlightRoute } from "../../application/launch";
 import { MissileCanvasRenderer } from "../animation/MissileCanvasRenderer";
 import { BlastCanvasRenderer } from "../effects/BlastCanvasRenderer";
+import { createFireballRenderer, type FireballRenderer } from "../animation/FireballRenderer";
 import { viewportFlightRoute } from "../animation/flightGeometry";
 import { MapCameraAdapter } from "./MapCameraAdapter";
 import { createSatelliteMap } from "./createSatelliteMap";
@@ -31,6 +32,7 @@ export interface SatelliteMapCallbacks {
 }
 
 const IMAGERY_SOURCE_ID = "satellite";
+const FIREBALL_LAYER_ID = "fireball-camera";
 
 /** Compute the prototype's map zoom for a horizon in km and viewport in CSS pixels. */
 export function scenarioZoom(horizonKm: number, latitude: number, width: number, height: number): number {
@@ -54,8 +56,10 @@ export class SatelliteMapController {
   private elapsedMs = 0;
   private highlightedZoneId: BlastZoneId | null = null;
   private inspection: BlastInspectionGeometry | null = null;
+  private fireballFailed = false;
+  private fireballMatrix: Float64Array | null = null;
 
-  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer) {
+  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null) {
     this.camera = new MapCameraAdapter(map);
     map.on("load", this.handleLoad);
     map.on("idle", this.handleIdle);
@@ -78,10 +82,15 @@ export class SatelliteMapController {
 
   /** Draw a single launch at its injected age in milliseconds. */
   setFlightFrame(launch: Launch | null, elapsedMs: number, highlightedZoneId: BlastZoneId | null = null): void {
+    if (!launch || (this.launch && this.launch.id !== launch.id)) this.fireballRenderer?.clear();
     this.launch = launch;
     this.elapsedMs = elapsedMs;
     this.highlightedZoneId = highlightedZoneId;
     this.repaintFlight();
+    if (this.fireballRenderer && !this.fireballFailed) {
+      if (this.fireballMatrix) this.repaintFireball();
+      else this.map.triggerRepaint();
+    }
   }
 
   /** Ease to a geographic center and frame its supplied horizon without creating a strike. */
@@ -116,13 +125,57 @@ export class SatelliteMapController {
     this.map.off("resize", this.repaintCamera);
     this.map.off("move", this.repaintCamera);
     this.map.off("click", this.handleMapClick);
+    this.fireballRenderer?.dispose();
     this.map.remove();
   }
 
   private readonly handleLoad = (): void => {
     this.mapLoaded = true;
+    this.addFireballLayer();
     this.emitCamera();
   };
+
+  /** Use MapLibre's exact camera matrix to repaint an independent WebGL canvas. */
+  private addFireballLayer(): void {
+    if (!this.fireballRenderer) return;
+    const layer: CustomLayerInterface = {
+      id: FIREBALL_LAYER_ID,
+      type: "custom",
+      renderingMode: "2d",
+      render: (_gl, options) => {
+        if (this.fireballFailed) return;
+        this.fireballMatrix = new Float64Array(options.defaultProjectionData.mainMatrix);
+        this.repaintFireball();
+      },
+    };
+    try {
+      this.map.addLayer(layer);
+    } catch (error) {
+      this.fireballFailed = true;
+      this.fireballRenderer.clear();
+      console.warn("Unable to attach the 3D fireball; 2D blast remains available.", error);
+    }
+  }
+
+  /** Reuse the latest camera matrix between map frames; only the small WebGL canvas changes. */
+  private repaintFireball(): void {
+    if (!this.fireballRenderer || !this.fireballMatrix || this.fireballFailed) return;
+    try {
+      const container = this.map.getContainer();
+      this.fireballRenderer.render(
+        this.fireballMatrix,
+        { longitude: this.map.getCenter().lng, zoom: this.map.getZoom() },
+        this.launch,
+        this.elapsedMs,
+        container.clientWidth,
+        container.clientHeight,
+      );
+    } catch (error) {
+      this.fireballFailed = true;
+      this.fireballRenderer.clear();
+      console.warn("Unable to draw the 3D fireball; 2D blast remains available.", error);
+    }
+  }
 
   private readonly handleIdle = (): void => {
     if (this.state === "loading" && this.map.isSourceLoaded(IMAGERY_SOURCE_ID)) {
@@ -202,10 +255,13 @@ export function createSatelliteMapController(
   callbacks: SatelliteMapCallbacks,
   missileCanvas?: HTMLCanvasElement,
   blastCanvas?: HTMLCanvasElement,
+  fireballCanvas?: HTMLCanvasElement,
+  inspectionCanvas?: HTMLCanvasElement,
 ): SatelliteMapController {
   const map = createSatelliteMap(container);
   const camera = new MapCameraAdapter(map);
   const missile = missileCanvas ? new MissileCanvasRenderer(missileCanvas, camera) : undefined;
-  const blast = blastCanvas ? new BlastCanvasRenderer(blastCanvas, camera) : undefined;
-  return new SatelliteMapController(map, callbacks, missile, blast);
+  const blast = blastCanvas ? new BlastCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
+  const fireball = fireballCanvas ? createFireballRenderer(fireballCanvas, () => map.triggerRepaint()) : undefined;
+  return new SatelliteMapController(map, callbacks, missile, blast, fireball);
 }

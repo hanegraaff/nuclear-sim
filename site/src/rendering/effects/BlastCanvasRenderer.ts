@@ -5,7 +5,10 @@ import { destinationPoint, type GeoPoint } from "../../domain/geodesy";
 import type { MapCameraAdapter, ScreenPoint } from "../map/MapCameraAdapter";
 import { buildBlastDistanceGrid, type BlastDistanceGrid } from "./blastFieldGeometry";
 import { groundGlowColor } from "./groundGlow";
+import { blastExpansion } from "../animation/blastTiming";
 import { buildBlastInspection, drawBlastInspection, selectBlastRulerBearing, type BlastInspectionGeometry } from "../overlays/blastInspection";
+
+export { blastExpansion } from "../animation/blastTiming";
 
 const FLASH_MS = 1100;
 const FALLOFF_FACTOR = 1.24;
@@ -23,12 +26,6 @@ interface CachedBlastField {
   readonly context: CanvasRenderingContext2D;
   readonly image: ImageData;
   groundSunCanvas?: HTMLCanvasElement;
-}
-
-/** Ease used by the prototype's expanding field: fast initially, slow near the edge. */
-export function blastExpansion(progress: number): number {
-  const bounded = Math.max(0, Math.min(1, progress));
-  return 1 - (1 - bounded) ** 2.15;
 }
 
 /** Ordered color anchors preserve the prototype's narrow fireball boundary. */
@@ -67,7 +64,7 @@ export class BlastCanvasRenderer {
   private field: CachedBlastField | null = null;
   private inspectionBearing: { readonly launchId: number; readonly degrees: number } | null = null;
 
-  constructor(private readonly canvas: HTMLCanvasElement, private readonly camera: MapCameraAdapter) {}
+  constructor(private readonly canvas: HTMLCanvasElement, private readonly camera: MapCameraAdapter, private readonly inspectionCanvas?: HTMLCanvasElement) {}
 
   /** Drop sampled distances when pan, zoom, pitch, rotation, or resize changes the camera. */
   invalidateProjection(): void {
@@ -87,6 +84,19 @@ export class BlastCanvasRenderer {
     if (!context) return null;
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, width, height);
+    let inspectionContext = context;
+    if (this.inspectionCanvas) {
+      if (this.inspectionCanvas.width !== pixelWidth || this.inspectionCanvas.height !== pixelHeight) {
+        this.inspectionCanvas.width = pixelWidth;
+        this.inspectionCanvas.height = pixelHeight;
+      }
+      const overlay = this.inspectionCanvas.getContext("2d");
+      if (overlay) {
+        overlay.setTransform(ratio, 0, 0, ratio, 0, 0);
+        overlay.clearRect(0, 0, width, height);
+        inspectionContext = overlay;
+      }
+    }
     if (!launch || elapsedMs < launch.flightMs || width <= 0 || height <= 0) {
       if (!launch) { this.field = null; this.inspectionBearing = null; }
       return null;
@@ -113,7 +123,7 @@ export class BlastCanvasRenderer {
     }
     const inspection = buildBlastInspection(this.camera, launch.route.target, launch.radii, width, height, this.inspectionBearing.degrees);
     this.drawOpticalSun(context, center, launch.route.target, launch.radii, 1, field);
-    if (inspection) drawBlastInspection(context, inspection, highlightedZoneId);
+    if (inspection) drawBlastInspection(inspectionContext, inspection, highlightedZoneId);
     return inspection;
   }
 

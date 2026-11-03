@@ -4,7 +4,7 @@ This repository contains a production-quality reimplementation of the nuclear ef
 
 ## Project status
 
-[Plans 01–07 of the roadmap](roadmap.md) are published. Clicking the map sends a 6.5-second missile toward a geographic target, then produces a flash and expanding single blast. The settled effect has four zone boundaries, a dashed distance ruler, and markers with hover, focus, and pinned inspection popups. Pan and zoom normally; right-drag upward to pitch the map and see the field and center glow lie on the ground. A second click replaces the strike, and Reset clears it while retaining the map camera and device. Alternate views follow in later plans.
+[Plans 01–08 of the roadmap](roadmap.md) are published. Clicking the map sends a 6.5-second missile toward a geographic target, then produces a flash and expanding single blast with a textured 3D fireball. The settled effect has four zone boundaries, a dashed distance ruler, and markers with hover, focus, and pinned inspection popups. Pan and zoom normally; right-drag upward to pitch the map and see the field and fireball attached to ground zero. A second click replaces the strike, and Reset clears it while retaining the map camera and device. Alternate views follow in later plans.
 
 **Open the private Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Access is limited to the Site owner. Users do not need to run the application locally.
 
@@ -22,7 +22,7 @@ To run a plan through implementation, Sites publication, a GitHub PR, and a sepa
 - `prototype-code/` contains the current reference application and its tests.
 - `prototype-screenshots/` contains nine visual references. The actual directory name is `prototype-screenshots/`.
 
-The implementation uses React, TypeScript, Vite, MapLibre GL JS, and Canvas 2D for the missile and blast field. A later plan adds a MapLibre-aligned WebGL fireball dome. Its static build is published through Sites with a private audience. The map uses Esri satellite imagery with visible provider attribution. Blast radii are illustrative estimates, not measured forecasts; assumptions and limits are documented in [the model notes](site/docs/model.md).
+The implementation uses React, TypeScript, Vite, MapLibre GL JS, Canvas 2D for the missile and blast field, and a MapLibre-aligned WebGL dome for the fireball. Its static build is published through Sites with a private audience. The map uses Esri satellite imagery with visible provider attribution. Blast radii are illustrative estimates, not measured forecasts; assumptions and limits are documented in [the model notes](site/docs/model.md).
 
 ## Development and review
 

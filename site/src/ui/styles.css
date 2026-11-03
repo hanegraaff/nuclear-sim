@@ -45,7 +45,7 @@ body { overflow: hidden; }
     radial-gradient(circle at 62% 50%, transparent 48%, rgba(2, 4, 3, 0.16) 140%);
 }
 
-.blast-canvas, .missile-canvas {
+.blast-canvas, .fireball-canvas, .missile-canvas, .inspection-canvas {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -53,9 +53,11 @@ body { overflow: hidden; }
   pointer-events: none;
 }
 .blast-canvas { z-index: 4; }
-.missile-canvas { z-index: 5; }
+.fireball-canvas { z-index: 5; }
+.missile-canvas { z-index: 6; }
+.inspection-canvas { z-index: 7; }
 
-.blast-inspection-layer { position: absolute; z-index: 7; inset: 0; pointer-events: none; }
+.blast-inspection-layer { position: absolute; z-index: 8; inset: 0; pointer-events: none; }
 .blast-zone-marker {
   position: absolute;
   width: 34px;

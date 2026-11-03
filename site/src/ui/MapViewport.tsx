@@ -29,6 +29,8 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
   const blastCanvasRef = useRef<HTMLCanvasElement>(null);
+  const fireballCanvasRef = useRef<HTMLCanvasElement>(null);
+  const inspectionCanvasRef = useRef<HTMLCanvasElement>(null);
   const controllerRef = useRef<SatelliteMapController | null>(null);
   const onLaunchRef = useRef(onLaunch);
   onLaunchRef.current = onLaunch;
@@ -46,7 +48,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container || !missileCanvasRef.current || !blastCanvasRef.current) return;
+    if (!container || !missileCanvasRef.current || !blastCanvasRef.current || !fireballCanvasRef.current || !inspectionCanvasRef.current) return;
     let controller: SatelliteMapController;
     try {
       controller = createSatelliteMapController(container, {
@@ -55,7 +57,7 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
         onInspectionChange: setInspection,
         onLaunch: (route) => onLaunchRef.current(route),
         launchAngle: () => launchAngleRef.current(),
-      }, missileCanvasRef.current, blastCanvasRef.current);
+      }, missileCanvasRef.current, blastCanvasRef.current, fireballCanvasRef.current, inspectionCanvasRef.current);
     } catch {
       setLoadState("map-error");
       return;
@@ -102,7 +104,9 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
       <div className="map-surface" ref={containerRef} aria-label="Interactive satellite map" />
       <div className="map-tone" aria-hidden="true" />
       <canvas className="blast-canvas" ref={blastCanvasRef} aria-hidden="true" />
+      <canvas className="fireball-canvas" ref={fireballCanvasRef} aria-hidden="true" />
       <canvas className="missile-canvas" ref={missileCanvasRef} aria-hidden="true" />
+      <canvas className="inspection-canvas" ref={inspectionCanvasRef} aria-hidden="true" />
       <BlastInspectionOverlay geometry={inspection} activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onHover={onHoverZone} onFocusZone={onFocusZone} onPin={onPinZone} onClear={onClearZoneInspection} />
       <p className="model-qualification">IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE</p>
       {children}
