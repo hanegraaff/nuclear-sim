@@ -56,8 +56,8 @@ export class SatelliteMapController {
     map.on("error", this.handleError);
     map.on("sourcedata", this.handleSourceData);
     map.on("resize", this.updateCameraPadding);
-    map.on("resize", this.repaintFlight);
-    map.on("move", this.repaintFlight);
+    map.on("resize", this.repaintCamera);
+    map.on("move", this.repaintCamera);
     map.on("click", this.handleMapClick);
     this.updateCameraPadding();
     this.emitCamera();
@@ -105,8 +105,8 @@ export class SatelliteMapController {
     this.map.off("error", this.handleError);
     this.map.off("sourcedata", this.handleSourceData);
     this.map.off("resize", this.updateCameraPadding);
-    this.map.off("resize", this.repaintFlight);
-    this.map.off("move", this.repaintFlight);
+    this.map.off("resize", this.repaintCamera);
+    this.map.off("move", this.repaintCamera);
     this.map.off("click", this.handleMapClick);
     this.map.remove();
   }
@@ -131,6 +131,11 @@ export class SatelliteMapController {
     const container = this.map.getContainer();
     this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
     this.missileRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
+  };
+
+  private readonly repaintCamera = (): void => {
+    this.blastRenderer?.invalidateProjection();
+    this.repaintFlight();
   };
 
   private readonly handleMapClick = (event: MapMouseEvent): void => {
