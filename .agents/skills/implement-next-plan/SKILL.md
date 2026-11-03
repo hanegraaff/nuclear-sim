@@ -1,9 +1,9 @@
 ---
-name: development-loop-skill
-description: Implement the next roadmap increment in this repository, publish it, open a GitHub PR, review the change against steering files, and wait for the human's merge or fix decision. Use for the full plan-to-PR review loop, not for an isolated edit or review-only request.
+name: implement-next-plan
+description: Implement the next ready roadmap plan in this repository, publish it to the existing Site, open and review a GitHub PR, then wait for the human's merge or fix decision. Use for the full plan-to-PR workflow, not an isolated edit or review-only request.
 ---
 
-# Development loop
+# Implement next plan
 
 Run one roadmap plan through implementation, release, and a reviewable PR. The human decides the disposition of review findings and whether to merge.
 
