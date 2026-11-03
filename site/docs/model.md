@@ -1,4 +1,4 @@
-# Model notes — Plans 01–05
+# Model notes — Plans 01–06
 
 Plan 01 introduces geographic calculations; Plan 05 adds the first blast-radius model. Fallout and range models arrive in later plans.
 
@@ -27,3 +27,7 @@ The incoming path is a visual reconstruction of `prototype-code/app/missile-flig
 These constants are transcribed from `prototype-code/app/page.tsx` and calibrated to its imagery, not derived from a validated damage calculation. Yield scaling omits burst height, terrain, shielding, building type, weather, and uncertainty. The conventional catalog entries use the same visual scale for now; their inclusion does not imply nuclear fallout. The field is a visual screening estimate and must not be used as emergency guidance.
 
 The application stores radii with the strike, so subsequent device changes cannot resize an existing blast. A 6.5-second carrier flight leads into a 4.6-second expansion; the flash lasts 1.1 seconds. The field uses `1 − (1 − t)^2.15` for fast-first growth, with `t` normalized to the expansion duration. The renderer unprojects each visible mask sample and measures great-circle distance from ground zero in kilometers, so the surface radius remains meaningful across zoom, latitude, and longitude wrapping. The distance grid is cached between animation frames and rebuilt after camera or viewport changes. The mask is capped to roughly 640 × 420 samples and smoothed on display; a dedicated pitched-ground treatment is scheduled for Plan 07. Color anchors, the shock ring, and the brighter white-gold corona are visual reconstructions, not physical wave-front or radiation predictions.
+
+## Blast inspection — Plan 06
+
+`src/domain/blastZones.ts` divides each blast into fireball, severe, moderate, and light annuli. For a surface radius `r` on the same 6371 km sphere, the enclosed area is `4πR² sin²(r/(2R))` square kilometers; each zone area subtracts its inner cap from its outer cap. This stable form agrees with the prototype's spherical-cap calculation even for small radii. The 21 kt light annulus is about 105.5 km², as displayed in `MarkersAnd Popups.jpeg`. Labels, colors, and damage descriptions reproduce the prototype's illustrative language. Neither a zone boundary nor its area predicts actual casualties or building damage: shielding, terrain, burst height, and local construction are not modeled. Marker positions and the ruler are geodesic destinations from ground zero; the current map camera only projects them for display.

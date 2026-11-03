@@ -3,6 +3,7 @@ import type { BlastRadii } from "../../domain/blast";
 import { destinationPoint, type GeoPoint } from "../../domain/geodesy";
 import type { MapCameraAdapter, ScreenPoint } from "../map/MapCameraAdapter";
 import { buildBlastDistanceGrid, type BlastDistanceGrid } from "./blastFieldGeometry";
+import { buildBlastInspection, drawBlastInspection, type BlastInspectionGeometry } from "../overlays/blastInspection";
 
 const FLASH_MS = 1100;
 const FALLOFF_FACTOR = 1.24;
@@ -69,8 +70,8 @@ export class BlastCanvasRenderer {
     this.field = null;
   }
 
-  /** Reproject and repaint at the launch age in ms; an absent launch clears the layer. */
-  render(launch: Launch | null, elapsedMs: number, width: number, height: number): void {
+  /** Reproject and repaint at the launch age in ms; return settled marker geometry. */
+  render(launch: Launch | null, elapsedMs: number, width: number, height: number): BlastInspectionGeometry | null {
     const ratio = window.devicePixelRatio || 1;
     const pixelWidth = Math.max(1, Math.round(width * ratio));
     const pixelHeight = Math.max(1, Math.round(height * ratio));
@@ -79,12 +80,12 @@ export class BlastCanvasRenderer {
       this.canvas.height = pixelHeight;
     }
     const context = this.canvas.getContext("2d");
-    if (!context) return;
+    if (!context) return null;
     context.setTransform(ratio, 0, 0, ratio, 0, 0);
     context.clearRect(0, 0, width, height);
     if (!launch || elapsedMs < launch.flightMs || width <= 0 || height <= 0) {
       if (!launch) this.field = null;
-      return;
+      return null;
     }
 
     const center = this.camera.toScreen(launch.route.target);
@@ -94,10 +95,15 @@ export class BlastCanvasRenderer {
     if (travelledKm > 0) {
       const field = this.ensureField(launch, width, height);
       if (field) this.drawField(context, field, travelledKm, launch.radii);
-      this.drawSun(context, center, launch.route.target, launch.radii, Math.min(1, blastAge / 650));
+      if (progress < 1) this.drawSun(context, center, launch.route.target, launch.radii, Math.min(1, blastAge / 650));
     }
     if (progress > 0 && progress < 1) this.drawShockwave(context, launch.route.target, travelledKm);
     if (blastAge < FLASH_MS) this.drawFlash(context, center, blastAge, Math.min(width, height));
+    if (progress < 1) return null;
+    const inspection = buildBlastInspection(this.camera, launch.route.target, launch.radii, width, height);
+    if (inspection) drawBlastInspection(context, inspection);
+    this.drawSun(context, center, launch.route.target, launch.radii, 1);
+    return inspection;
   }
 
   /** Build the visible geographic distance mask once per strike and camera state. */

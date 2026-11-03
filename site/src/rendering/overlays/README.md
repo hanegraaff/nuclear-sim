@@ -1,0 +1,3 @@
+# Inspection overlays
+
+`blastInspection.ts` receives immutable blast radii in kilometers, an impact `GeoPoint`, and a small camera projection interface. `buildBlastInspection` returns projected ring, ruler, and marker geometry in CSS pixels while retaining physical zone spans and areas; `drawBlastInspection` paints only that geometry. The module owns prototype marker colors and viewport-aware ruler bearing, not yield formulas, time, or MapLibre state. Its projection interface is faked in integration tests. Geometry is rebuilt when the camera moves or the viewport resizes; a missing or unprojectable ruler suppresses interactive markers rather than placing them at invalid coordinates.

@@ -20,7 +20,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–05 are published to the 
 | 03 | Scenario navigation | Complete | 02 |
 | 04 | Target and incoming missile | Complete | 03 |
 | 05 | Single blast animation | Complete | 04 |
-| 06 | Blast ruler and inspection markers | Ready | 05 |
+| 06 | Blast ruler and inspection markers | In progress | 05 |
 | 07 | Blast field grounded in pitched views | Not started | 06 |
 | 08 | 3D fireball | Not started | 07 |
 | 09 | Animated cloud-profile monitor | Not started | 08 |
@@ -115,7 +115,7 @@ The roadmap is current as of **2026-11-02**. Plans 01–05 are published to the 
 
 **Completion evidence.** Model and placement tests pass; a desktop capture is reviewed against `Nuke Blast Top.png` and `MarkersAnd Popups.jpeg`.
 
-**Current status.** Ready; Plan 05 is complete.
+**Current status.** In progress on branch `plan-6`; implementing settled blast measurement and marker inspection.
 
 **Blocking decisioning.** None. Allow ruler bearing to adjust for screen space while preserving the supplied New York composition where possible.
 
