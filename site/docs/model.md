@@ -1,4 +1,4 @@
-# Model notes — Plans 01–08
+# Model notes — Plans 01–09
 
 Plan 01 introduces geographic calculations; Plan 05 adds the first blast-radius model. Fallout and range models arrive in later plans.
 
@@ -41,3 +41,11 @@ The GPU mesh is a hemisphere in local Web Mercator coordinates. Its center is th
 ## Blast inspection — Plan 06
 
 `src/domain/blastZones.ts` divides each blast into fireball, severe, moderate, and light annuli. For a surface radius `r` on the same 6371 km sphere, the enclosed area is `4πR² sin²(r/(2R))` square kilometers; each zone area subtracts its inner cap from its outer cap. This stable form agrees with the prototype's spherical-cap calculation even for small radii. The 21 kt light annulus is about 105.5 km², as displayed in `MarkersAnd Popups.jpeg`. Labels, colors, and damage descriptions reproduce the prototype's illustrative language. Neither a zone boundary nor its area predicts actual casualties or building damage: shielding, terrain, burst height, and local construction are not modeled. Marker positions and the ruler are geodesic destinations from ground zero; the current map camera only projects them for display.
+
+## Cloud-profile instrument — Plan 09
+
+`src/domain/cloud.ts` follows the display-height formula in `prototype-code/app/page.tsx` (`cloudModel`), with `Nuke Blast with Fireball.png` as the visual calibration for the default 21 kt Fat Man. Inputs are **one impact's yield in megatons**, an illustrative burst height in kilometers, and whether the device is nuclear. For a nuclear impact, the atmospheric term is `burstHeight + 7.5 + 8.4 × log10(1 + yield / 0.01)` km. For a conventional impact it is `burstHeight + 0.12 × cbrt(yield / 0.000011)` km. The final displayed peak is the greater of that term and burst height plus the modeled fireball radius, capped at 1,000,000 km so the instrument stays finite. The default Fat Man's 0.503 km burst-height setting gives a 12.1 km rounded peak. Conventional MOAB/FOAB use 0.003 km; the prototype supplies fixed heights for Davy Crockett, Little Boy, Fat Man, and the three MIRV systems, while other nuclear devices use a bounded cube-root setting. MIRV heights use each reentry vehicle's yield, not the aggregate catalog yield.
+
+During the 6.5-second carrier flight the cloud remains at standby. During the 4.6-second blast expansion, progress `t` goes from 0 to 1 and the height fraction rises as `1 − (1 − t)^2.45`. The selected device sets the standby scale; once launched, the monitor follows that launch's device and yield even if selection changes. Reset removes the launch and returns the readout to standby. The silhouette is a separate, deterministic Canvas illustration whose puffs, glow, and phase labels follow the same progress; its visual shape is not part of the numerical model. Heights above 120 km receive a “luminous plume” and space-line treatment only as a visual cue for hypothetical scale studies.
+
+These equations are transcribed from the prototype for visual parity, **not** derived from atmospheric observations or a validated cloud-rise model. They omit atmospheric stability, winds, precipitation, terrain, burst-medium coupling, and time-varying buoyancy. The extreme-yield cap and space-line marker do not predict an actual plume in space. The height is an illustrative screening display, not a measured altitude, fallout boundary, weather forecast, or emergency-planning estimate.

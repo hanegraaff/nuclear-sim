@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { SimulatorStore, type AnimationClock } from "../application/SimulatorStore";
 import { resolveDeviceSelection } from "../application/deviceSelection";
+import { cloudPresentationForState } from "../application/cloudPresentation";
 import type { BlastZoneId } from "../domain/blastZones";
 import { DevicePanel } from "./DevicePanel";
 import { MapViewport } from "./MapViewport";
@@ -22,6 +23,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
     customYieldInput: state.customYieldInput,
   }), [state.tab, state.scenarioId, state.selectedId, state.customYieldInput]);
   const selection = useMemo(() => resolveDeviceSelection(panelState), [panelState]);
+  const cloud = useMemo(() => cloudPresentationForState(state), [state]);
   const selectTab = useCallback((tab: "scenario" | "device") => store.dispatch({ type: "selectTab", tab }), [store]);
   const selectScenario = useCallback((id: string) => store.dispatch({ type: "selectScenario", id }), [store]);
   const selectDevice = useCallback((id: string) => store.dispatch({ type: "selectDevice", id }), [store]);
@@ -38,6 +40,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
         state={panelState}
         selection={selection}
         launchPhase={state.phase}
+        cloud={cloud}
         onReset={reset}
         onSelectTab={selectTab}
         onSelectScenario={selectScenario}

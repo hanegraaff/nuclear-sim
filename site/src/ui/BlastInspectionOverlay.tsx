@@ -10,6 +10,9 @@ const ZONE_COPY: Record<BlastZoneId, { readonly label: string; readonly descript
   fireball: { label: "FIREBALL", description: "People and structures are consumed in incandescent heat." },
 };
 
+/** Inner projected marks take pointer priority where pitch brings their targets close. */
+const MARKER_STACK: Record<BlastZoneId, number> = { fireball: 4, severe: 3, moderate: 2, light: 1 };
+
 /** View data and semantic actions for the keyboard-accessible marker layer. */
 export interface BlastInspectionOverlayProps {
   readonly geometry: BlastInspectionGeometry | null;
@@ -43,7 +46,7 @@ export function BlastInspectionOverlay({ geometry, activeZoneId, pinnedZoneId, o
             type="button"
             key={zone.id}
             className="blast-zone-marker"
-            style={{ left: marker.x, top: marker.y }}
+            style={{ left: marker.x, top: marker.y, zIndex: MARKER_STACK[zone.id] }}
             aria-label={`${copy.label} destruction. ${copy.description} Zone span ${formatDistance(zone.innerKm)} to ${formatDistance(zone.outerKm)}. Damage area ${formatArea(zone.areaKm2)}.`}
             aria-expanded={activeZoneId === zone.id}
             aria-pressed={pinnedZoneId === zone.id}

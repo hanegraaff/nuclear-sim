@@ -127,3 +127,18 @@ test("tooltip flips above a marker near the bottom edge", async ({ page }) => {
   expect(tooltipBounds!.y).toBeGreaterThanOrEqual(0);
   expect(tooltipBounds!.x + tooltipBounds!.width).toBeLessThanOrEqual(1508);
 });
+
+test("each pitched marker can be hovered at its visible center when projected marks converge", async ({ page }) => {
+  await page.getByRole("button", { name: "Zoom out" }).click();
+  await page.clock.runFor(500);
+  await page.mouse.move(1400, 780);
+  await page.mouse.down({ button: "right" });
+  await page.mouse.move(1400, 350, { steps: 10 });
+  await page.mouse.up({ button: "right" });
+  await page.clock.runFor(500);
+  await expect.poll(async () => Number(await page.locator("main.simulator").getAttribute("data-pitch"))).toBeGreaterThan(50);
+  for (const zone of ["FIREBALL", "SEVERE", "MODERATE", "LIGHT"]) {
+    await page.getByRole("button", { name: new RegExp(`^${zone} destruction`) }).hover({ timeout: 3000 });
+    await expect(page.getByRole("tooltip")).toContainText(`${zone} DESTRUCTION`);
+  }
+});
