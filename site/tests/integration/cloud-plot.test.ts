@@ -1,6 +1,6 @@
-/** Cloud plot geometry tests guard fixed-scale placement through growth and resize without map inputs. */
+/** Cloud plot tests guard fixed-scale placement and unit labels without map inputs. */
 import { describe, expect, it } from "vitest";
-import { cloudPlotGeometry } from "../../src/rendering/cloud/paintCloudProfile";
+import { cloudPlotGeometry, formatCloudScaleTick } from "../../src/rendering/cloud/paintCloudProfile";
 
 describe("independent cloud plot geometry", () => {
   it("moves the top upward while keeping the height scale fixed", () => {
@@ -19,5 +19,11 @@ describe("independent cloud plot geometry", () => {
     expect(wide.scaleX).toBe(314);
     expect(narrow.scaleX).toBe(238);
     expect(narrow.baseY).toBe(83);
+  });
+
+  it("keeps meter units on conventional ticks while omitting repeated kilometer units", () => {
+    const moabTicks = [1, 2, 3, 4].map((tick) => formatCloudScaleTick(0.123 * tick / 4));
+    expect(moabTicks).toEqual(["31 m", "62 m", "92 m", "123 m"]);
+    expect(formatCloudScaleTick(12.13 / 4)).toBe("3.03");
   });
 });

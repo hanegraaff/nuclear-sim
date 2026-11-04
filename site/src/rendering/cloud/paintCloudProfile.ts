@@ -24,6 +24,11 @@ export function cloudPlotGeometry(width: number, height: number, growth: number)
   };
 }
 
+/** Format a vertical scale tick from kilometers, retaining meters below 1 km. */
+export function formatCloudScaleTick(heightKm: number): string {
+  return formatCloudHeight(heightKm).replace(" km", "");
+}
+
 /** Stable texture sample so a paused frame has no random visual drift. */
 function noise(seed: number): number {
   const value = Math.sin(seed * 127.1 + 78.233) * 43758.5453;
@@ -65,7 +70,7 @@ function paintScale(context: CanvasRenderingContext2D, state: CloudPresentation,
     context.beginPath(); context.moveTo(scaleX - 4, y); context.lineTo(scaleX + 3, y); context.stroke();
     if (tick === 0 || state.progress > 0) {
       context.fillStyle = tick === 4 ? "rgba(245,248,241,.86)" : "rgba(151,164,156,.68)";
-      context.fillText(tick === 0 ? "0" : formatCloudHeight(state.peakHeightKm * tick / 4).replace(/ (km|m)$/, ""), scaleX + 6, y + 2.5);
+      context.fillText(tick === 0 ? "0" : formatCloudScaleTick(state.peakHeightKm * tick / 4), scaleX + 6, y + 2.5);
     }
   }
   if (state.orbitalScale && state.progress > 0) {
