@@ -23,7 +23,7 @@ The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the 
 | 06 | Blast ruler and inspection markers | Complete | 05 |
 | 07 | Blast field grounded in pitched views | Complete | 06 |
 | 08 | 3D fireball | Complete | 07 |
-| 09 | Animated cloud-profile monitor | Ready | 08 |
+| 09 | Animated cloud-profile monitor | In progress | 08 |
 | 10 | Additive multi launch | Not started | 09 |
 | 11 | MIRV separation and multiple impacts | Not started | 10 |
 | 12 | Fallout view | Not started | 11 |
@@ -157,7 +157,7 @@ The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the 
 
 **Completion evidence.** Cloud model and fake-time tests pass; compare standby, growing, and settled captures with the cloud panel in `Nuke Blast with Fireball.png`.
 
-**Current status.** Ready; Plan 08 is complete.
+**Current status.** In progress on branch `plan-9`; the cloud model, synchronized monitor, tests, documentation, and Site release are underway.
 
 **Blocking decisioning.** None. Use an illustrative model and label its limits in `docs/model.md`.
 

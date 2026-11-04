@@ -3,11 +3,14 @@ import { SCENARIOS } from "../catalog/scenarios";
 import { CUSTOM_DEVICE_ID, type ResolvedDeviceSelection } from "../application/deviceSelection";
 import type { ScenarioSelectionState } from "../application/scenarioSelection";
 import { memo, type KeyboardEvent } from "react";
+import type { CloudPresentation } from "../application/cloudPresentation";
+import { CloudProfileMonitor } from "./CloudProfileMonitor";
 
 interface DevicePanelProps {
   readonly state: Pick<ScenarioSelectionState, "tab" | "scenarioId" | "selectedId" | "customYieldInput">;
   readonly selection: ResolvedDeviceSelection;
   readonly launchPhase: "armed" | "inbound" | "detonating" | "complete";
+  readonly cloud: CloudPresentation;
   readonly onReset: () => void;
   readonly onSelectTab: (tab: "scenario" | "device") => void;
   readonly onSelectScenario: (id: string) => void;
@@ -16,7 +19,7 @@ interface DevicePanelProps {
 }
 
 /** Prototype-style selector; tab and input actions update application state. */
-export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, onReset, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, cloud, onReset, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -112,6 +115,7 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, launchP
           </p>
         </div>
       </section>
+      <CloudProfileMonitor state={cloud} />
     </aside>
   );
 });
