@@ -1,39 +1,32 @@
 ---
 name: implement-next-plan
-description: Implement the next ready roadmap plan in this repository, publish it to the existing Site, open and review a GitHub PR, then wait for the human's merge or fix decision. Use for the full plan-to-PR workflow, not an isolated edit or review-only request.
+description: Implement the next ready roadmap plan with project developer, website tester, technical writer, and reviewer agents; publish the Site, review a GitHub PR, then follow the human's fix-or-merge decision. Use for the full plan-to-PR loop, not an isolated edit or review.
 ---
 
 # Implement next plan
 
-Run one roadmap plan through implementation, release, and a reviewable PR. The human decides the disposition of review findings and whether to merge.
+The primary agent coordinates one roadmap increment. It owns branch integration, verification, Sites publication, the PR, review comments, and the final squash merge. Delegate the work below to the four predefined project agents; do not substitute a single-agent implementation or claim an agent's checks ran when they did not. If named custom-agent selection is unavailable, spawn delegated agents and instruct each to read its corresponding `.codex/agents/*.toml` role file before acting. If delegation itself is unavailable, report the blocker.
 
-## Start the increment
+## Start or resume
 
-1. Read the repository's `AGENTS.md`, `requirements.md`, `architecture.md`, `roadmap.md`, and the selected plan before changing code. Follow the user's latest direction if it narrows or changes the plan. Treat `prototype-code/` and `prototype-screenshots/` as read-only references.
-2. Fetch GitHub changes, inspect the working tree, and start from the next ready plan on a dedicated branch. Honor a branch name supplied by the user. Preserve unrelated local changes and reconcile a moved base before pushing.
-3. Identify the plan's requirement IDs, observable experience, prototype references, tests, and any real blocking decision. Record `In progress` in the roadmap. Continue useful work while a decision is pending; stop only when it truly prevents completion.
+Read `AGENTS.md`, `requirements.md`, `architecture.md`, `roadmap.md`, and the selected plan. Read the current branch and remote state. On a new run, select the next `Ready` plan, create a dedicated branch from the reconciled `main` using any branch name supplied by the human, and mark the plan `In progress`. On a resumed run, inspect the existing PR, branch, review threads, submitted reviews, and general PR comments before acting; retain completed work and the existing Site project ID. Preserve unrelated changes and never edit `prototype-code/` or `prototype-screenshots/`.
 
-## Implement and publish
+## Build and test loop
 
-Implement the complete plan behind the boundaries in `architecture.md`. Update source-area and model documentation, requirement-to-test evidence, and meaningful unit, integration, and browser tests. Inspect required visual states against the prototype before accepting a screenshot baseline. Run the repository's full verification gate; report exact results and remaining differences.
+1. Delegate implementation to **`plan_developer`** (`.codex/agents/plan-developer.toml`). Give it the plan, requirement IDs, prototype references, architecture boundaries, and file ownership. It returns working code, relevant documented tests, and a concise requirement-to-test account. The primary agent checks its result before the next stage.
+2. Once there is a testable candidate, delegate **`experience_tester`** (`.codex/agents/experience-tester.toml`) and **`technical_writer`** (`.codex/agents/technical-writer.toml`) concurrently. The tester must operate the actual website in a browser, not merely run automated tests or inspect code. It exercises the plan's controls and animation, including launch, impact, expansion, settlement, map gestures, markers, and Reset where applicable. It reports reproducible defects and visual differences with evidence. The writer updates the root and source-area documentation, model/visual notes, and an outsider-readable account of how the increment is built. Keep their file ownership separate.
+3. Send tester defects and documentation contradictions to the developer. Repeat the developer → tester/writer handoff until the plan's behavior and documentation are ready. Recheck every affected browser path after a fix. Do not refresh a visual baseline without inspecting the difference against the read-only prototype.
 
-The project requires each completed increment on the same Site. Follow `docs/sites-publishing.md`: commit and push the exact application source to the GitHub branch first, use a temporary Sites release checkout outside this repository, preserve the Site project ID and audience, verify the release tree and clean build, deploy, check the hosted path, and record version, URL, and source commits in `roadmap.md`. Do not create a nested Git repository in `site/`. A plan is not `Complete` if its required tests or deployment fail.
+The primary agent runs the full `npm run verify` gate. For each completed increment, follow `docs/sites-publishing.md`: commit and push the exact application source to GitHub, verify it in a clean temporary Sites checkout, deploy to the existing Site without changing its audience, and record the version, URL, and GitHub/Sites source commits in `roadmap.md`. Have the tester operate the **published Site** in a browser for the plan's visible path before opening the PR. A failed gate, Site deployment, or hosted path returns to the build loop; do not mark the plan `Complete` until all required evidence exists.
 
-## Open the PR and review it
+## PR and human decision
 
-Open a PR from the plan branch to `main` with a concise capability summary, requirement IDs, verification results, visual evidence, and Site version. Then make a distinct reviewer pass over the **final PR diff** and the steering files. Check prototype fidelity, architecture boundaries, state and timing behavior, failure paths, accessibility, test quality, documentation, and release provenance.
+Open a PR to `main` with capability, requirement IDs, checks, visual evidence, and deployed Site version. Delegate an independent review of the **final PR diff** to **`plan_reviewer`** (`.codex/agents/plan-reviewer.toml`). The reviewer reads the steering files and prototype references, reports only concrete findings with severity, impact, file/line, and a correction. The primary agent posts the review summary and actionable inline comments to GitHub, then verifies they appeared. Do not invent findings or approve the PR merely because checks pass.
 
-Post a GitHub review summary and actionable inline comments for real findings. Each finding should name severity, impact, file/line, and a concrete correction or decision. Do not invent findings to fill a quota, and do not mark the PR approved merely because checks pass. Verify the comments appeared on the PR.
+**Pause once for the human.** Report the PR, Site, checks, and findings. Discover the human's later response and any new review bodies, inline comments, or general PR comments before continuing:
 
-**Stop here for human review.** Report the PR URL, deployed Site version, checks, and findings. Do not merge, dismiss, or resolve findings before the human responds.
+- **Proceed:** record any accepted findings as accepted, without calling them fixed; squash merge the PR.
+- **Fix named findings or human comments:** delegate the selected corrections to the developer. The tester rechecks affected website interactions, the writer refreshes affected documentation, and the reviewer checks the corrections. Rerun relevant and full gates. If any `site/` content changed, commit and push it, then repeat the exact-source release and hosted check. Update the roadmap and PR, reply to each addressed comment with evidence, and resolve fixed threads. Then squash merge without another routine human pause. Pause only if a new blocking issue or decision arises.
+- **Stop or change scope:** follow the human's direction and leave the PR state explicit.
 
-## Continue after the human responds
-
-Read the latest PR, branch, and review threads before acting; continue from their current state instead of repeating the plan. Follow the human's choice:
-
-- **Fix findings:** implement the requested changes, update tests and docs, rerun the relevant and full gates, push the branch, and republish if application source changed. Reply to each addressed PR comment with the fix and evidence, then resolve that thread.
-- **Accept findings as-is:** record the human's disposition in the relevant PR threads. Leave or resolve threads as the human directs; do not silently call them fixed.
-- **Merge:** only when explicitly directed, check the current remote base and PR head, then squash merge using the expected head SHA. Sync local `main` and verify the merged source tree. Delete branches only if requested.
-- **Stop or change scope:** honor the direction, report what remains open, and end the loop.
-
-If a requested external mutation is blocked by permissions or an approval check, report the exact blocked action and reason. Keep credentials out of source, command arguments, logs, and PR text.
+Before merging, fetch remote changes, check the PR head and base, and use the expected head SHA for the squash merge. Sync local `main` and verify its tree matches the merged branch. Delete branches only when requested. Keep credentials out of source, command arguments, logs, and PR text. If an external action is blocked by permissions or approval review, report the exact action and reason.
