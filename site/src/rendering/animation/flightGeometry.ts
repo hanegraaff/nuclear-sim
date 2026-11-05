@@ -20,9 +20,11 @@ export interface FlightProjector {
 
 /**
  * Start 14 CSS pixels inside the viewport edge and bend toward the target.
+ * When a selected MIRV needs runway near that edge, slide entry along the
+ * same edge. Single-device paths retain the prototype's fixed edge bearing.
  * Angle is radians clockwise from the positive screen-x axis.
  */
-export function viewportFlightRoute(width: number, height: number, aim: ScreenPoint, angle: number): ScreenFlightRoute {
+export function viewportFlightRoute(width: number, height: number, aim: ScreenPoint, angle: number, ensureMirvRunway = false): ScreenFlightRoute {
   if (![width, height, aim.x, aim.y, angle].every(Number.isFinite) || width <= 0 || height <= 0) {
     throw new RangeError("Flight viewport, aim, and angle must be finite with positive dimensions.");
   }
@@ -32,7 +34,20 @@ export function viewportFlightRoute(width: number, height: number, aim: ScreenPo
   const tx = Math.abs(dx) < 1e-8 ? Infinity : (width / 2 - inset) / Math.abs(dx);
   const ty = Math.abs(dy) < 1e-8 ? Infinity : (height / 2 - inset) / Math.abs(dy);
   const distance = Math.min(tx, ty);
-  const start = { x: width / 2 + dx * distance, y: height / 2 + dy * distance };
+  const initial = { x: width / 2 + dx * distance, y: height / 2 + dy * distance };
+  const runway = Math.min(width, height) * 0.4;
+  const span = Math.hypot(aim.x - initial.x, aim.y - initial.y);
+  let start = initial;
+  if (ensureMirvRunway && span < runway) {
+    const onVerticalEdge = Math.abs(initial.x - inset) < 1e-6 || Math.abs(initial.x - (width - inset)) < 1e-6;
+    const extent = onVerticalEdge ? height : width;
+    const candidates = [0, 0.25, 0.5, 0.75, 1].map((fraction) => {
+      const position = inset + (extent - inset * 2) * fraction;
+      return onVerticalEdge ? { x: initial.x, y: position } : { x: position, y: initial.y };
+    });
+    start = candidates.filter((candidate) => Math.hypot(aim.x - candidate.x, aim.y - candidate.y) >= runway)
+      .sort((a, b) => Math.hypot(a.x - initial.x, a.y - initial.y) - Math.hypot(b.x - initial.x, b.y - initial.y))[0] ?? initial;
+  }
   const vx = aim.x - start.x;
   const vy = aim.y - start.y;
   const length = Math.max(1, Math.hypot(vx, vy));

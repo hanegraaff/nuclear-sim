@@ -40,6 +40,12 @@ export class MissileCanvasRenderer {
     }
   }
 
+  /** Draw a temporary geographic target while an unsafe MIRV camera is framed. */
+  paintPendingTarget(target: import("../../domain/geodesy").GeoPoint): void {
+    const context = this.canvas.getContext("2d");
+    if (context) this.drawTarget(context, this.projector.toScreen(target), 0);
+  }
+
   /** Paint one shared carrier before split and geographically distinct branches afterwards. */
   private drawMirvFlight(context: CanvasRenderingContext2D, launch: Launch, elapsedMs: number, smokeStep: number): void {
     const mirv = launch.mirv!;

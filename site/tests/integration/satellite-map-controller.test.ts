@@ -143,11 +143,36 @@ describe("satellite map controller", () => {
     const launches: unknown[] = [];
     const controller = new SatelliteMapController(runtime.map, {
       onStateChange: () => {}, onCameraChange: () => {}, onLaunch: (route) => launches.push(route), launchAngle: () => Math.PI,
+      prepareLaunch: () => ({ intent: { deviceId: "fat-man", yieldMt: 0.021 }, mirvTargets: null }),
     });
     runtime.emit("click", { point: { x: 900, y: 450 }, originalEvent: { target: {} } });
     expect(launches).toHaveLength(1);
     expect(launches[0]).toMatchObject({ target: { longitude: -30, latitude: 35 } });
     expect((launches[0] as { start: { longitude: number } }).start.longitude).toBeLessThan(-30);
+    controller.dispose();
+  });
+  it("stops after bounded unsafe MIRV camera attempts without dispatching a reversed launch", () => {
+    const runtime = fakeMap();
+    Object.assign(runtime.map, { project: () => ({ x: 900, y: 450 }) });
+    const launches: unknown[] = [];
+    const notices: (string | null)[] = [];
+    const pending: boolean[] = [];
+    const controller = new SatelliteMapController(runtime.map, {
+      onStateChange: () => {}, onCameraChange: () => {},
+      onLaunch: (route) => launches.push(route),
+      prepareLaunch: (aim) => ({ intent: { deviceId: "rs-24-yars", yieldMt: 0.525 }, mirvTargets: [
+        { longitude: aim.longitude - 0.1, latitude: aim.latitude + 0.02 },
+        { longitude: aim.longitude + 0.1, latitude: aim.latitude - 0.02 },
+      ] }),
+      onPendingChange: (value) => pending.push(value),
+      onLaunchUnavailable: (notice) => notices.push(notice),
+    });
+    runtime.emit("click", { point: { x: 900, y: 450 }, originalEvent: { target: {} } });
+    for (let attempt = 0; attempt < 7; attempt += 1) runtime.emit("moveend");
+    expect(runtime.fitBounds).toHaveBeenCalledTimes(7);
+    expect(launches).toHaveLength(0);
+    expect(pending).toEqual([true, false]);
+    expect(notices.at(-1)).toMatch(/Could not frame this MIRV launch/);
     controller.dispose();
   });
   it("keeps scenario imagery loading until the destination source is idle and loaded", () => {

@@ -25,6 +25,9 @@ function fakeMap(addLayerFailure = false) {
   const listeners = new Map<string, Set<() => void>>();
   const layers: CustomLayerInterface[] = [];
   const triggerRepaint = vi.fn();
+  const resize = vi.fn();
+  let center = { lng: TARGET.longitude, lat: TARGET.latitude };
+  let zoom = 11.6;
   const addLayer = vi.fn((layer: CustomLayerInterface) => {
     if (addLayerFailure) throw new Error("custom layers unavailable");
     layers.push(layer);
@@ -32,20 +35,70 @@ function fakeMap(addLayerFailure = false) {
   const map = {
     on: (event: string, callback: () => void) => { const group = listeners.get(event) ?? new Set(); group.add(callback); listeners.set(event, group); },
     off: (event: string, callback: () => void) => listeners.get(event)?.delete(callback),
-    getCenter: () => ({ lng: TARGET.longitude, lat: TARGET.latitude }),
-    getZoom: () => 11.6,
+    getCenter: () => center,
+    getZoom: () => zoom,
     getPitch: () => 60,
     getBearing: () => 0,
     getContainer: () => ({ clientWidth: 1508, clientHeight: 1080 }),
     setPadding: vi.fn(),
     addLayer,
     triggerRepaint,
+    resize,
     remove: vi.fn(),
   } as unknown as MapLibreMap;
-  return { map, layers, addLayer, triggerRepaint, emit: (event: string) => listeners.get(event)?.forEach((callback) => callback()) };
+  return { map, layers, addLayer, triggerRepaint, resize,
+    setCamera: (longitude: number, nextZoom: number) => { center = { lng: longitude, lat: TARGET.latitude }; zoom = nextZoom; },
+    emit: (event: string) => listeners.get(event)?.forEach((callback) => callback()) };
 }
 
 describe("MapLibre fireball camera layer", () => {
+  it("discards a stale matrix while hidden and redraws with fresh camera data on visibility and focus return", () => {
+    const runtime = fakeMap();
+    const render = vi.fn();
+    const clear = vi.fn();
+    const fireball = { render, clear, dispose: vi.fn() } as unknown as FireballRenderer;
+    const hidden = vi.spyOn(document, "hidden", "get").mockReturnValue(false);
+    try {
+      const controller = new SatelliteMapController(runtime.map, { onStateChange: () => {}, onCameraChange: () => {} }, undefined, undefined, fireball);
+      runtime.emit("load");
+      controller.setFlightFrame(launch(1), 11_100);
+      runtime.layers[0]!.render({} as WebGL2RenderingContext, { defaultProjectionData: { mainMatrix: MATRIX } } as never);
+      expect(render).toHaveBeenCalledTimes(1);
+
+      hidden.mockReturnValue(true);
+      document.dispatchEvent(new Event("visibilitychange"));
+      expect(clear).toHaveBeenCalledOnce();
+      runtime.setCamera(-74.4, 12.6);
+      runtime.emit("move");
+      controller.setFlightFrame(launch(1), 11_100);
+      expect(render).toHaveBeenCalledTimes(1);
+
+      hidden.mockReturnValue(false);
+      document.dispatchEvent(new Event("visibilitychange"));
+      expect(runtime.resize).toHaveBeenCalledOnce();
+      const restoredMatrix = new Float32Array(MATRIX);
+      restoredMatrix[12] = 0.25;
+      runtime.layers[0]!.render({} as WebGL2RenderingContext, { defaultProjectionData: { mainMatrix: restoredMatrix } } as never);
+      expect(Array.from(render.mock.lastCall![0] as Float64Array)).toEqual(Array.from(restoredMatrix));
+      expect(render.mock.lastCall![1]).toEqual({ longitude: -74.4, zoom: 12.6 });
+
+      runtime.setCamera(-75.2, 13.6);
+      runtime.emit("move");
+      window.dispatchEvent(new Event("focus"));
+      expect(runtime.resize).toHaveBeenCalledTimes(2);
+      const focusedMatrix = new Float32Array(MATRIX);
+      focusedMatrix[13] = -0.35;
+      runtime.layers[0]!.render({} as WebGL2RenderingContext, { defaultProjectionData: { mainMatrix: focusedMatrix } } as never);
+      expect(Array.from(render.mock.lastCall![0] as Float64Array)).toEqual(Array.from(focusedMatrix));
+      expect(render.mock.lastCall![1]).toEqual({ longitude: -75.2, zoom: 13.6 });
+      controller.dispose();
+      window.dispatchEvent(new Event("focus"));
+      expect(runtime.resize).toHaveBeenCalledTimes(2);
+    } finally {
+      hidden.mockRestore();
+    }
+  });
+
   it("projects each frame from the same launch clock and clears on replacement and Reset", () => {
     const runtime = fakeMap();
     const render = vi.fn();

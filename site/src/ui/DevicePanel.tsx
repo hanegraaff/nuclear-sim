@@ -14,6 +14,7 @@ interface DevicePanelProps {
   readonly multiLaunch: boolean;
   readonly impactCount: number;
   readonly totalCount: number;
+  readonly pendingLaunch?: boolean;
   readonly onReset: () => void;
   readonly onSetMultiLaunch: (enabled: boolean) => void;
   readonly onSelectTab: (tab: "scenario" | "device") => void;
@@ -23,7 +24,7 @@ interface DevicePanelProps {
 }
 
 /** Prototype-style selector; tab and input actions update application state. */
-export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, cloud, multiLaunch, impactCount, totalCount, onReset, onSetMultiLaunch, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, cloud, multiLaunch, impactCount, totalCount, pendingLaunch = false, onReset, onSetMultiLaunch, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -112,7 +113,7 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, launchP
             <p className="selection-status" role="status" aria-live="polite">Choose a scenario to prepare a device.</p>
           )}
           <div className="launch-actions">
-            <button className="reset-map" type="button" onClick={onReset} disabled={totalCount === 0} aria-label="Reset map">
+            <button className="reset-map" type="button" onClick={onReset} disabled={totalCount === 0 && !pendingLaunch} aria-label="Reset map">
               <span aria-hidden="true">↶</span> RESET
             </button>
             <button className={`multi-launch-toggle${multiLaunch ? " active" : ""}`} type="button" onClick={() => onSetMultiLaunch(!multiLaunch)} aria-pressed={multiLaunch} aria-label={`Multi-Launch Mode ${multiLaunch ? "ON" : "OFF"}`}>

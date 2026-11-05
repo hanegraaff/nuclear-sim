@@ -20,7 +20,10 @@ describe("MIRV click group", () => {
     expect(group.launches).toHaveLength(device.warheadCount!);
     expect(group.launches.map((launch) => launch.yieldMt)).toEqual(Array(device.warheadCount).fill(device.warheadYieldMt));
     expect(group.launches.every((launch) => launch.radii.light === blastRadiiForYield(device.warheadYieldMt!).light)).toBe(true);
-    expect(group.launches.every((launch) => launch.mirv?.route === route && launch.mirv.splitMs === FLIGHT_MS * 0.6)).toBe(true);
+    const carrier = group.launches[0]!.mirv!;
+    expect(group.launches.every((launch) => launch.mirv?.route === carrier.route && launch.mirv.splitMs === carrier.splitMs)).toBe(true);
+    expect(carrier.splitMs).toBeGreaterThan(0);
+    expect(carrier.splitMs).toBeLessThanOrEqual(FLIGHT_MS * 0.6);
     expect(group.launches.filter((launch) => launch.mirv?.lead)).toHaveLength(1);
     expect(group.launches.every((launch) => surfaceDistanceKm(route.target, launch.route.target) > 0)).toBe(true);
     expect(launched.nextLaunchId).toBe(device.warheadCount! + 1);

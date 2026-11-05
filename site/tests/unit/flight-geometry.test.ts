@@ -26,6 +26,19 @@ describe("prototype carrier trajectory", () => {
     expect(screenFlightPoint({ ...second, target: { x: 1080, y: 630 } }, 1)).toEqual({ x: 1080, y: 630 });
   });
 
+  it("moves an edge-adjacent entry along its edge to keep the carrier visible from launch", () => {
+    const aim = { x: 1430, y: 100 };
+    const normal = viewportFlightRoute(1508, 1080, aim, -Math.PI / 4);
+    const route = viewportFlightRoute(1508, 1080, aim, -Math.PI / 4, true);
+    expect(route.start.y).toBeCloseTo(14, 6);
+    expect(Math.hypot(aim.x - route.start.x, aim.y - route.start.y)).toBeGreaterThanOrEqual(432);
+    expect(route.start.x).toBeGreaterThan(14);
+    expect(normal.start).not.toEqual(route.start);
+    expect(Math.hypot(aim.x - normal.start.x, aim.y - normal.start.y)).toBeLessThan(432);
+    const nextGroup = viewportFlightRoute(1508, 1080, { x: 1380, y: 70 }, -Math.PI / 4, true);
+    expect(nextGroup.start.y).toBeCloseTo(route.start.y, 6);
+  });
+
   it("arrives exactly at the target without a position jump", () => {
     const route = { start: { x: 0, y: 0 }, control: { x: 400, y: 80 }, target: { x: 700, y: 450 } };
     expect(screenFlightPoint(route, 0)).toEqual(route.start);

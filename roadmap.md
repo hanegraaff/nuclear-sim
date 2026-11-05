@@ -25,8 +25,8 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 | 08 | 3D fireball | Complete | 07 |
 | 09 | Animated cloud-profile monitor | Complete | 08 |
 | 10 | Additive multi launch | Complete | 09 |
-| 11 | MIRV separation and multiple impacts | Complete | 10 |
-| 12 | Fallout view | Ready | 11 |
+| 11 | MIRV separation and multiple impacts | In progress | 10 |
+| 12 | Fallout view | Not started | 11 |
 | 13 | Audible view | Not started | 12 |
 | 14 | Visible view | Not started | 13 |
 | 15 | Night map and hide/show controls | Not started | 14 |
@@ -181,13 +181,15 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 
 **Capability description.** Make the three prototype MIRV entries deliver their listed number of warheads from one shared carrier. Covers R-03, R-07, and M-03.
 
-**Implementation details.** Use the catalog's per-warhead yields and deterministic target spread. Draw one carrier before separation at about 60% of its flight, then smoothly branch into individual trails and impacts without a position or velocity jump. Keep a MIRV click as one launch group for mode switching and Reset. Show impact count and per-warhead cloud wording. Test target count, per-warhead radius, path continuity, grouped retention, and a browser launch.
+**Implementation details.** Use the catalog's per-warhead yields and deterministic target spread. Draw one carrier before separation, normally at about 60% of its flight and earlier when needed to keep every target ahead of its direction of travel. Branch into individual trails and impacts without a position or velocity jump. Keep a MIRV click as one launch group for mode switching and Reset. Show impact count and per-warhead cloud wording. Test target count, per-warhead radius, forward separation, path continuity, grouped retention, and a browser launch. Restore fireball alignment when the browser returns from the background.
 
 **What the user will experience.** Selecting a MIRV system produces one incoming missile that splits into several visible warheads and distinct blasts. The effect scale reflects each warhead rather than the aggregate displayed yield.
 
 **Completion evidence.** Continuity and catalog tests pass; a fixed-time capture shows pre-split, split, and multiple impacts.
 
-**Current status.** Complete on 2026-11-05 from branch `plan-11`. Private [Site version 21](https://nuke-simulator-rebuild.maquaman.chatgpt.site) was published from GitHub application commit `d230f782d9d131532bfc00636b6c1850b447c4da` and Sites source commit `dd799461c9104b9d590505cf547fac1fd9b7b23c`; the exact `site/` trees matched. Clean-release `npm run verify` passed type checking, lint, 168 unit tests, 38 integration tests, build, and 36 browser tests. The tester operated Yars, Bulava, and Sarmat in Chromium, checked carrier separation, impact counts, camera gestures, whole-group retention, and Reset. A targeted 430 × 844 recheck confirmed that otherwise hidden Yars impacts are framed below the controls without a missile or reticle jump. Reviewed [carrier](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-shared-carrier-darwin.png), [separation](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-separation-darwin.png), [settled](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-three-impacts-darwin.png), and [narrow](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-narrow-impacts-darwin.png) fixed-tile frames, plus a [hosted live-imagery capture](docs/plan-11-hosted.png). Authenticated hosted Chromium returned HTTP 200, ready imagery, 3/3 Yars impacts, a per-warhead cloud label, and no page errors. There is no dedicated MIRV prototype screenshot; behavior follows its code, with carrier appearance compared to `Missile.jpeg` and settled effects to blast/multi references.
+**Prior release.** Published on 2026-11-05 from branch `plan-11`. Private [Site version 21](https://nuke-simulator-rebuild.maquaman.chatgpt.site) was published from GitHub application commit `d230f782d9d131532bfc00636b6c1850b447c4da` and Sites source commit `dd799461c9104b9d590505cf547fac1fd9b7b23c`; the exact `site/` trees matched. Clean-release `npm run verify` passed type checking, lint, 168 unit tests, 38 integration tests, build, and 36 browser tests. The tester operated Yars, Bulava, and Sarmat in Chromium, checked carrier separation, impact counts, camera gestures, whole-group retention, and Reset. A targeted 430 × 844 recheck confirmed that otherwise hidden Yars impacts are framed below the controls without a missile or reticle jump. Reviewed [carrier](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-shared-carrier-darwin.png), [separation](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-separation-darwin.png), [settled](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-three-impacts-darwin.png), and [narrow](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-narrow-impacts-darwin.png) fixed-tile frames, plus a [hosted live-imagery capture](docs/plan-11-hosted.png). Authenticated hosted Chromium returned HTTP 200, ready imagery, 3/3 Yars impacts, a per-warhead cloud label, and no page errors. There is no dedicated MIRV prototype screenshot; behavior follows its code, with carrier appearance compared to `Missile.jpeg` and settled effects to blast/multi references.
+
+**Current status.** In progress: Site version 22 contains the first two review corrections. User-reported fireball alignment after returning to the browser and MIRV separation direction are being corrected before the PR is merged.
 
 **Blocking decisioning.** None. Use the representative modeled loadouts in the prototype, visibly labeled as modeled.
 
@@ -201,7 +203,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 
 **Completion evidence.** Model and view tests pass; compare a pitched New York capture with `Fallout.png`.
 
-**Current status.** Ready; Plan 11 is complete.
+**Current status.** Not started; depends on Plan 11.
 
 **Blocking decisioning.** None. The architecture commits to a climatological proxy; live weather is outside this roadmap.
 

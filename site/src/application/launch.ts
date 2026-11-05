@@ -5,6 +5,7 @@ import { blastRadiiForYield, type BlastRadii } from "../domain/blast";
 import type { BlastZoneId } from "../domain/blastZones";
 import { getDeviceById } from "../catalog/devices";
 import { mirvImpactTargets } from "../domain/mirv";
+import { planMirvCarrier } from "./mirvCarrierPlan";
 
 /** Normal carrier travel time in milliseconds, taken from the prototype. */
 export const FLIGHT_MS = 6500;
@@ -16,6 +17,12 @@ export interface FlightRoute {
   readonly start: GeoPoint;
   readonly control: GeoPoint;
   readonly target: GeoPoint;
+}
+
+/** Selected delivery frozen at a map click; yield is total megatons. */
+export interface LaunchIntent {
+  readonly deviceId: string;
+  readonly yieldMt: number;
 }
 
 /** Shared geographic carrier route and millisecond split timing for one MIRV click. */
@@ -56,6 +63,7 @@ export interface LaunchFrame {
 export interface SimulatorState extends ScenarioSelectionState {
   readonly phase: "armed" | "inbound" | "detonating" | "complete";
   readonly multiLaunch: boolean;
+  readonly pendingLaunch: boolean;
   readonly launchGroups: readonly LaunchGroup[];
   readonly nowMs: number;
   readonly launch: Launch | null;
@@ -72,6 +80,7 @@ export type SimulatorAction = ScenarioSelectionAction
   | { readonly type: "launchAt"; readonly route: FlightRoute; readonly deviceId: string; readonly yieldMt: number; readonly nowMs: number; readonly flightMs?: number }
   | { readonly type: "tick"; readonly nowMs: number; readonly launchId: number }
   | { readonly type: "setMultiLaunch"; readonly enabled: boolean }
+  | { readonly type: "setPendingLaunch"; readonly pending: boolean }
   | { readonly type: "reset" }
   | { readonly type: "hoverZone"; readonly zoneId: BlastZoneId | null }
   | { readonly type: "focusZone"; readonly zoneId: BlastZoneId | null }
@@ -83,6 +92,7 @@ export const INITIAL_SIMULATOR_STATE: SimulatorState = {
   ...INITIAL_SCENARIO_SELECTION,
   phase: "armed",
   multiLaunch: false,
+  pendingLaunch: false,
   launchGroups: [],
   nowMs: 0,
   launch: null,
@@ -105,16 +115,18 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     const yieldMt = device?.warheadYieldMt ?? action.yieldMt;
     const radii = blastRadiiForYield(yieldMt);
     const targets = count > 1 ? mirvImpactTargets(action.route.target, count, radii.light) : [action.route.target];
+    const staggerMs = flightMs < 1000 ? 8 : 45;
+    const carrier = count > 1 ? planMirvCarrier(action.route, targets, flightMs, flightMs + (count - 1) * staggerMs) : null;
     const launches: readonly Launch[] = targets.map((target, index) => ({
       id: state.nextLaunchId + index,
       deviceId: action.deviceId,
       yieldMt,
-      route: count > 1 ? { ...action.route, target } : action.route,
+      route: carrier ? { ...carrier.route, target } : action.route,
       launchedAtMs: action.nowMs,
-      flightMs: flightMs + (count > 1 ? index * (flightMs < 1000 ? 8 : 45) : 0),
+      flightMs: flightMs + (carrier ? index * staggerMs : 0),
       blastMs: BLAST_MS,
       radii,
-      ...(count > 1 ? { mirv: { route: action.route, splitMs: flightMs * 0.6, carrierFlightMs: flightMs, lead: index === 0 } } : {}),
+      ...(carrier ? { mirv: { route: carrier.route, splitMs: carrier.splitMs, carrierFlightMs: flightMs, lead: index === 0 } } : {}),
     }));
     const group: LaunchGroup = { id: state.nextLaunchId, launches };
     const launch = launches.at(-1)!;
@@ -157,6 +169,9 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       pinnedZoneId: null,
     };
   }
+  if (action.type === "setPendingLaunch") {
+    return state.pendingLaunch === action.pending ? state : { ...state, pendingLaunch: action.pending };
+  }
   if (action.type === "hoverZone") {
     if (action.zoneId === state.hoveredZoneId) return state;
     return updateInspection(state, action.zoneId, state.focusedZoneId, state.pinnedZoneId);
@@ -173,7 +188,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     return state.activeZoneId === null && state.hoveredZoneId === null && state.focusedZoneId === null && state.pinnedZoneId === null
       ? state : updateInspection(state, null, null, null);
   }
-  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, elapsedMs: 0, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
+  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, pendingLaunch: false, elapsedMs: 0, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
   return { ...state, ...reduceScenarioSelection(state, action) };
 }
 

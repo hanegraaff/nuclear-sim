@@ -1,5 +1,7 @@
 import { resolveDeviceSelection } from "./deviceSelection";
-import { INITIAL_SIMULATOR_STATE, launchFramesForState, reduceSimulator, type FlightRoute, type SimulatorAction, type SimulatorState } from "./launch";
+import { prepareLaunch, type PreparedLaunch } from "./launchPreparation";
+import type { GeoPoint } from "../domain/geodesy";
+import { INITIAL_SIMULATOR_STATE, launchFramesForState, reduceSimulator, type FlightRoute, type LaunchIntent, type SimulatorAction, type SimulatorState } from "./launch";
 
 /** Monotonic milliseconds and cancellable frame callbacks supplied by the host. */
 export interface AnimationClock {
@@ -50,8 +52,22 @@ export class SimulatorStore {
   readonly launchAt = (route: FlightRoute): void => {
     const selection = resolveDeviceSelection(this.state);
     if (!selection.valid) return;
-    this.dispatch({ type: "launchAt", route, deviceId: selection.device.id, yieldMt: selection.device.yieldMt, nowMs: this.clock.now() });
+    this.launchAtWithIntent(route, { deviceId: selection.device.id, yieldMt: selection.device.yieldMt });
   };
+
+  /** Dispatch a route using the device frozen when its map click was made. */
+  readonly launchAtWithIntent = (route: FlightRoute, intent: LaunchIntent): void => {
+    this.dispatch({ type: "launchAt", route, deviceId: intent.deviceId, yieldMt: intent.yieldMt, nowMs: this.clock.now() });
+  };
+
+  /** Freeze the selected device and modeled geographic targets for a map click. */
+  readonly prepareLaunchAt = (aim: GeoPoint): PreparedLaunch | null => {
+    const selection = resolveDeviceSelection(this.state);
+    return selection.valid ? prepareLaunch(selection.device, aim) : null;
+  };
+
+  /** Mirror rendering-owned pending framing in the application snapshot. */
+  readonly setPendingLaunch = (pending: boolean): void => this.dispatch({ type: "setPendingLaunch", pending });
 
   /** Hold a deterministic entry bearing from the first group until Reset or mode change. */
   readonly nextLaunchAngle = (): number => {

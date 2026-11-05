@@ -126,3 +126,43 @@ test("WebGL failure preserves the 2D impact and settled field", async ({ page })
     (element as HTMLCanvasElement).getContext("2d")!.getImageData(1000, 580, 1, 1).data[3]);
   expect(alpha).toBeGreaterThan(100);
 });
+
+test("a settled fireball refreshes its map matrix after tab visibility and window focus return", async ({ page }, testInfo) => {
+  await page.clock.install();
+  await page.mouse.click(1000, 580);
+  await page.clock.runFor(11_200);
+  await expect(page.locator("main.simulator")).toHaveAttribute("data-launch-phase", "complete");
+  const original = await fireballFootprint(page);
+  expect(original.count).toBeGreaterThan(20);
+
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, get: () => true });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  // Chromium may paint a queued map frame despite this synthetic hidden flag.
+  // The restored frame after the viewport change is the alignment contract.
+  await page.setViewportSize({ width: 1700, height: 950 });
+  await page.evaluate(() => {
+    Object.defineProperty(document, "hidden", { configurable: true, get: () => false });
+    document.dispatchEvent(new Event("visibilitychange"));
+  });
+  await page.clock.runFor(100);
+  const restored = await fireballFootprint(page);
+  expect(restored.count).toBeGreaterThan(20);
+  await page.screenshot({ path: testInfo.outputPath("plan-11-fireball-resumed.png") });
+
+  await page.mouse.move(1000, 700);
+  await page.mouse.down();
+  await page.mouse.move(1090, 700, { steps: 8 });
+  await page.mouse.up();
+  await page.clock.runFor(100);
+  const moved = await fireballFootprint(page);
+  expect(Math.abs(moved.centerX - restored.centerX)).toBeGreaterThan(40);
+  await page.evaluate(() => window.dispatchEvent(new Event("focus")));
+  await page.clock.runFor(100);
+  const focused = await fireballFootprint(page);
+  expect(focused.count).toBeGreaterThan(20);
+  // Focus restoration must keep the settled dome on the already moved ground.
+  expect(Math.abs(focused.centerX - moved.centerX)).toBeLessThan(3);
+  expect(Math.abs(focused.centerY - moved.centerY)).toBeLessThan(3);
+});
