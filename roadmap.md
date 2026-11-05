@@ -25,8 +25,8 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 | 08 | 3D fireball | Complete | 07 |
 | 09 | Animated cloud-profile monitor | Complete | 08 |
 | 10 | Additive multi launch | Complete | 09 |
-| 11 | MIRV separation and multiple impacts | Ready | 10 |
-| 12 | Fallout view | Not started | 11 |
+| 11 | MIRV separation and multiple impacts | Complete | 10 |
+| 12 | Fallout view | Ready | 11 |
 | 13 | Audible view | Not started | 12 |
 | 14 | Visible view | Not started | 13 |
 | 15 | Night map and hide/show controls | Not started | 14 |
@@ -187,7 +187,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 
 **Completion evidence.** Continuity and catalog tests pass; a fixed-time capture shows pre-split, split, and multiple impacts.
 
-**Current status.** In progress on branch `plan-11`.
+**Current status.** Complete on 2026-11-05 from branch `plan-11`. Private [Site version 21](https://nuke-simulator-rebuild.maquaman.chatgpt.site) was published from GitHub application commit `d230f782d9d131532bfc00636b6c1850b447c4da` and Sites source commit `dd799461c9104b9d590505cf547fac1fd9b7b23c`; the exact `site/` trees matched. Clean-release `npm run verify` passed type checking, lint, 168 unit tests, 38 integration tests, build, and 36 browser tests. The tester operated Yars, Bulava, and Sarmat in Chromium, checked carrier separation, impact counts, camera gestures, whole-group retention, and Reset. A targeted 430 × 844 recheck confirmed that otherwise hidden Yars impacts are framed below the controls without a missile or reticle jump. Reviewed [carrier](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-shared-carrier-darwin.png), [separation](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-separation-darwin.png), [settled](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-three-impacts-darwin.png), and [narrow](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-narrow-impacts-darwin.png) fixed-tile frames, plus a [hosted live-imagery capture](docs/plan-11-hosted.png). Authenticated hosted Chromium returned HTTP 200, ready imagery, 3/3 Yars impacts, a per-warhead cloud label, and no page errors. There is no dedicated MIRV prototype screenshot; behavior follows its code, with carrier appearance compared to `Missile.jpeg` and settled effects to blast/multi references.
 
 **Blocking decisioning.** None. Use the representative modeled loadouts in the prototype, visibly labeled as modeled.
 
@@ -201,7 +201,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 
 **Completion evidence.** Model and view tests pass; compare a pitched New York capture with `Fallout.png`.
 
-**Current status.** Not started; depends on Plan 11.
+**Current status.** Ready; Plan 11 is complete.
 
 **Blocking decisioning.** None. The architecture commits to a climatological proxy; live weather is outside this roadmap.
 
@@ -291,7 +291,7 @@ Fill this table as plans finish. Record the deployed version and stable Site URL
 | 08 | 2026-11-03; review fixes 2026-11-03 | [Version 16](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-install verification: 137 unit, 22 integration, 26 browser tests, type checking, lint, and build; reviewed [pitched expansion](site/tests/e2e/fireball.spec.ts-snapshots/plan-08-expansion-darwin.png) and [pitched settled](site/tests/e2e/fireball.spec.ts-snapshots/plan-08-settled-darwin.png), plus launch, impact, and early growth; authenticated hosted HTTP 200, 60° pitch, complete strike, 1,023 dome pixels, four markers, no page errors; GPU failure cleanup covered; GitHub source `0987c9c0ebbe33159d33765aca08f1a4e67fb4f7`, Sites source `5a9a54a2f65e2a81f8689e9381038f77f1f8fc79` | Live imagery and camera scale differ from fixed-tile captures; prototype single-launch screenshot and mass-mode custom-layer code disagree, so the visible dome is favored. Cloud monitor arrives in Plan 09. |
 | 09 | 2026-11-03; review fix 2026-11-03 | [Version 18](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Workspace and clean-release `npm run verify`: 144 unit, 25 integration, 29 browser tests, type checking, lint, build; four reviewed [cloud states](site/tests/e2e/cloud-profile.spec.ts-snapshots/plan-09-settled-darwin.png); hosted HTTP 200, Fat Man 12.1 km, MOAB 123 m with meter scale ticks, Reset, 60° marker hover, no page errors; GitHub source `4fdf5f21bc20b4278eb794c0240a26c08a2bf8a1`, Sites source `3cd24c0bd3798dc8c8dd41995b98f12da0d0e70a` | Prototype smoke is slightly denser/softer; fixed-tile and live-imagery compositions differ. |
 | 10 | — | — | — | — |
-| 11 | — | — | — | — |
+| 11 | 2026-11-05 | [Version 21](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 168 unit, 38 integration, 36 browser tests, type checking, lint, build; [hosted capture](docs/plan-11-hosted.png); GitHub source `d230f782d9d131532bfc00636b6c1850b447c4da`, Sites source `dd799461c9104b9d590505cf547fac1fd9b7b23c` | No dedicated MIRV screenshot; behavior follows prototype code, while live imagery and framing differ from fixed-tile references. |
 | 12 | — | — | — | — |
 | 13 | — | — | — | — |
 | 14 | — | — | — | — |
