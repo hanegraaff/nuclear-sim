@@ -25,13 +25,14 @@ export function buildBlastDistanceGrid(
   origin: GeoPoint,
   viewportWidth: number,
   viewportHeight: number,
+  sampleCap: { readonly width: number; readonly height: number } = { width: 640, height: 420 },
 ): BlastDistanceGrid {
   if (!Number.isFinite(viewportWidth) || !Number.isFinite(viewportHeight) || viewportWidth <= 0 || viewportHeight <= 0) {
     throw new RangeError("Blast viewport must have positive finite CSS-pixel dimensions.");
   }
   // Match the prototype's bounded mask size; browser image smoothing hides the
   // subpixel mask resolution while geodesic distances remain authoritative.
-  const scale = Math.min(0.42, 640 / viewportWidth, 420 / viewportHeight);
+  const scale = Math.min(0.42, sampleCap.width / viewportWidth, sampleCap.height / viewportHeight);
   const width = Math.max(1, Math.ceil(viewportWidth * scale));
   const height = Math.max(1, Math.ceil(viewportHeight * scale));
   const distancesKm = new Float32Array(width * height);

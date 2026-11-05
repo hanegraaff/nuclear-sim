@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-05**. Plans 01–09 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -24,7 +24,7 @@ The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the 
 | 07 | Blast field grounded in pitched views | Complete | 06 |
 | 08 | 3D fireball | Complete | 07 |
 | 09 | Animated cloud-profile monitor | Complete | 08 |
-| 10 | Additive multi launch | Not started | 09 |
+| 10 | Additive multi launch | In progress | 09 |
 | 11 | MIRV separation and multiple impacts | Not started | 10 |
 | 12 | Fallout view | Not started | 11 |
 | 13 | Audible view | Not started | 12 |
@@ -171,7 +171,7 @@ The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the 
 
 **Completion evidence.** State and composition tests pass; inspect two, five, and dense overlapping strikes and compare the five-strike state with `Multi-Launch.png`.
 
-**Current status.** Not started; depends on Plan 09.
+**Current status.** In progress on branch `plan-10`; Plan 09 is complete. The multi-launch state, field composition, map presentation, tests, documentation, and Site release are underway.
 
 **Blocking decisioning.** None. Do not combine multiple strikes by adding their yields into a single virtual device.
 

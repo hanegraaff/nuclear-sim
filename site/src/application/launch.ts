@@ -28,9 +28,24 @@ export interface Launch {
   readonly radii: BlastRadii;
 }
 
-/** Current single-strike phase, effect age, and immutable selected device. */
+/** One map click and all of its geographically anchored deliveries. */
+export interface LaunchGroup {
+  readonly id: number;
+  readonly launches: readonly Launch[];
+}
+
+/** A delivery paired with its current injected-clock age in milliseconds. */
+export interface LaunchFrame {
+  readonly launch: Launch;
+  readonly elapsedMs: number;
+}
+
+/** Current phase, immutable launch groups, and latest-delivery compatibility view. */
 export interface SimulatorState extends ScenarioSelectionState {
   readonly phase: "armed" | "inbound" | "detonating" | "complete";
+  readonly multiLaunch: boolean;
+  readonly launchGroups: readonly LaunchGroup[];
+  readonly nowMs: number;
   readonly launch: Launch | null;
   readonly elapsedMs: number;
   readonly nextLaunchId: number;
@@ -44,6 +59,7 @@ export interface SimulatorState extends ScenarioSelectionState {
 export type SimulatorAction = ScenarioSelectionAction
   | { readonly type: "launchAt"; readonly route: FlightRoute; readonly deviceId: string; readonly yieldMt: number; readonly nowMs: number; readonly flightMs?: number }
   | { readonly type: "tick"; readonly nowMs: number; readonly launchId: number }
+  | { readonly type: "setMultiLaunch"; readonly enabled: boolean }
   | { readonly type: "reset" }
   | { readonly type: "hoverZone"; readonly zoneId: BlastZoneId | null }
   | { readonly type: "focusZone"; readonly zoneId: BlastZoneId | null }
@@ -54,6 +70,9 @@ export type SimulatorAction = ScenarioSelectionAction
 export const INITIAL_SIMULATOR_STATE: SimulatorState = {
   ...INITIAL_SCENARIO_SELECTION,
   phase: "armed",
+  multiLaunch: false,
+  launchGroups: [],
+  nowMs: 0,
   launch: null,
   elapsedMs: 0,
   nextLaunchId: 1,
@@ -69,10 +88,14 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     if (!Number.isFinite(action.nowMs) || !Number.isFinite(action.yieldMt) || action.yieldMt <= 0) return state;
     const flightMs = action.flightMs ?? FLIGHT_MS;
     if (!Number.isFinite(flightMs) || flightMs <= 0) return state;
+    const launch: Launch = { id: state.nextLaunchId, deviceId: action.deviceId, yieldMt: action.yieldMt, route: action.route, launchedAtMs: action.nowMs, flightMs, blastMs: BLAST_MS, radii: blastRadiiForYield(action.yieldMt) };
+    const group: LaunchGroup = { id: launch.id, launches: [launch] };
     return {
       ...state,
-      phase: "inbound",
-      launch: { id: state.nextLaunchId, deviceId: action.deviceId, yieldMt: action.yieldMt, route: action.route, launchedAtMs: action.nowMs, flightMs, blastMs: BLAST_MS, radii: blastRadiiForYield(action.yieldMt) },
+      phase: state.multiLaunch ? phaseForGroups([...state.launchGroups, group], action.nowMs) : "inbound",
+      launchGroups: state.multiLaunch ? [...state.launchGroups, group] : [group],
+      nowMs: action.nowMs,
+      launch,
       elapsedMs: 0,
       activeZoneId: null,
       hoveredZoneId: null,
@@ -83,11 +106,28 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
   }
   if (action.type === "tick") {
     if (!state.launch || state.launch.id !== action.launchId || !Number.isFinite(action.nowMs)) return state;
-    const elapsedMs = Math.min(state.launch.flightMs + state.launch.blastMs, Math.max(state.elapsedMs, action.nowMs - state.launch.launchedAtMs));
-    if (elapsedMs === state.elapsedMs) return state;
-    const phase = elapsedMs >= state.launch.flightMs + state.launch.blastMs ? "complete"
-      : elapsedMs >= state.launch.flightMs ? "detonating" : "inbound";
-    return { ...state, elapsedMs, phase };
+    const nowMs = Math.max(state.nowMs, action.nowMs);
+    const elapsedMs = Math.max(state.elapsedMs, elapsedForLaunch(state.launch, nowMs));
+    const active = state.launchGroups.some((group) => group.launches.some((launch) => elapsedForLaunch(launch, state.nowMs) < launch.flightMs + launch.blastMs));
+    if (elapsedMs === state.elapsedMs && (!active || nowMs === state.nowMs)) return state;
+    return { ...state, nowMs, elapsedMs, phase: phaseForGroups(state.launchGroups, nowMs) };
+  }
+  if (action.type === "setMultiLaunch") {
+    if (state.multiLaunch === action.enabled) return state;
+    const launchGroups = action.enabled ? state.launchGroups : state.launchGroups.slice(-1);
+    const launch = launchGroups.at(-1)?.launches.at(-1) ?? null;
+    return {
+      ...state,
+      multiLaunch: action.enabled,
+      launchGroups,
+      launch,
+      elapsedMs: launch ? elapsedForLaunch(launch, state.nowMs) : 0,
+      phase: phaseForGroups(launchGroups, state.nowMs),
+      activeZoneId: null,
+      hoveredZoneId: null,
+      focusedZoneId: null,
+      pinnedZoneId: null,
+    };
   }
   if (action.type === "hoverZone") {
     if (action.zoneId === state.hoveredZoneId) return state;
@@ -105,8 +145,30 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     return state.activeZoneId === null && state.hoveredZoneId === null && state.focusedZoneId === null && state.pinnedZoneId === null
       ? state : updateInspection(state, null, null, null);
   }
-  if (action.type === "reset") return { ...state, phase: "armed", launch: null, elapsedMs: 0, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
+  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, elapsedMs: 0, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
   return { ...state, ...reduceScenarioSelection(state, action) };
+}
+
+/** Clamp one delivery's age to its finite flight plus expansion interval. */
+export function elapsedForLaunch(launch: Launch, nowMs: number): number {
+  return Math.min(launch.flightMs + launch.blastMs, Math.max(0, nowMs - launch.launchedAtMs));
+}
+
+/** Flatten click groups without losing each delivery's own geographic profile. */
+export function launchFramesForState(state: SimulatorState): readonly LaunchFrame[] {
+  return state.launchGroups.flatMap((group) => group.launches.map((launch) => ({ launch, elapsedMs: elapsedForLaunch(launch, state.nowMs) })));
+}
+
+/** Prioritize a live detonation over an inbound carrier in the aggregate status. */
+function phaseForGroups(groups: readonly LaunchGroup[], nowMs: number): SimulatorState["phase"] {
+  if (groups.length === 0) return "armed";
+  let inbound = false;
+  for (const group of groups) for (const launch of group.launches) {
+    const age = elapsedForLaunch(launch, nowMs);
+    if (age >= launch.flightMs && age < launch.flightMs + launch.blastMs) return "detonating";
+    if (age < launch.flightMs) inbound = true;
+  }
+  return inbound ? "inbound" : "complete";
 }
 
 /** Recompute visible inspection from pointer, keyboard focus, and pinned selection. */

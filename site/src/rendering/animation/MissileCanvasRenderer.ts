@@ -1,4 +1,4 @@
-import type { Launch } from "../../application/launch";
+import type { Launch, LaunchFrame } from "../../application/launch";
 import type { ScreenPoint } from "../map/MapCameraAdapter";
 import { projectFlightRoute, screenFlightPoint, smokeParticle, SMOKE_SAMPLE_STEP_MS, type FlightProjector, type ProjectedFlightRoute } from "./flightGeometry";
 
@@ -10,6 +10,11 @@ export class MissileCanvasRenderer {
 
   /** Clear and repaint at CSS-pixel dimensions; the launch route remains geographic. */
   render(launch: Launch | null, elapsedMs: number, width: number, height: number): void {
+    this.renderMany(launch ? [{ launch, elapsedMs }] : [], width, height);
+  }
+
+  /** Paint every live carrier and its bounded recent smoke on one canvas. */
+  renderMany(frames: readonly LaunchFrame[], width: number, height: number): void {
     const pixelRatio = window.devicePixelRatio || 1;
     const pixelWidth = Math.max(1, Math.round(width * pixelRatio));
     const pixelHeight = Math.max(1, Math.round(height * pixelRatio));
@@ -21,11 +26,14 @@ export class MissileCanvasRenderer {
     if (!context) return;
     context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
     context.clearRect(0, 0, width, height);
-    if (!launch) return;
-    const route = projectFlightRoute(launch.route, this.projector);
-    if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
-    this.drawSmoke(context, launch, route, elapsedMs);
-    if (elapsedMs < launch.flightMs) this.drawCore(context, screenFlightPoint(route, elapsedMs / launch.flightMs));
+    const smokeStep = frames.length >= 10 ? 3 : frames.length >= 5 ? 2 : 1;
+    for (const { launch, elapsedMs } of frames) {
+      if (elapsedMs >= launch.flightMs + 3000) continue;
+      const route = projectFlightRoute(launch.route, this.projector);
+      if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
+      this.drawSmoke(context, launch, route, elapsedMs, smokeStep);
+      if (elapsedMs < launch.flightMs) this.drawCore(context, screenFlightPoint(route, elapsedMs / launch.flightMs));
+    }
   }
 
   private drawTarget(context: CanvasRenderingContext2D, point: ScreenPoint, elapsedMs: number): void {
@@ -58,8 +66,8 @@ export class MissileCanvasRenderer {
     context.restore();
   }
 
-  private drawSmoke(context: CanvasRenderingContext2D, launch: Launch, route: ProjectedFlightRoute, elapsedMs: number): void {
-    const stepMs = SMOKE_SAMPLE_STEP_MS;
+  private drawSmoke(context: CanvasRenderingContext2D, launch: Launch, route: ProjectedFlightRoute, elapsedMs: number, sampleStep = 1): void {
+    const stepMs = SMOKE_SAMPLE_STEP_MS * sampleStep;
     const startMs = Math.max(0, Math.ceil((elapsedMs - 3000) / stepMs) * stepMs);
     context.save();
     context.lineCap = "round";

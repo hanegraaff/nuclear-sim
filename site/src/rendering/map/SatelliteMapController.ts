@@ -1,7 +1,8 @@
 import type { CustomLayerInterface, ErrorEvent as MapErrorEvent, Map as MapLibreMap, MapMouseEvent, MapSourceDataEvent } from "maplibre-gl";
-import type { Launch, FlightRoute } from "../../application/launch";
+import type { Launch, LaunchFrame, FlightRoute } from "../../application/launch";
 import { MissileCanvasRenderer } from "../animation/MissileCanvasRenderer";
 import { BlastCanvasRenderer } from "../effects/BlastCanvasRenderer";
+import { MultiBlastCanvasRenderer } from "../effects/MultiBlastCanvasRenderer";
 import { createFireballRenderer, type FireballRenderer } from "../animation/FireballRenderer";
 import { viewportFlightRoute } from "../animation/flightGeometry";
 import { MapCameraAdapter } from "./MapCameraAdapter";
@@ -54,12 +55,14 @@ export class SatelliteMapController {
   private panelsVisible = true;
   private launch: Launch | null = null;
   private elapsedMs = 0;
+  private sceneFrames: readonly LaunchFrame[] = [];
+  private multiLaunch = false;
   private highlightedZoneId: BlastZoneId | null = null;
   private inspection: BlastInspectionGeometry | null = null;
   private fireballFailed = false;
   private fireballMatrix: Float64Array | null = null;
 
-  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null) {
+  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null, private readonly multiBlastRenderer?: MultiBlastCanvasRenderer) {
     this.camera = new MapCameraAdapter(map);
     map.on("load", this.handleLoad);
     map.on("idle", this.handleIdle);
@@ -82,9 +85,17 @@ export class SatelliteMapController {
 
   /** Draw a single launch at its injected age in milliseconds. */
   setFlightFrame(launch: Launch | null, elapsedMs: number, highlightedZoneId: BlastZoneId | null = null): void {
-    if (!launch || (this.launch && this.launch.id !== launch.id)) this.fireballRenderer?.clear();
-    this.launch = launch;
-    this.elapsedMs = elapsedMs;
+    this.setSceneFrame(launch ? [{ launch, elapsedMs }] : [], false, highlightedZoneId);
+  }
+
+  /** Draw all click groups; turning multi mode off restores one group's ruler. */
+  setSceneFrame(frames: readonly LaunchFrame[], multiLaunch: boolean, highlightedZoneId: BlastZoneId | null = null): void {
+    const latest = frames.at(-1);
+    if (!latest || (this.launch && this.launch.id !== latest.launch.id) || this.multiLaunch !== multiLaunch) this.fireballRenderer?.clear();
+    this.sceneFrames = frames;
+    this.multiLaunch = multiLaunch;
+    this.launch = latest?.launch ?? null;
+    this.elapsedMs = latest?.elapsedMs ?? 0;
     this.highlightedZoneId = highlightedZoneId;
     this.repaintFlight();
     if (this.fireballRenderer && !this.fireballFailed) {
@@ -162,14 +173,9 @@ export class SatelliteMapController {
     if (!this.fireballRenderer || !this.fireballMatrix || this.fireballFailed) return;
     try {
       const container = this.map.getContainer();
-      this.fireballRenderer.render(
-        this.fireballMatrix,
-        { longitude: this.map.getCenter().lng, zoom: this.map.getZoom() },
-        this.launch,
-        this.elapsedMs,
-        container.clientWidth,
-        container.clientHeight,
-      );
+      const camera = { longitude: this.map.getCenter().lng, zoom: this.map.getZoom() };
+      if (this.multiLaunch) this.fireballRenderer.renderMany(this.fireballMatrix, camera, this.sceneFrames, container.clientWidth, container.clientHeight);
+      else this.fireballRenderer.render(this.fireballMatrix, camera, this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
     } catch (error) {
       this.fireballFailed = true;
       this.fireballRenderer.clear();
@@ -190,17 +196,23 @@ export class SatelliteMapController {
 
   private readonly repaintFlight = (): void => {
     const container = this.map.getContainer();
-    const inspection = this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, this.highlightedZoneId) ?? null;
+    if (this.multiLaunch) this.multiBlastRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight);
+    const inspection = this.multiLaunch ? null : this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, this.highlightedZoneId) ?? null;
     if (inspection !== this.inspection) {
       this.inspection = inspection;
       this.callbacks.onInspectionChange?.(inspection);
     }
-    this.missileRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
+    if (this.multiLaunch) this.missileRenderer?.renderMany(this.sceneFrames, container.clientWidth, container.clientHeight);
+    else this.missileRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
   };
 
   private readonly repaintCamera = (): void => {
     this.blastRenderer?.invalidateProjection();
+    this.multiBlastRenderer?.invalidateProjection();
     this.repaintFlight();
+    // The map-distance instrument follows the same moving camera frame as the
+    // geographic field, including animated zoom and container resize.
+    this.emitCamera();
   };
 
   private readonly handleMapClick = (event: MapMouseEvent): void => {
@@ -262,6 +274,7 @@ export function createSatelliteMapController(
   const camera = new MapCameraAdapter(map);
   const missile = missileCanvas ? new MissileCanvasRenderer(missileCanvas, camera) : undefined;
   const blast = blastCanvas ? new BlastCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
+  const multiBlast = blastCanvas ? new MultiBlastCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
   const fireball = fireballCanvas ? createFireballRenderer(fireballCanvas, () => map.triggerRepaint()) : undefined;
-  return new SatelliteMapController(map, callbacks, missile, blast, fireball);
+  return new SatelliteMapController(map, callbacks, missile, blast, fireball, multiBlast);
 }

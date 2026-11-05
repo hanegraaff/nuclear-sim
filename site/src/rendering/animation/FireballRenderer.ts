@@ -1,4 +1,4 @@
-import type { Launch } from "../../application/launch";
+import type { Launch, LaunchFrame } from "../../application/launch";
 import { fireballEnvelope, fireballMeshDetail, groundMetersPerPixel, hemisphereVertices, localMercatorMatrix } from "./fireballGeometry";
 
 /** Camera values needed by the standalone WebGL canvas, in degrees and map zoom. */
@@ -167,6 +167,11 @@ export class FireballRenderer {
 
   /** Paint the launch at elapsed ms through MapLibre's current world matrix. */
   render(matrix: ArrayLike<number>, camera: FireballCamera, launch: Launch | null, elapsedMs: number, width: number, height: number): void {
+    this.renderMany(matrix, camera, launch ? [{ launch, elapsedMs }] : [], width, height);
+  }
+
+  /** Draw every visible impact dome with one clear and a bounded shared mesh. */
+  renderMany(matrix: ArrayLike<number>, camera: FireballCamera, frames: readonly LaunchFrame[], width: number, height: number): void {
     const gl = this.gl;
     if (!this.resources || gl.isContextLost()) return;
     const ratio = Math.min(1.5, window.devicePixelRatio || 1);
@@ -177,29 +182,32 @@ export class FireballRenderer {
       this.canvas.height = pixelHeight;
     }
     this.clear();
-    if (!launch || width <= 0 || height <= 0 || elapsedMs <= launch.flightMs) return;
-    const progress = Math.min(1, (elapsedMs - launch.flightMs) / launch.blastMs);
-    const envelope = fireballEnvelope(progress, launch.radii.fireball, launch.radii.light);
-    if (envelope.radius <= 0 || envelope.opacity <= 0) return;
-    const radiusKm = launch.radii.fireball * envelope.radius;
-    const groundPoint = launch.route.target;
-    const pixelsPerMeter = 1 / groundMetersPerPixel(groundPoint.latitude, camera.zoom);
-    const detail = fireballMeshDetail(radiusKm * 1000 * pixelsPerMeter);
+    if (width <= 0 || height <= 0 || frames.length === 0) return;
     const resources = this.resources;
-    const mesh = resources.meshes[detail];
     gl.enable(gl.DEPTH_TEST);
     gl.depthFunc(gl.LEQUAL);
     gl.enable(gl.BLEND);
     gl.blendFuncSeparate(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
     gl.useProgram(resources.program);
-    gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffer);
     gl.enableVertexAttribArray(resources.position);
-    gl.vertexAttribPointer(resources.position, 3, gl.FLOAT, false, 0, 0);
-    gl.uniformMatrix4fv(resources.matrix, false, localMercatorMatrix(matrix, groundPoint, radiusKm, camera.longitude));
-    gl.uniform1f(resources.time, elapsedMs / 1000);
-    gl.uniform1f(resources.cooling, envelope.cooling);
-    gl.uniform1f(resources.opacity, envelope.opacity);
-    gl.drawArrays(gl.TRIANGLES, 0, mesh.vertexCount);
+    for (const { launch, elapsedMs } of frames) {
+      if (elapsedMs <= launch.flightMs) continue;
+      const progress = Math.min(1, (elapsedMs - launch.flightMs) / launch.blastMs);
+      const envelope = fireballEnvelope(progress, launch.radii.fireball, launch.radii.light);
+      if (envelope.radius <= 0 || envelope.opacity <= 0) continue;
+      const radiusKm = launch.radii.fireball * envelope.radius;
+      const groundPoint = launch.route.target;
+      const pixelsPerMeter = 1 / groundMetersPerPixel(groundPoint.latitude, camera.zoom);
+      const detail = frames.length >= 10 ? "compact" : fireballMeshDetail(radiusKm * 1000 * pixelsPerMeter);
+      const mesh = resources.meshes[detail];
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffer);
+      gl.vertexAttribPointer(resources.position, 3, gl.FLOAT, false, 0, 0);
+      gl.uniformMatrix4fv(resources.matrix, false, localMercatorMatrix(matrix, groundPoint, radiusKm, camera.longitude));
+      gl.uniform1f(resources.time, elapsedMs / 1000);
+      gl.uniform1f(resources.cooling, envelope.cooling);
+      gl.uniform1f(resources.opacity, envelope.opacity);
+      gl.drawArrays(gl.TRIANGLES, 0, mesh.vertexCount);
+    }
   }
 
   /** Release GPU buffers and context listeners when the map is disposed. */
