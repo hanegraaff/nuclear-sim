@@ -26,8 +26,8 @@ The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the 
 | 09 | Animated cloud-profile monitor | Complete | 08 |
 | 10 | Additive multi launch | Complete | 09 |
 | 11 | MIRV separation and multiple impacts | Complete | 10 |
-| 12 | Fallout view | Complete | 11 |
-| 13 | Audible view | Ready | 12 |
+| 12 | Fallout view | In progress — review and performance corrections | 11 |
+| 13 | Audible view | Not started | 12 |
 | 14 | Visible view | Not started | 13 |
 | 15 | Night map and hide/show controls | Not started | 14 |
 | 16 | Narrow-screen layout | Not started | 15 |
@@ -195,6 +195,8 @@ The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the 
 
 ## Plan 12 — Fallout view
 
+**Correction work.** In progress on `plan-12`: preserve the full Fallout field during camera movement, keep new launches in the clicked camera, and replace sequential viewport resampling with reusable geographic fields for responsive multi-launch and camera gestures.
+
 **Capability description.** Add the post-detonation pink Fallout tab and the long H+24 downwind plume. Covers R-10, R-11, V-05, and M-04.
 
 **Implementation details.** Implement a deterministic location-based wind proxy, local deposition, curved plume geometry, and four nested dose-screening bands in the pure domain model. Render the irregular yellow/orange-to-pink/purple field, downwind dashed ruler, H+24 endpoint label, markers, and tooltips. Reframe the camera to show the plume. Show the tab only when a nuclear strike is available; include the prototype's “not live meteorology” qualification. Add wind reproducibility, geometry, eligibility, camera-alignment, and view-switch tests.
@@ -217,7 +219,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the 
 
 **Completion evidence.** Range and rendering tests pass; compare the multi-mode green state with the selected Audible tab in `Additive Blasts.png`. Do not use `Audible.png` as the green target because it shows Blast selected.
 
-**Current status.** Ready; Plan 12 is complete.
+**Current status.** Not started; awaits Plan 12 review and performance corrections.
 
 **Blocking decisioning.** None. Decibel descriptions remain illustrative rather than precise predictions.
 

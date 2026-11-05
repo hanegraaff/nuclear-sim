@@ -3,8 +3,8 @@ import { expect, test } from "@playwright/test";
 import path from "node:path";
 
 test.use({ viewport: { width: 2208, height: 1276 }, deviceScaleFactor: 1 });
-// The full-size geographic mask is rebuilt through the eased camera's fake-time
-// frames. Allow CPU headroom without weakening any visual/state assertion.
+// Allow the shared browser worker CPU headroom for fixed-time visual checks;
+// camera movement reprojects cached geographic textures without model sampling.
 test.setTimeout(90_000);
 test.beforeEach(async ({ page }) => {
   await page.route("**/ArcGIS/rest/services/World_Imagery/MapServer/tile/**", (route) => route.fulfill({ path: path.resolve("tests/fixtures/satellite-tile.png"), contentType: "image/png" }));
@@ -72,6 +72,61 @@ test("conventional-only deliveries omit Fallout while a mixed multi scene includ
   await expect(page.getByRole("tooltip")).toContainText("Below ~0.5 Gy");
   await page.getByRole("button", { name: "Reset map" }).click();
   await expect(page.getByRole("complementary", { name: "Fallout map and effect scales" })).toHaveCount(0);
+});
+
+test.describe("camera motion regressions", () => {
+  test.use({ viewport: { width: 1299, height: 751 }, deviceScaleFactor: 1 });
+
+  test("keeps the complete field visible throughout pan and zoom instead of rebuilding an empty mask", async ({ page }) => {
+    await page.mouse.click(650, 420); await page.clock.fastForward(11_300);
+    await page.getByRole("tab", { name: "FALLOUT", exact: true }).click(); await page.clock.runFor(900);
+    const visibleFieldPixels = () => page.locator(".blast-canvas").evaluate((canvas) => {
+      const element = canvas as HTMLCanvasElement;
+      const data = element.getContext("2d")!.getImageData(0, 0, element.width, element.height).data;
+      let visible = 0;
+      for (let i = 3; i < data.length; i += 4) if (data[i]! > 20) visible++;
+      return visible;
+    });
+    const settled = await visibleFieldPixels();
+    expect(settled).toBeGreaterThan(25_000);
+    await page.mouse.move(950, 450); await page.mouse.down();
+    for (const x of [975, 1000, 1025]) {
+      await page.mouse.move(x, 450); await page.clock.runFor(16);
+      // This small pan keeps the entire lobe in view. A 45% floor tolerates
+      // rasterization/cropping while rejecting the old glow-only moving frame.
+      expect(await visibleFieldPixels()).toBeGreaterThan(settled * 0.45);
+    }
+    await page.mouse.up(); await page.clock.runFor(300);
+    await page.mouse.wheel(0, -80); await page.clock.runFor(48);
+    expect(await visibleFieldPixels()).toBeGreaterThan(settled * 0.45);
+    for (let zoom = 0; zoom < 7; zoom++) {
+      await page.getByRole("button", { name: "Zoom in", exact: true }).click();
+      await page.clock.runFor(400);
+      // The plume grows to cover the viewport. Large valid mesh faces must
+      // remain clipped and visible rather than being rejected by pixel size.
+      expect(await visibleFieldPixels()).toBeGreaterThan(settled * 0.45);
+    }
+    await page.getByRole("button", { name: "Reset map" }).click();
+    expect(await visibleFieldPixels()).toBe(0);
+  });
+
+  test("keeps a new target visible at the clicked camera when Fallout automatically returns to Blast", async ({ page }) => {
+    await page.mouse.click(650, 420); await page.clock.fastForward(11_300);
+    await page.getByRole("tab", { name: "FALLOUT", exact: true }).click(); await page.clock.runFor(900);
+    const simulator = page.locator("main.simulator");
+    const camera = await simulator.evaluate((element) => ({ longitude: element.getAttribute("data-center-longitude"), zoom: element.getAttribute("data-zoom") }));
+    await page.mouse.click(1200, 550); await page.clock.runFor(750);
+    await expect(simulator).toHaveAttribute("data-effect-view", "blast");
+    await expect(simulator).toHaveAttribute("data-center-longitude", camera.longitude!);
+    await expect(simulator).toHaveAttribute("data-zoom", camera.zoom!);
+    const reticlePixels = await page.locator(".missile-canvas").evaluate((canvas) => {
+      const data = (canvas as HTMLCanvasElement).getContext("2d")!.getImageData(1180, 530, 40, 40).data;
+      let red = 0;
+      for (let i = 0; i < data.length; i += 4) if (data[i]! > 120 && data[i]! > data[i + 1]! * 1.3 && data[i + 3]! > 40) red++;
+      return red;
+    });
+    expect(reticlePixels).toBeGreaterThan(10);
+  });
 });
 
 test.describe("narrow pointer controls", () => {

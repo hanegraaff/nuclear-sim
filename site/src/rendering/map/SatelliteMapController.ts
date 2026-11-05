@@ -128,6 +128,9 @@ export class SatelliteMapController {
     this.effectView = effectView;
     this.activeFalloutId = activeFalloutId;
     const latest = frames.at(-1);
+    // A replacement launch must keep the camera at the clicked target. Only an
+    // explicit tab return within the same settled scene restores Blast framing.
+    if (changedView && effectView === "blast" && this.launch?.id !== latest?.launch.id) this.blastCamera = null;
     if (!latest || (this.launch && this.launch.id !== latest.launch.id) || this.multiLaunch !== multiLaunch) this.fireballRenderer?.clear();
     this.sceneFrames = frames;
     this.multiLaunch = multiLaunch;
@@ -386,6 +389,8 @@ export class SatelliteMapController {
     const prepared = this.callbacks.prepareLaunch?.(target) ?? null;
     if (!prepared) return;
     const { intent, mirvTargets: targets } = prepared;
+    // Pending MIRV framing can switch the view before a launch object exists.
+    this.blastCamera = null;
     if (this.pendingClicks.length > 0) {
       if (this.multiLaunch) this.pendingClicks.push({ target, angle, targets, intent });
       else {

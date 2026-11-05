@@ -1,7 +1,7 @@
 /** Deterministic screening-model tests cover wind bands, geographic reach, and bounded deposition. */
 import { describe, expect, it } from "vitest";
 import { destinationPoint, geoPoint, surfaceDistanceKm } from "../../src/domain/geodesy";
-import { falloutCenterline, falloutDimensions, falloutIntensityAt, falloutZones, modelFallout, prevailingWind } from "../../src/domain/fallout";
+import { falloutCenterline, falloutDimensions, falloutIntensityAt, falloutIntensityAtLocal, falloutLocalPoint, falloutZones, modelFallout, prevailingWind } from "../../src/domain/fallout";
 import { MAX_SURFACE_DISTANCE_KM } from "../../src/domain/blast";
 
 const NEW_YORK = geoPoint(-73.9857, 40.7484);
@@ -47,6 +47,19 @@ describe("H+24 fallout screening model", () => {
     expect(falloutIntensityAt(field, upwind)).toBe(0);
     for (let i = 0; i <= 20; i++) expect(falloutIntensityAt(field, falloutCenterline(field, i / 20))).toBeLessThanOrEqual(1);
     expect(modelFallout(NEW_YORK, 0.021, 42)).toEqual(field);
+  });
+
+  it("gives the same scalar in geographic and strike-local coordinates across latitude and world wrap", () => {
+    for (const origin of [NEW_YORK, geoPoint(179.98, 40), geoPoint(20, 80)]) {
+      const field = modelFallout(origin, 0.021);
+      for (const distance of [0, 0.1, 2, 10, 40]) for (const bearing of [0, 90, 225]) {
+        const point = destinationPoint(origin, distance, bearing);
+        const local = falloutLocalPoint(origin, point);
+        // Both paths now share the scalar kernel; the tolerance permits only
+        // geodesic round-trip floating arithmetic, not a physical approximation.
+        expect(falloutIntensityAtLocal(field, local.eastKm, local.northKm)).toBeCloseTo(falloutIntensityAt(field, point), 12);
+      }
+    }
   });
 
   it("grows monotonically with yield, stays Earth-bounded, and rejects invalid yields", () => {

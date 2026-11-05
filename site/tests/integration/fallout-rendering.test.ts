@@ -2,6 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { blastRadiiForYield } from "../../src/domain/blast";
 import { modelFallout } from "../../src/domain/fallout";
+import * as falloutModel from "../../src/domain/fallout";
 import { normalizeLongitude, type GeoPoint } from "../../src/domain/geodesy";
 import type { LaunchFrame } from "../../src/application/launch";
 import { FalloutCanvasRenderer } from "../../src/rendering/effects/FalloutCanvasRenderer";
@@ -47,48 +48,58 @@ describe("Fallout ground projection", () => {
     expect(buildFalloutInspection({ toScreen: () => ({ x: NaN, y: NaN }) }, field, 1500, 1000)).toBeNull();
   });
 
-  it("reuses geographic samples, rebuilds them after camera/resize changes, and cancels obsolete continuations", () => {
+  it("shows every field before refining and reprojects cached samples during camera and resize changes", () => {
     const origin = { longitude: -73.9857, latitude: 40.7484 };
     const camera = cameraAt(origin, 10, 50, 50);
     const translate = vi.fn();
     const context = {
-      setTransform: () => {}, clearRect: () => {}, save: () => {}, restore: () => {}, drawImage: () => {},
+      setTransform: () => {}, transform: () => {}, clearRect: () => {}, save: () => {}, restore: () => {}, drawImage: () => {},
       createImageData: (width: number, height: number) => ({ data: new Uint8ClampedArray(width * height * 4) }),
-      putImageData: () => {}, beginPath: () => {}, moveTo: () => {}, lineTo: () => {}, stroke: () => {},
+      getImageData: (_x: number, _y: number, width: number, height: number) => ({ data: new Uint8ClampedArray(width * height * 4) }),
+      putImageData: () => {}, beginPath: () => {}, moveTo: () => {}, lineTo: () => {}, stroke: () => {}, closePath: () => {}, clip: () => {},
       setLineDash: () => {}, arc: () => {}, fill: () => {}, measureText: () => ({ width: 100 }),
       fillRect: () => {}, fillText: () => {},
       translate, scale: () => {}, createRadialGradient: () => ({ addColorStop: () => {} }),
     };
     const canvas = () => ({ width: 0, height: 0, getContext: () => context }) as unknown as HTMLCanvasElement;
-    const createElement = vi.spyOn(document, "createElement").mockReturnValue(canvas());
-    const requestFrame = vi.spyOn(globalThis, "requestAnimationFrame").mockReturnValue(7);
-    const cancelFrame = vi.spyOn(globalThis, "cancelAnimationFrame").mockImplementation(() => {});
-    const frames: LaunchFrame[] = [{
+    const createElement = vi.spyOn(document, "createElement").mockImplementation(() => canvas());
+    let continuation: FrameRequestCallback | null = null;
+    const requestFrame = vi.spyOn(globalThis, "requestAnimationFrame").mockImplementation((callback) => { continuation = callback; return 7; });
+    const cancelFrame = vi.spyOn(globalThis, "cancelAnimationFrame").mockImplementation(() => { continuation = null; });
+    const sample = vi.spyOn(falloutModel, "falloutIntensityAtLocal");
+    const frames: LaunchFrame[] = Array.from({ length: 10 }, (_, index) => ({
       launch: {
-        id: 1, deviceId: "fat-man", yieldMt: 0.021,
+        id: index + 1, deviceId: "fat-man", yieldMt: 0.021,
         route: { start: origin, control: origin, target: origin }, launchedAtMs: 0,
-        flightMs: 6500, blastMs: 4600, radii: blastRadiiForYield(0.021), fallout: modelFallout(origin, 0.021),
+        flightMs: 6500, blastMs: 4600, radii: blastRadiiForYield(0.021),
+        fallout: modelFallout({ longitude: origin.longitude + index * 0.02, latitude: origin.latitude }, 0.021),
       }, elapsedMs: 11_100,
-    }];
+    }));
     try {
       const renderer = new FalloutCanvasRenderer(canvas(), camera as never, canvas());
-      renderer.render(frames, 100, 100, false, null);
-      expect(translate).toHaveBeenCalledWith(50, 50);
-      const firstGridCalls = camera.toGeo.mock.calls.length;
-      renderer.render(frames, 100, 100, false, "high");
-      expect(camera.toGeo).toHaveBeenCalledTimes(firstGridCalls);
+      renderer.render(frames, 100, 100, true, null);
+      // First appearance is scene-wide, so no later strike waits for an earlier
+      // strike's high-resolution texture to finish. This is a work-count contract.
+      expect(new Set(sample.mock.calls.map(([field]) => field))).toHaveLength(10);
+      expect(sample.mock.calls.length).toBeLessThanOrEqual(12_000);
+      for (let i = 0; i < 10 && continuation; i++) {
+        const callback: FrameRequestCallback = continuation; continuation = null; callback(0);
+      }
+      expect(continuation).toBeNull();
+      const completeSamples = sample.mock.calls.length;
+      renderer.render(frames, 100, 100, true, "high");
       renderer.invalidateProjection();
-      renderer.render(frames, 100, 100, false, null);
-      expect(camera.toGeo.mock.calls.length).toBeGreaterThan(firstGridCalls);
-      const afterCamera = camera.toGeo.mock.calls.length;
-      renderer.render(frames, 800, 700, false, null);
-      expect(camera.toGeo.mock.calls.length).toBeGreaterThan(afterCamera);
-      expect(requestFrame).toHaveBeenCalled();
+      renderer.render(frames, 100, 100, true, null);
+      renderer.render(frames, 800, 700, true, null);
+      expect(sample).toHaveBeenCalledTimes(completeSamples);
+      renderer.dispose();
+      expect(renderer.render([], 800, 700, false, null)).toBeNull();
+      renderer.render(frames, 100, 100, true, null);
       renderer.dispose();
       expect(cancelFrame).toHaveBeenCalledWith(7);
-      expect(renderer.render([], 800, 700, false, null)).toBeNull();
+      expect(continuation).toBeNull();
     } finally {
-      createElement.mockRestore(); requestFrame.mockRestore(); cancelFrame.mockRestore();
+      createElement.mockRestore(); requestFrame.mockRestore(); cancelFrame.mockRestore(); sample.mockRestore();
     }
   });
 });

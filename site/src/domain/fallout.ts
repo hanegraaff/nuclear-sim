@@ -190,6 +190,16 @@ export function falloutLocalPoint(origin: GeoPoint, point: GeoPoint): { readonly
 /** Evaluate the unitless deposition field at a geographic point; output is bounded [0,1]. */
 export function falloutIntensityAt(field: FalloutFootprint, point: GeoPoint): number {
   const local = falloutLocalPoint(field.origin, point);
+  return falloutIntensityAtLocal(field, local.eastKm, local.northKm);
+}
+
+/**
+ * Evaluate the same bounded [0,1] deposition field in great-circle local east/north
+ * kilometers. Rendering caches can sample this camera-independent chart without
+ * repeating geographic inversion; geography remains the authoritative input.
+ */
+export function falloutIntensityAtLocal(field: FalloutFootprint, eastKm: number, northKm: number): number {
+  const local = { eastKm, northKm };
   let raw = 0;
   for (const puff of field.puffs) {
     const east = local.eastKm - puff.eastKm;
