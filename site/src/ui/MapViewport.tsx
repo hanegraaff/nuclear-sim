@@ -14,12 +14,16 @@ import { MultiLaunchLegend } from "./MultiLaunchLegend";
 import { mapDistanceScale } from "../rendering/overlays/mapDistanceScale";
 import type { GeoPoint } from "../domain/geodesy";
 import type { PreparedLaunch } from "../application/launchPreparation";
+import type { FalloutBandId, FalloutZone } from "../domain/fallout";
+import type { FalloutInspectionGeometry } from "../rendering/overlays/falloutInspection";
+import { FalloutInspectionOverlay } from "./FalloutInspectionOverlay";
+import { EffectViewSelector } from "./EffectViewSelector";
 
 /** UI inputs and semantic callbacks; no MapLibre object crosses this boundary. */
 interface MapViewportProps {
   readonly children?: ReactNode;
   readonly cameraRequest: ScenarioCameraRequest | null;
-  readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "multiLaunch" | "activeZoneId" | "pinnedZoneId">;
+  readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "multiLaunch" | "activeZoneId" | "pinnedZoneId" | "effectView" | "activeFalloutId" | "pinnedFalloutId">;
   readonly frames: readonly LaunchFrame[];
   readonly onLaunch: (route: FlightRoute, intent: LaunchIntent) => void;
   readonly prepareLaunch: (aim: GeoPoint) => PreparedLaunch | null;
@@ -31,10 +35,22 @@ interface MapViewportProps {
   readonly onFocusZone: (zoneId: BlastZoneId | null) => void;
   readonly onPinZone: (zoneId: BlastZoneId) => void;
   readonly onClearZoneInspection: () => void;
+  readonly falloutEligible: boolean;
+  readonly falloutLegendZones: readonly FalloutZone[];
+  readonly onSelectEffectView: (view: "blast" | "fallout") => void;
+  readonly onHoverFallout: (id: FalloutBandId | null) => void;
+  readonly onFocusFallout: (id: FalloutBandId | null) => void;
+  readonly onPinFallout: (id: FalloutBandId) => void;
+  readonly onClearFallout: () => void;
 }
 
 /** Full-viewport map mount that places controls above imagery and map feedback. */
-export function MapViewport({ children, cameraRequest, launch, frames, onLaunch, prepareLaunch, launchAngle, cancelPendingVersion, onPendingChange, onHoverZone, onFocusZone, onPinZone, onClearZoneInspection }: MapViewportProps) {
+export function MapViewport({
+  children, cameraRequest, launch, frames, onLaunch, prepareLaunch, launchAngle,
+  cancelPendingVersion, onPendingChange, onHoverZone, onFocusZone, onPinZone,
+  onClearZoneInspection, falloutEligible, falloutLegendZones, onSelectEffectView,
+  onHoverFallout, onFocusFallout, onPinFallout, onClearFallout,
+}: MapViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
   const blastCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -52,6 +68,7 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
   const [loadState, setLoadState] = useState<MapLoadState>("loading");
   const [launchError, setLaunchError] = useState<string | null>(null);
   const [inspection, setInspection] = useState<BlastInspectionGeometry | null>(null);
+  const [falloutInspection, setFalloutInspection] = useState<FalloutInspectionGeometry | null>(null);
   const [camera, setCamera] = useState({
     longitude: INITIAL_MAP_CENTER.longitude,
     latitude: INITIAL_MAP_CENTER.latitude,
@@ -69,6 +86,7 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
         onStateChange: setLoadState,
         onCameraChange: setCamera,
         onInspectionChange: setInspection,
+        onFalloutInspectionChange: setFalloutInspection,
         onLaunch: (route, intent) => onLaunchRef.current(route, intent),
         prepareLaunch: (aim) => prepareLaunchRef.current(aim),
         launchAngle: () => launchAngleRef.current(),
@@ -100,8 +118,8 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
   }, [cancelPendingVersion]);
 
   useEffect(() => {
-    controllerRef.current?.setSceneFrame(frames, launch.multiLaunch, launch.activeZoneId);
-  }, [frames, launch.multiLaunch, launch.activeZoneId]);
+    controllerRef.current?.setSceneFrame(frames, launch.multiLaunch, launch.activeZoneId, launch.effectView, launch.activeFalloutId);
+  }, [frames, launch.multiLaunch, launch.activeZoneId, launch.effectView, launch.activeFalloutId]);
 
   const retryImagery = () => {
     const controller = controllerRef.current;
@@ -123,6 +141,7 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
       data-pitch={camera.pitch.toFixed(3)}
       data-bearing={camera.bearing.toFixed(3)}
       data-launch-phase={launch.phase}
+      data-effect-view={launch.effectView}
       data-multi-launch={launch.multiLaunch}
       data-launch-count={frames.length}
       data-impact-count={frames.filter((frame) => frame.elapsedMs >= frame.launch.flightMs).length}
@@ -136,13 +155,28 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
       <canvas className="fireball-canvas" ref={fireballCanvasRef} aria-hidden="true" />
       <canvas className="missile-canvas" ref={missileCanvasRef} aria-hidden="true" />
       <canvas className="inspection-canvas" ref={inspectionCanvasRef} aria-hidden="true" />
-      <BlastInspectionOverlay geometry={inspection} activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onHover={onHoverZone} onFocusZone={onFocusZone} onPin={onPinZone} onClear={onClearZoneInspection} />
-      {launch.multiLaunch && (
+      {launch.effectView === "blast" && <BlastInspectionOverlay geometry={inspection} activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onHover={onHoverZone} onFocusZone={onFocusZone} onPin={onPinZone} onClear={onClearZoneInspection} />}
+      {launch.effectView === "blast" && launch.multiLaunch && (
         <MultiLaunchLegend scale={mapDistanceScale(camera.latitude, camera.zoom)} latestRadii={launch.launch?.radii ?? null}
           activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onHoverZone={onHoverZone}
           onFocusZone={onFocusZone} onPinZone={onPinZone} onClearZoneInspection={onClearZoneInspection} />
       )}
-      <p className="model-qualification">IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE</p>
+      {launch.effectView === "fallout" && (
+        <FalloutInspectionOverlay
+          geometry={falloutInspection} legendZones={falloutLegendZones}
+          multi={launch.multiLaunch} scale={mapDistanceScale(camera.latitude, camera.zoom)}
+          active={launch.activeFalloutId} pinned={launch.pinnedFalloutId}
+          onHover={onHoverFallout} onFocus={onFocusFallout} onPin={onPinFallout} onClear={onClearFallout}
+        />
+      )}
+      {launch.phase === "complete" && (
+        <EffectViewSelector view={launch.effectView} falloutAvailable={falloutEligible} onSelect={onSelectEffectView} />
+      )}
+      <p className="model-qualification">
+        {launch.effectView === "fallout"
+          ? "SURFACE-BURST H+24 SCREENING ENVELOPE · CLIMATOLOGICAL WIND PROXY, NOT LIVE METEOROLOGY"
+          : "IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE"}
+      </p>
       {children}
       {loadState === "loading" && (
         <div className="map-message" role="status">Loading satellite map…</div>

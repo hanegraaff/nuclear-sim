@@ -8,6 +8,12 @@ The map converts a click into a geographic aim point. The application freezes th
 
 The renderer projects geographic routes through the current camera for every frame, keeping the missile, reticles, fireballs, fields, and markers attached during pan, zoom, pitch, and resize. If an entry or spread is unsafe at the current high zoom or narrow view, a red reticle appears immediately and the map eases for roughly 450 ms before dispatching the frozen click. Multi-mode clicks wait in order; Reset and replacement cancel pending work. A failed route after bounded framing attempts is reported without disabling the map. A narrow spread that would hide almost all settled centers can receive an additional one-time fit below the controls. When a hidden page returns or the window regains focus, the fireball layer discards its stale camera matrix and requests a fresh projection. In single mode, a settled field has four geographic zone boundaries, a dashed ruler, and inspectable markers. In multi mode, click groups accumulate, carriers share a general entry direction, and bounded field intensities move overlapping samples toward warmer legend colors. The lower-left distance bar and four-band legend replace the single ruler. Reset cancels animation and clears every group while retaining device, mode, and camera.
 
+## Settled effect views
+
+Once every retained delivery has completed and no launch is pending, Blast and eligible Fallout views can be selected. Availability follows the retained impacts rather than the currently selected device: conventional-only scenes have no Fallout tab, mixed scenes include only nuclear fields, and a MIRV contributes a separate footprint for each warhead using its individual yield. A new launch returns to Blast; Reset removes both views' effects and inspection state.
+
+Fallout shows an H+24 surface-burst screening envelope driven by a deterministic latitude-band wind proxy. Its warm local core, curved irregular plume, purple/pink/orange bands, and four inspectable markers reproduce the prototype. In single mode, the map frames the first nuclear footprint and restores the saved Blast camera on return; a retained MIRV still renders all its warhead fields. Multi mode preserves the camera and replaces the geographic ruler with a map scale and four-band legend describing the newest nuclear delivery. Overlap sums normalized field intensity, bounded at one, without inventing a combined device or dose. The printed Gy bands and health descriptions are illustrative prototype copy, not computed exposure or live meteorology. Only Blast and Fallout are currently implemented.
+
 The cloud monitor follows the latest group's first ignited warhead through growth and modeled peak. Nuclear and conventional silhouettes differ; MIRV wording identifies the per-warhead scale. All displayed distances and heights are illustrative estimates. See [model notes](docs/model.md) and [visual reference](docs/visual-reference.md).
 
 ## Source boundaries
@@ -15,8 +21,8 @@ The cloud monitor follows the latest group's first ignited warhead through growt
 | Area | Responsibility |
 | --- | --- |
 | [`src/catalog/`](src/catalog/README.md) | Exact device and scenario choices, labels, yields, and coordinates. |
-| [`src/domain/`](src/domain/README.md) | Pure geodesy, blast, MIRV spread, cloud, zone-area, and overlap calculations in physical units. |
-| [`src/application/`](src/application/README.md) | Selection, launch groups, injected clock, phases, inspection state, and cloud presentation. |
+| [`src/domain/`](src/domain/README.md) | Pure geodesy, blast, MIRV spread, cloud, deterministic wind/fallout, zone-area, and normalized overlap calculations. |
+| [`src/application/`](src/application/README.md) | Selection, launch groups, injected clock, phases, effect-view eligibility, inspection state, and model-derived presentation. |
 | [`src/rendering/`](src/rendering/README.md) | MapLibre camera and imagery, Canvas fields and missiles, WebGL fireballs, and geographic overlays. |
 | [`src/ui/`](src/ui/README.md) | React controls, map mount, status, instrument, and accessible inspection. |
 | [`tests/`](tests/README.md) | Deterministic unit, integration, and browser verification. |

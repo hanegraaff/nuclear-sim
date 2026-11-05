@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-05**. Plans 01–11 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -26,7 +26,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 | 09 | Animated cloud-profile monitor | Complete | 08 |
 | 10 | Additive multi launch | Complete | 09 |
 | 11 | MIRV separation and multiple impacts | Complete | 10 |
-| 12 | Fallout view | Ready | 11 |
+| 12 | Fallout view | In progress | 11 |
 | 13 | Audible view | Not started | 12 |
 | 14 | Visible view | Not started | 13 |
 | 15 | Night map and hide/show controls | Not started | 14 |
@@ -203,7 +203,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 
 **Completion evidence.** Model and view tests pass; compare a pitched New York capture with `Fallout.png`.
 
-**Current status.** Ready; Plan 11 is complete.
+**Current status.** In progress on branch `plan-12`.
 
 **Blocking decisioning.** None. The architecture commits to a climatological proxy; live weather is outside this roadmap.
 
