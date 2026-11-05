@@ -122,6 +122,8 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, launchP
           <p className="launch-status" aria-live="polite">
             {multiLaunch
               ? `Multi-launch armed · strikes accumulate${totalCount > 0 ? ` · ${impactCount}/${totalCount} impacts` : ""}`
+              : totalCount > 1
+                ? `MIRV ${launchPhase === "complete" ? "COMPLETE" : launchPhase === "detonating" ? "IMPACTS" : "INBOUND"} · ${impactCount}/${totalCount} impacts`
               : launchPhase === "inbound" ? "MISSILE INBOUND" : launchPhase === "detonating" ? "BLAST EXPANDING" : launchPhase === "complete" ? "BLAST COMPLETE" : "READY TO LAUNCH"}
           </p>
         </div>

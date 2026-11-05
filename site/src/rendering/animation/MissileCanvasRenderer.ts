@@ -1,6 +1,6 @@
 import type { Launch, LaunchFrame } from "../../application/launch";
 import type { ScreenPoint } from "../map/MapCameraAdapter";
-import { projectFlightRoute, screenFlightPoint, smokeParticle, SMOKE_SAMPLE_STEP_MS, type FlightProjector, type ProjectedFlightRoute } from "./flightGeometry";
+import { projectFlightRoute, screenFlightPoint, screenMirvPoint, smokeParticle, SMOKE_SAMPLE_STEP_MS, type FlightProjector, type ProjectedFlightRoute, type ProjectedMirvRoute } from "./flightGeometry";
 
 /** Draws the prototype target, smoke, and white-hot carrier on a transparent canvas. */
 export class MissileCanvasRenderer {
@@ -29,11 +29,41 @@ export class MissileCanvasRenderer {
     const smokeStep = frames.length >= 10 ? 3 : frames.length >= 5 ? 2 : 1;
     for (const { launch, elapsedMs } of frames) {
       if (elapsedMs >= launch.flightMs + 3000) continue;
+      if (launch.mirv) {
+        this.drawMirvFlight(context, launch, elapsedMs, smokeStep);
+        continue;
+      }
       const route = projectFlightRoute(launch.route, this.projector);
       if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
       this.drawSmoke(context, launch, route, elapsedMs, smokeStep);
       if (elapsedMs < launch.flightMs) this.drawCore(context, screenFlightPoint(route, elapsedMs / launch.flightMs));
     }
+  }
+
+  /** Paint one shared carrier before split and geographically distinct branches afterwards. */
+  private drawMirvFlight(context: CanvasRenderingContext2D, launch: Launch, elapsedMs: number, smokeStep: number): void {
+    const mirv = launch.mirv!;
+    const carrier = projectFlightRoute(mirv.route, this.projector);
+    const route: ProjectedMirvRoute = {
+      carrier,
+      target: this.projector.toScreen(launch.route.target),
+      splitMs: mirv.splitMs,
+      carrierFlightMs: mirv.carrierFlightMs,
+      flightMs: launch.flightMs,
+    };
+    if (mirv.lead) {
+      if (elapsedMs < mirv.splitMs) this.drawTarget(context, carrier.target, elapsedMs);
+      this.drawSmoke(context, launch, carrier, elapsedMs, smokeStep, 0, mirv.splitMs,
+        (timeMs) => screenFlightPoint(carrier, timeMs / mirv.carrierFlightMs));
+    }
+    if (elapsedMs < mirv.splitMs) {
+      if (mirv.lead) this.drawCore(context, screenFlightPoint(carrier, elapsedMs / mirv.carrierFlightMs));
+      return;
+    }
+    if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
+    this.drawSmoke(context, launch, carrier, elapsedMs, smokeStep, mirv.splitMs, launch.flightMs,
+      (timeMs) => screenMirvPoint(route, timeMs));
+    if (elapsedMs < launch.flightMs) this.drawCore(context, screenMirvPoint(route, elapsedMs));
   }
 
   private drawTarget(context: CanvasRenderingContext2D, point: ScreenPoint, elapsedMs: number): void {
@@ -66,13 +96,14 @@ export class MissileCanvasRenderer {
     context.restore();
   }
 
-  private drawSmoke(context: CanvasRenderingContext2D, launch: Launch, route: ProjectedFlightRoute, elapsedMs: number, sampleStep = 1): void {
+  private drawSmoke(context: CanvasRenderingContext2D, launch: Launch, route: ProjectedFlightRoute, elapsedMs: number, sampleStep = 1,
+    firstBornMs = 0, lastBornMs = launch.flightMs, pointAtMs?: (timeMs: number) => ScreenPoint): void {
     const stepMs = SMOKE_SAMPLE_STEP_MS * sampleStep;
-    const startMs = Math.max(0, Math.ceil((elapsedMs - 3000) / stepMs) * stepMs);
+    const startMs = Math.max(firstBornMs, Math.ceil((elapsedMs - 3000) / stepMs) * stepMs);
     context.save();
     context.lineCap = "round";
-    for (let bornMs = startMs; bornMs < Math.min(elapsedMs, launch.flightMs); bornMs += stepMs) {
-      const particle = smokeParticle(route, bornMs, elapsedMs, launch.flightMs, launch.id * 193);
+    for (let bornMs = startMs; bornMs < Math.min(elapsedMs, lastBornMs); bornMs += stepMs) {
+      const particle = smokeParticle(route, bornMs, elapsedMs, lastBornMs, launch.id * 193, pointAtMs);
       if (particle.opacity < 0.008) continue;
       const { x, y } = particle.center;
       if (particle.segmentEnd) {

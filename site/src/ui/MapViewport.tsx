@@ -60,6 +60,11 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
         onInspectionChange: setInspection,
         onLaunch: (route) => onLaunchRef.current(route),
         launchAngle: () => launchAngleRef.current(),
+        clearMapTopPx: () => {
+          const panel = container.parentElement?.querySelector(".left-instrument-stack");
+          if (!panel) return 80;
+          return panel.getBoundingClientRect().bottom - container.getBoundingClientRect().top + 14;
+        },
       }, missileCanvasRef.current, blastCanvasRef.current, fireballCanvasRef.current, inspectionCanvasRef.current);
     } catch {
       setLoadState("map-error");

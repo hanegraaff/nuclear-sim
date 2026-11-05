@@ -187,7 +187,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 
 **Completion evidence.** Continuity and catalog tests pass; a fixed-time capture shows pre-split, split, and multiple impacts.
 
-**Current status.** Ready; Plan 10 is complete.
+**Current status.** In progress on branch `plan-11`.
 
 **Blocking decisioning.** None. Use the representative modeled loadouts in the prototype, visibly labeled as modeled.
 

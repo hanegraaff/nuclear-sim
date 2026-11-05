@@ -32,7 +32,7 @@ describe("cloud instrument timeline", () => {
     const armed = reduceSimulator(INITIAL_SIMULATOR_STATE, { type: "selectDevice", id: "rs-24-yars" });
     const launched = reduceSimulator(armed, { type: "launchAt", route, deviceId: "rs-24-yars", yieldMt: 0.525, nowMs: 0 });
     const switched = reduceSimulator(launched, { type: "selectDevice", id: "tsar-bomba" });
-    const complete = reduceSimulator(switched, { type: "tick", nowMs: FLIGHT_MS + BLAST_MS, launchId: 1 });
+    const complete = reduceSimulator(switched, { type: "tick", nowMs: FLIGHT_MS + 2 * 45 + BLAST_MS, launchId: launched.launch!.id });
     const display = cloudPresentationForState(complete);
     expect(display.qualificationLabel).toBe("PER WARHEAD · 3 RVs");
     expect(display.peakHeightKm).toBeLessThan(25); // 0.175 Mt warhead, not 0.525 Mt aggregate.

@@ -7,6 +7,7 @@ import type { BlastCanvasRenderer } from "../../src/rendering/effects/BlastCanva
 import type { MultiBlastCanvasRenderer } from "../../src/rendering/effects/MultiBlastCanvasRenderer";
 import type { Launch } from "../../src/application/launch";
 import { blastRadiiForYield } from "../../src/domain/blast";
+import { INITIAL_SIMULATOR_STATE, launchFramesForState, reduceSimulator } from "../../src/application/launch";
 
 function fakeMap() {
   const listeners = new Map<string, Set<(event?: never) => void>>();
@@ -16,6 +17,7 @@ function fakeMap() {
   const remove = vi.fn();
   const stop = vi.fn();
   const easeTo = vi.fn();
+  const fitBounds = vi.fn();
   let center = { lng: -73.9857, lat: 40.7484 };
   let viewportWidth = 2208;
   let sourceLoaded = true;
@@ -41,6 +43,7 @@ function fakeMap() {
       remove,
       stop,
       easeTo,
+      fitBounds,
     } as unknown as MapLibreMap,
     emit: (name: string, event?: object) => listeners.get(name)?.forEach((listener) => listener(event as never)),
     setCenter: (lng: number, lat: number) => { center = { lng, lat }; },
@@ -52,10 +55,37 @@ function fakeMap() {
     remove,
     stop,
     easeTo,
+    fitBounds,
   };
 }
 
 describe("satellite map controller", () => {
+  it("frames a hidden narrow MIRV group once without changing its geographic targets", () => {
+    const runtime = fakeMap();
+    runtime.setViewportWidth(430);
+    const controller = new SatelliteMapController(runtime.map,
+      { onStateChange: () => {}, onCameraChange: () => {}, clearMapTopPx: () => 420 });
+    const route = { start: { longitude: -74.2, latitude: 40.9 }, control: { longitude: -74.1, latitude: 40.8 }, target: { longitude: -73.9857, latitude: 40.7484 } };
+    const launched = reduceSimulator(INITIAL_SIMULATOR_STATE,
+      { type: "launchAt", route, deviceId: "rs-24-yars", yieldMt: 0.525, nowMs: 0 });
+    const frames = launchFramesForState(launched);
+    const targets = frames.map((frame) => frame.launch.route.target);
+    controller.setSceneFrame(frames, false);
+    expect(runtime.fitBounds).toHaveBeenCalledOnce();
+    expect(runtime.fitBounds).toHaveBeenCalledWith(expect.any(Array), {
+      padding: { top: 420, right: 24, bottom: 75, left: 24 }, maxZoom: 10.6, duration: 650,
+    });
+    controller.setSceneFrame(frames, false);
+    expect(runtime.fitBounds).toHaveBeenCalledOnce();
+    expect(frames.map((frame) => frame.launch.route.target)).toEqual(targets);
+    runtime.setViewportWidth(2208);
+    const desktop = reduceSimulator(launched,
+      { type: "launchAt", route, deviceId: "rs-24-yars", yieldMt: 0.525, nowMs: 1_000 });
+    controller.setSceneFrame(launchFramesForState(desktop), false);
+    expect(runtime.fitBounds).toHaveBeenCalledOnce();
+    controller.dispose();
+  });
+
   it("renders every delivery of the newest whole group after multi mode is disabled", () => {
     const runtime = fakeMap();
     const singleRender = vi.fn().mockReturnValue(null);

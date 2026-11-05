@@ -66,6 +66,42 @@ export function screenFlightPoint(route: ProjectedFlightRoute, progress: number)
   };
 }
 
+/** Shared carrier and one reentry vehicle projected to CSS pixels, with millisecond timing. */
+export interface ProjectedMirvRoute {
+  readonly carrier: ProjectedFlightRoute;
+  readonly target: ScreenPoint;
+  readonly splitMs: number;
+  readonly carrierFlightMs: number;
+  readonly flightMs: number;
+}
+
+/**
+ * Follow the carrier until separation, then use a cubic branch whose starting
+ * derivative matches the eased carrier's CSS-pixel velocity. Camera projection
+ * is applied before sampling, so every frame uses the same map transform.
+ */
+export function screenMirvPoint(route: ProjectedMirvRoute, elapsedMs: number): ScreenPoint {
+  if (!Number.isFinite(elapsedMs) || route.splitMs <= 0 || route.carrierFlightMs <= route.splitMs || route.flightMs <= route.splitMs) {
+    throw new RangeError("MIRV flight requires a finite age and a split within both flight durations.");
+  }
+  const splitProgress = route.splitMs / route.carrierFlightMs;
+  if (elapsedMs <= route.splitMs) return screenFlightPoint(route.carrier, elapsedMs / route.carrierFlightMs);
+  const start = screenFlightPoint(route.carrier, splitProgress);
+  const eased = splitProgress ** 1.16;
+  const tangentScale = 1.16 * splitProgress ** 0.16 * (route.flightMs - route.splitMs) / route.carrierFlightMs;
+  const tangent = {
+    x: 2 * ((1 - eased) * (route.carrier.control.x - route.carrier.start.x) + eased * (route.carrier.target.x - route.carrier.control.x)) * tangentScale,
+    y: 2 * ((1 - eased) * (route.carrier.control.y - route.carrier.start.y) + eased * (route.carrier.target.y - route.carrier.control.y)) * tangentScale,
+  };
+  const control = { x: start.x + tangent.x / 3, y: start.y + tangent.y / 3 };
+  const u = Math.max(0, Math.min(1, (elapsedMs - route.splitMs) / (route.flightMs - route.splitMs)));
+  const inverse = 1 - u;
+  return {
+    x: inverse ** 3 * start.x + 3 * inverse ** 2 * u * control.x + 3 * inverse * u ** 2 * route.target.x + u ** 3 * route.target.x,
+    y: inverse ** 3 * start.y + 3 * inverse ** 2 * u * control.y + 3 * inverse * u ** 2 * route.target.y + u ** 3 * route.target.y,
+  };
+}
+
 /** Deterministic smoke offset in CSS pixels and opacity after emission age in seconds. */
 export interface SmokeMotion extends ScreenPoint {
   readonly radius: number;
@@ -102,15 +138,15 @@ export interface SmokeParticle {
 export const SMOKE_SAMPLE_STEP_MS = 60;
 
 /** Sample fixed-age smoke without using the previous puff's drift for the segment end. */
-export function smokeParticle(route: ProjectedFlightRoute, bornMs: number, elapsedMs: number, flightMs: number, seed: number): SmokeParticle {
-  const from = screenFlightPoint(route, bornMs / flightMs);
-  const after = screenFlightPoint(route, Math.min(1, (bornMs + 20) / flightMs));
+export function smokeParticle(route: ProjectedFlightRoute, bornMs: number, elapsedMs: number, flightMs: number, seed: number, pointAtMs: (timeMs: number) => ScreenPoint = (timeMs) => screenFlightPoint(route, timeMs / flightMs)): SmokeParticle {
+  const from = pointAtMs(bornMs);
+  const after = pointAtMs(Math.min(flightMs, bornMs + 20));
   const velocity = { x: (after.x - from.x) * 50, y: (after.y - from.y) * 50 };
   const motion = smokeMotion((elapsedMs - bornMs) / 1000, velocity, seed + bornMs);
   const nextMs = Math.min(elapsedMs - 70, flightMs, bornMs + SMOKE_SAMPLE_STEP_MS);
   let segmentEnd: ScreenPoint | null = null;
   if (nextMs > bornMs) {
-    const next = screenFlightPoint(route, nextMs / flightMs);
+    const next = pointAtMs(nextMs);
     const nextMotion = smokeMotion((elapsedMs - nextMs) / 1000, velocity, seed + nextMs);
     segmentEnd = { x: next.x + nextMotion.x, y: next.y + nextMotion.y };
   }

@@ -7,7 +7,7 @@ import { createFireballRenderer, type FireballRenderer } from "../animation/Fire
 import { viewportFlightRoute } from "../animation/flightGeometry";
 import { MapCameraAdapter } from "./MapCameraAdapter";
 import { createSatelliteMap } from "./createSatelliteMap";
-import type { GeoPoint } from "../../domain/geodesy";
+import { normalizeLongitude, type GeoPoint } from "../../domain/geodesy";
 import type { BlastZoneId } from "../../domain/blastZones";
 import type { BlastInspectionGeometry } from "../overlays/blastInspection";
 
@@ -30,6 +30,8 @@ export interface SatelliteMapCallbacks {
   readonly onLaunch?: (route: FlightRoute) => void;
   readonly launchAngle?: () => number;
   readonly onInspectionChange?: (geometry: BlastInspectionGeometry | null) => void;
+  /** Return the lower edge of controls covering the narrow map, in CSS pixels from its top. */
+  readonly clearMapTopPx?: () => number;
 }
 
 const IMAGERY_SOURCE_ID = "satellite";
@@ -61,6 +63,7 @@ export class SatelliteMapController {
   private inspection: BlastInspectionGeometry | null = null;
   private fireballFailed = false;
   private fireballMatrix: Float64Array | null = null;
+  private lastFramedMirvGroupId: number | null = null;
 
   constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null, private readonly multiBlastRenderer?: MultiBlastCanvasRenderer) {
     this.camera = new MapCameraAdapter(map);
@@ -97,10 +100,53 @@ export class SatelliteMapController {
     this.launch = latest?.launch ?? null;
     this.elapsedMs = latest?.elapsedMs ?? 0;
     this.highlightedZoneId = highlightedZoneId;
+    this.frameHiddenNarrowMirv(frames);
     this.repaintFlight();
     if (this.fireballRenderer && !this.fireballFailed) {
       if (this.fireballMatrix) this.repaintFireball();
       else this.map.triggerRepaint();
+    }
+  }
+
+  /**
+   * On a narrow screen only, reveal a new MIRV group's impact centers if its
+   * spread falls behind the control stack or outside the viewport. The model's
+   * geographic targets and routes stay fixed while MapLibre eases the camera.
+   */
+  private frameHiddenNarrowMirv(frames: readonly LaunchFrame[]): void {
+    const container = this.map.getContainer();
+    if (container.clientWidth >= 600 || !frames.at(-1)?.launch.mirv) return;
+    let leadIndex = frames.length - 1;
+    while (leadIndex > 0 && !frames[leadIndex]!.launch.mirv?.lead) leadIndex -= 1;
+    const lead = frames[leadIndex]?.launch;
+    if (!lead?.mirv || this.lastFramedMirvGroupId === lead.id) return;
+    this.lastFramedMirvGroupId = lead.id;
+    const group = frames.slice(leadIndex);
+    const clearTop = Math.min(container.clientHeight - 100,
+      Math.max(16, this.panelsVisible ? this.callbacks.clearMapTopPx?.() ?? 80 : 16));
+    const visible = group.filter(({ launch }) => {
+      const point = this.camera.toScreen(launch.route.target);
+      return point.x >= 16 && point.x <= container.clientWidth - 16 && point.y >= clearTop && point.y <= container.clientHeight - 75;
+    }).length;
+    if (visible >= 2) return;
+
+    const aim = lead.mirv.route.target;
+    const points = [aim, ...group.map(({ launch }) => launch.route.target)];
+    const longitudes = points.map((point) => aim.longitude + normalizeLongitude(point.longitude - aim.longitude));
+    const west = Math.min(...longitudes);
+    const east = Math.max(...longitudes);
+    const south = Math.min(...points.map((point) => point.latitude));
+    const north = Math.max(...points.map((point) => point.latitude));
+    const longitudeMargin = Math.max(0.002, (east - west) * 0.08);
+    const latitudeMargin = Math.max(0.002, (north - south) * 0.08);
+    try {
+      this.map.fitBounds([[west - longitudeMargin, south - latitudeMargin], [east + longitudeMargin, north + latitudeMargin]], {
+        padding: { top: clearTop, right: 24, bottom: 75, left: 24 },
+        maxZoom: this.map.getZoom(),
+        duration: 650,
+      });
+    } catch (error) {
+      console.warn("Unable to frame narrow MIRV impacts; geographic launch remains available.", error);
     }
   }
 
