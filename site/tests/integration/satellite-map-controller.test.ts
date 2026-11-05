@@ -56,6 +56,29 @@ function fakeMap() {
 }
 
 describe("satellite map controller", () => {
+  it("renders every delivery of the newest whole group after multi mode is disabled", () => {
+    const runtime = fakeMap();
+    const singleRender = vi.fn().mockReturnValue(null);
+    const inspectionOnly = vi.fn().mockReturnValue(null);
+    const multiRender = vi.fn();
+    const missileMany = vi.fn();
+    const controller = new SatelliteMapController(runtime.map, { onStateChange: () => {}, onCameraChange: () => {} },
+      { render: vi.fn(), renderMany: missileMany } as unknown as MissileCanvasRenderer,
+      { render: singleRender, renderInspectionOnly: inspectionOnly } as unknown as BlastCanvasRenderer,
+      null,
+      { render: multiRender, dispose: vi.fn() } as unknown as MultiBlastCanvasRenderer);
+    const route = { start: { longitude: -74, latitude: 41 }, control: { longitude: -73.9, latitude: 40.9 }, target: { longitude: -73.8, latitude: 40.8 } };
+    const first: Launch = { id: 2, deviceId: "fat-man", yieldMt: 0.021, route, launchedAtMs: 0, flightMs: 6500, blastMs: 4600, radii: blastRadiiForYield(0.021) };
+    const second: Launch = { ...first, id: 3, route: { ...route, target: { longitude: -73.7, latitude: 40.75 } } };
+    const wholeGroup = [{ launch: first, elapsedMs: 11_100 }, { launch: second, elapsedMs: 11_100 }];
+    controller.setSceneFrame(wholeGroup, false);
+    expect(multiRender).toHaveBeenCalledWith(wholeGroup, 2208, 740, false);
+    expect(missileMany).toHaveBeenCalledWith(wholeGroup, 2208, 740);
+    expect(inspectionOnly).toHaveBeenCalledWith(second, 11_100, 2208, 740, null);
+    expect(singleRender).not.toHaveBeenCalled();
+    controller.dispose();
+  });
+
   it("switches immediately between independent multi fields and the latest single ruler, invalidating both on camera movement", () => {
     const runtime = fakeMap();
     const singleRender = vi.fn().mockReturnValue(null);
@@ -68,12 +91,12 @@ describe("satellite map controller", () => {
       { render: missileRender, renderMany: missileMany } as unknown as MissileCanvasRenderer,
       { render: singleRender, invalidateProjection: singleInvalidate } as unknown as BlastCanvasRenderer,
       null,
-      { render: multiRender, invalidateProjection: multiInvalidate } as unknown as MultiBlastCanvasRenderer);
+      { render: multiRender, invalidateProjection: multiInvalidate, dispose: vi.fn() } as unknown as MultiBlastCanvasRenderer);
     const route = { start: { longitude: -74, latitude: 41 }, control: { longitude: -73.9, latitude: 40.9 }, target: { longitude: -73.8, latitude: 40.8 } };
     const launch: Launch = { id: 1, deviceId: "fat-man", yieldMt: 0.021, route, launchedAtMs: 0, flightMs: 6500, blastMs: 4600, radii: blastRadiiForYield(0.021) };
     const frames = [{ launch, elapsedMs: 11_100 }];
     controller.setSceneFrame(frames, true);
-    expect(multiRender).toHaveBeenCalledWith(frames, 2208, 740);
+    expect(multiRender).toHaveBeenCalledWith(frames, 2208, 740, true);
     expect(missileMany).toHaveBeenCalledWith(frames, 2208, 740);
     expect(singleRender).not.toHaveBeenCalled();
     runtime.emit("move");

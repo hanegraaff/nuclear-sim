@@ -28,6 +28,20 @@ export function multiBlastDisplayIntensity(modeledIntensity: number): number {
   return Math.max(0, Math.min(1, modeledIntensity)) ** 1.85;
 }
 
+/**
+ * Move overlapping damage through the legend hues without inflating opacity.
+ * Peak and sum are unit intensities from independent geographic strikes;
+ * the cap confines this optical accent to at most one neighboring color band.
+ * It fades away from display intensity 0.4 to 0.7 so an already hot cluster
+ * keeps the prototype's localized yellow/orange core instead of turning white.
+ */
+export function multiBlastHueIntensity(displayIntensity: number, peak: number, sum: number): number {
+  const overlap = Math.max(0, sum - peak);
+  const taper = Math.max(0, Math.min(1, (0.7 - displayIntensity) / 0.3));
+  const accent = Math.min(0.16, overlap * 1.2) * taper;
+  return Math.max(0, Math.min(1, displayIntensity + accent));
+}
+
 /** Interpolate the prototype palette for a bounded visual intensity. */
 export function multiBlastColor(intensity: number): MultiBlastColor {
   const value = Math.max(0, Math.min(1, intensity));

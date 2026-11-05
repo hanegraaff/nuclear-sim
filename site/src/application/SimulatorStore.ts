@@ -53,8 +53,11 @@ export class SimulatorStore {
     this.dispatch({ type: "launchAt", route, deviceId: selection.device.id, yieldMt: selection.device.yieldMt, nowMs: this.clock.now() });
   };
 
-  /** Stable radians for the next launch; each launch enters from a different edge. */
-  readonly nextLaunchAngle = (): number => -Math.PI / 4 + (this.state.nextLaunchId - 1) * Math.PI * (3 - Math.sqrt(5));
+  /** Hold a deterministic entry bearing from the first group until Reset or mode change. */
+  readonly nextLaunchAngle = (): number => {
+    const entryId = this.state.multiLaunch ? this.state.launchGroups[0]?.id ?? this.state.nextLaunchId : this.state.nextLaunchId;
+    return -Math.PI / 4 + (entryId - 1) * Math.PI * (3 - Math.sqrt(5));
+  };
 
   private scheduleFrame(): void {
     if (this.frameId !== null || this.listeners.size === 0) return;

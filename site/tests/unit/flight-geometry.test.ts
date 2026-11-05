@@ -17,6 +17,15 @@ describe("prototype carrier trajectory", () => {
     }
   });
 
+  it("uses one edge entry with the same bearing while separate targets keep their own curves", () => {
+    const first = viewportFlightRoute(1508, 1080, { x: 920, y: 570 }, -Math.PI / 4);
+    const second = viewportFlightRoute(1508, 1080, { x: 1080, y: 630 }, -Math.PI / 4);
+    expect(first.start).toEqual(second.start);
+    expect(first.control).not.toEqual(second.control);
+    expect(screenFlightPoint({ ...first, target: { x: 920, y: 570 } }, 1)).toEqual({ x: 920, y: 570 });
+    expect(screenFlightPoint({ ...second, target: { x: 1080, y: 630 } }, 1)).toEqual({ x: 1080, y: 630 });
+  });
+
   it("arrives exactly at the target without a position jump", () => {
     const route = { start: { x: 0, y: 0 }, control: { x: 400, y: 80 }, target: { x: 700, y: 450 } };
     expect(screenFlightPoint(route, 0)).toEqual(route.start);

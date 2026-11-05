@@ -24,8 +24,8 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 | 07 | Blast field grounded in pitched views | Complete | 06 |
 | 08 | 3D fireball | Complete | 07 |
 | 09 | Animated cloud-profile monitor | Complete | 08 |
-| 10 | Additive multi launch | Complete | 09 |
-| 11 | MIRV separation and multiple impacts | Ready | 10 |
+| 10 | Additive multi launch | In progress | 09 |
+| 11 | MIRV separation and multiple impacts | Not started | 10 |
 | 12 | Fallout view | Not started | 11 |
 | 13 | Audible view | Not started | 12 |
 | 14 | Visible view | Not started | 13 |
@@ -171,7 +171,9 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 
 **Completion evidence.** State and composition tests pass; inspect two, five, and dense overlapping strikes and compare the five-strike state with `Multi-Launch.png`.
 
-**Current status.** Complete on 2026-11-05 from branch `plan-10`. Private [Site version 19](https://nuke-simulator-rebuild.maquaman.chatgpt.site) is published from GitHub application commit `0c308fbe0bb0a35f3323fc2939b91bcb2627dc8e` and Sites source commit `16ea378f677739f7b612f89517742273b0c983a5`. Workspace and clean-release-checkout `npm run verify` both passed type checking, lint, 151 unit tests, 30 integration tests, the production build, and 31 browser tests. Direct Chromium checks exercised two, five, and 16 overlapping strikes; missile flight during an earlier blast; hover/focus legend popups; pan, zoom, pitch, resize, narrow layout, mode switching, and Reset. An authenticated browser check of the published Site confirmed five impacts, the latest-group single view, Reset, and no page errors. The reviewed [fixed-time inbound](site/tests/e2e/multi-launch.spec.ts-snapshots/plan-10-second-inbound-darwin.png) and [five-strike](site/tests/e2e/multi-launch.spec.ts-snapshots/plan-10-five-strikes-darwin.png) baselines and a live-Esri pitched comparison were inspected against `Multi-Launch.png`. A display-only tone adjustment localized the bright overlap while retaining geographic radii. The remaining camera/scene differences are documented in [visual reference notes](site/docs/visual-reference.md).
+**Prior release.** Published on 2026-11-05 from branch `plan-10`. Private [Site version 19](https://nuke-simulator-rebuild.maquaman.chatgpt.site) is published from GitHub application commit `0c308fbe0bb0a35f3323fc2939b91bcb2627dc8e` and Sites source commit `16ea378f677739f7b612f89517742273b0c983a5`. Workspace and clean-release-checkout `npm run verify` both passed type checking, lint, 151 unit tests, 30 integration tests, the production build, and 31 browser tests. Direct Chromium checks exercised two, five, and 16 overlapping strikes; missile flight during an earlier blast; hover/focus legend popups; pan, zoom, pitch, resize, narrow layout, mode switching, and Reset. An authenticated browser check of the published Site confirmed five impacts, the latest-group single view, Reset, and no page errors. The reviewed [fixed-time inbound](site/tests/e2e/multi-launch.spec.ts-snapshots/plan-10-second-inbound-darwin.png) and [five-strike](site/tests/e2e/multi-launch.spec.ts-snapshots/plan-10-five-strikes-darwin.png) baselines and a live-Esri pitched comparison were inspected against `Multi-Launch.png`. A display-only tone adjustment localized the bright overlap while retaining geographic radii. The remaining camera/scene differences are documented in [visual reference notes](site/docs/visual-reference.md).
+
+**Correction in progress.** User testing found that successive multi-launch missiles approach from different directions and overlap changes little on the damage gradient. Address both behaviors on the open Plan 10 PR, along with the two posted review findings, then repeat the tests, visual review, and private Site release before restoring `Complete`.
 
 **Blocking decisioning.** None. Do not combine multiple strikes by adding their yields into a single virtual device.
 
@@ -185,7 +187,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the 
 
 **Completion evidence.** Continuity and catalog tests pass; a fixed-time capture shows pre-split, split, and multiple impacts.
 
-**Current status.** Ready; Plan 10 is complete.
+**Current status.** Not started; depends on the Plan 10 correction.
 
 **Blocking decisioning.** None. Use the representative modeled loadouts in the prototype, visibly labeled as modeled.
 

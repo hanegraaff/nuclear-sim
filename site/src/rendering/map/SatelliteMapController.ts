@@ -136,6 +136,7 @@ export class SatelliteMapController {
     this.map.off("resize", this.repaintCamera);
     this.map.off("move", this.repaintCamera);
     this.map.off("click", this.handleMapClick);
+    this.multiBlastRenderer?.dispose();
     this.fireballRenderer?.dispose();
     this.map.remove();
   }
@@ -174,7 +175,7 @@ export class SatelliteMapController {
     try {
       const container = this.map.getContainer();
       const camera = { longitude: this.map.getCenter().lng, zoom: this.map.getZoom() };
-      if (this.multiLaunch) this.fireballRenderer.renderMany(this.fireballMatrix, camera, this.sceneFrames, container.clientWidth, container.clientHeight);
+      if (this.multiLaunch || this.sceneFrames.length > 1) this.fireballRenderer.renderMany(this.fireballMatrix, camera, this.sceneFrames, container.clientWidth, container.clientHeight);
       else this.fireballRenderer.render(this.fireballMatrix, camera, this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
     } catch (error) {
       this.fireballFailed = true;
@@ -196,13 +197,16 @@ export class SatelliteMapController {
 
   private readonly repaintFlight = (): void => {
     const container = this.map.getContainer();
-    if (this.multiLaunch) this.multiBlastRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight);
-    const inspection = this.multiLaunch ? null : this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, this.highlightedZoneId) ?? null;
+    const groupedSingle = !this.multiLaunch && this.sceneFrames.length > 1;
+    if (this.multiLaunch || groupedSingle) this.multiBlastRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch);
+    const inspection = this.multiLaunch ? null : groupedSingle
+      ? this.blastRenderer?.renderInspectionOnly(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, this.highlightedZoneId) ?? null
+      : this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, this.highlightedZoneId) ?? null;
     if (inspection !== this.inspection) {
       this.inspection = inspection;
       this.callbacks.onInspectionChange?.(inspection);
     }
-    if (this.multiLaunch) this.missileRenderer?.renderMany(this.sceneFrames, container.clientWidth, container.clientHeight);
+    if (this.multiLaunch || groupedSingle) this.missileRenderer?.renderMany(this.sceneFrames, container.clientWidth, container.clientHeight);
     else this.missileRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
   };
 

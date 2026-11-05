@@ -115,6 +115,29 @@ export class BlastCanvasRenderer {
     if (progress > 0 && progress < 1) this.drawShockwave(context, launch.route.target, travelledKm);
     if (blastAge < FLASH_MS) this.drawFlash(context, center, blastAge, Math.min(width, height));
     if (progress < 1) return null;
+    this.drawOpticalSun(context, center, launch.route.target, launch.radii, 1, field);
+    return this.paintSettledInspection(launch, width, height, highlightedZoneId, inspectionContext);
+  }
+
+  /** Keep the latest group's ruler and markers above a combined multi-warhead field. */
+  renderInspectionOnly(launch: Launch | null, elapsedMs: number, width: number, height: number, highlightedZoneId: BlastZoneId | null): BlastInspectionGeometry | null {
+    const canvas = this.inspectionCanvas;
+    if (!canvas) return null;
+    const ratio = window.devicePixelRatio || 1;
+    const pixelWidth = Math.max(1, Math.round(width * ratio));
+    const pixelHeight = Math.max(1, Math.round(height * ratio));
+    if (canvas.width !== pixelWidth) canvas.width = pixelWidth;
+    if (canvas.height !== pixelHeight) canvas.height = pixelHeight;
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+    context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    context.clearRect(0, 0, width, height);
+    if (!launch || elapsedMs < launch.flightMs + launch.blastMs || width <= 0 || height <= 0) return null;
+    return this.paintSettledInspection(launch, width, height, highlightedZoneId, context);
+  }
+
+  /** Reuse the latest geographic bearing when only presentation changes. */
+  private paintSettledInspection(launch: Launch, width: number, height: number, highlightedZoneId: BlastZoneId | null, context: CanvasRenderingContext2D): BlastInspectionGeometry | null {
     if (this.inspectionBearing?.launchId !== launch.id) {
       this.inspectionBearing = {
         launchId: launch.id,
@@ -122,8 +145,7 @@ export class BlastCanvasRenderer {
       };
     }
     const inspection = buildBlastInspection(this.camera, launch.route.target, launch.radii, width, height, this.inspectionBearing.degrees);
-    this.drawOpticalSun(context, center, launch.route.target, launch.radii, 1, field);
-    if (inspection) drawBlastInspection(inspectionContext, inspection, highlightedZoneId);
+    if (inspection) drawBlastInspection(context, inspection, highlightedZoneId);
     return inspection;
   }
 

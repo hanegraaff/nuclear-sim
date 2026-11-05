@@ -22,6 +22,23 @@ interface Resources {
   readonly opacity: WebGLUniformLocation;
 }
 
+/**
+ * Reject a transformed dome only when its full unit-hemisphere bounding box
+ * lies outside a horizontal or vertical clip plane. The bound deliberately
+ * includes empty corners so pitched and edge-crossing domes stay visible.
+ */
+export function fireballIntersectsClipViewport(transform: ArrayLike<number>): boolean {
+  if (transform.length !== 16) return true;
+  for (const [axis, sign] of [[0, 1], [0, -1], [1, 1], [1, -1]] as const) {
+    const base = transform[15]! + sign * transform[12 + axis]!;
+    const x = transform[3]! + sign * transform[axis]!;
+    const y = transform[7]! + sign * transform[4 + axis]!;
+    const z = transform[11]! + sign * transform[8 + axis]!;
+    if (base + Math.abs(x) + Math.abs(y) + Math.max(0, z) < 0) return false;
+  }
+  return true;
+}
+
 const VERTEX_SOURCE = `#version 300 es
 in vec3 a_position;
 uniform mat4 u_matrix;
@@ -197,12 +214,14 @@ export class FireballRenderer {
       if (envelope.radius <= 0 || envelope.opacity <= 0) continue;
       const radiusKm = launch.radii.fireball * envelope.radius;
       const groundPoint = launch.route.target;
+      const transform = localMercatorMatrix(matrix, groundPoint, radiusKm, camera.longitude);
+      if (!fireballIntersectsClipViewport(transform)) continue;
       const pixelsPerMeter = 1 / groundMetersPerPixel(groundPoint.latitude, camera.zoom);
       const detail = frames.length >= 10 ? "compact" : fireballMeshDetail(radiusKm * 1000 * pixelsPerMeter);
       const mesh = resources.meshes[detail];
       gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffer);
       gl.vertexAttribPointer(resources.position, 3, gl.FLOAT, false, 0, 0);
-      gl.uniformMatrix4fv(resources.matrix, false, localMercatorMatrix(matrix, groundPoint, radiusKm, camera.longitude));
+      gl.uniformMatrix4fv(resources.matrix, false, transform);
       gl.uniform1f(resources.time, elapsedMs / 1000);
       gl.uniform1f(resources.cooling, envelope.cooling);
       gl.uniform1f(resources.opacity, envelope.opacity);
