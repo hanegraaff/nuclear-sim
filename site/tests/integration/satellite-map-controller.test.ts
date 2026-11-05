@@ -60,6 +60,47 @@ function fakeMap() {
 }
 
 describe("satellite map controller", () => {
+  it("preserves a multi scene camera across views while single Fallout framing remains reversible", () => {
+    const runtime = fakeMap();
+    const controller = new SatelliteMapController(runtime.map, { onStateChange: () => {}, onCameraChange: () => {} });
+    const origin = { longitude: -73.9857, latitude: 40.7484 };
+    const launched = reduceSimulator(INITIAL_SIMULATOR_STATE, {
+      type: "launchAt", route: { start: origin, control: origin, target: origin },
+      deviceId: "fat-man", yieldMt: 0.021, nowMs: 0,
+    });
+    const settled = reduceSimulator(launched, { type: "tick", launchId: launched.launch!.id, nowMs: 12_000 });
+    const frames = launchFramesForState(settled);
+    controller.setSceneFrame(frames, true, null, "fallout");
+    controller.setSceneFrame(frames, true, null, "blast");
+    expect(runtime.easeTo).not.toHaveBeenCalled();
+    controller.setSceneFrame(frames, false, null, "fallout");
+    expect(runtime.easeTo).toHaveBeenCalledOnce();
+    controller.setSceneFrame(frames, false, null, "blast");
+    expect(runtime.easeTo).toHaveBeenLastCalledWith({
+      // Longitude normalization can introduce only floating-point rounding in degrees.
+      center: [expect.closeTo(origin.longitude, 10), origin.latitude], zoom: 10.6, pitch: 0, bearing: 0, duration: 650,
+    });
+    controller.dispose();
+  });
+
+  it("keeps a replacement launch camera while retaining explicit Blast-tab camera restoration", () => {
+    const runtime = fakeMap();
+    const controller = new SatelliteMapController(runtime.map, { onStateChange: () => {}, onCameraChange: () => {} });
+    const origin = { longitude: -73.9857, latitude: 40.7484 };
+    const launched = reduceSimulator(INITIAL_SIMULATOR_STATE, {
+      type: "launchAt", route: { start: origin, control: origin, target: origin }, deviceId: "fat-man", yieldMt: 0.021, nowMs: 0,
+    });
+    const settled = reduceSimulator(launched, { type: "tick", launchId: launched.launch!.id, nowMs: 12_000 });
+    controller.setSceneFrame(launchFramesForState(settled), false, null, "blast");
+    controller.setSceneFrame(launchFramesForState(settled), false, null, "fallout");
+    runtime.easeTo.mockClear();
+    const target = { longitude: -73.55, latitude: 40.7 };
+    const replacement = reduceSimulator(settled, { type: "launchAt", route: { start: origin, control: origin, target }, deviceId: "fat-man", yieldMt: 0.021, nowMs: 13_000 });
+    controller.setSceneFrame(launchFramesForState(replacement), false, null, "blast");
+    expect(runtime.easeTo).not.toHaveBeenCalled();
+    controller.dispose();
+  });
+
   it("frames a hidden narrow MIRV group once without changing its geographic targets", () => {
     const runtime = fakeMap();
     runtime.setViewportWidth(430);

@@ -6,6 +6,7 @@ import type { BlastZoneId } from "../domain/blastZones";
 import { getDeviceById } from "../catalog/devices";
 import { mirvImpactTargets } from "../domain/mirv";
 import { planMirvCarrier } from "./mirvCarrierPlan";
+import { modelFallout, type FalloutBandId, type FalloutFootprint } from "../domain/fallout";
 
 /** Normal carrier travel time in milliseconds, taken from the prototype. */
 export const FLIGHT_MS = 6500;
@@ -43,6 +44,8 @@ export interface Launch {
   readonly flightMs: number;
   readonly blastMs: number;
   readonly radii: BlastRadii;
+  /** H+24 screening geometry exists only for nuclear devices. */
+  readonly fallout?: FalloutFootprint;
   /** Absent for a single device; all reentry vehicles share one carrier route. */
   readonly mirv?: MirvCarrier;
 }
@@ -64,6 +67,11 @@ export interface SimulatorState extends ScenarioSelectionState {
   readonly phase: "armed" | "inbound" | "detonating" | "complete";
   readonly multiLaunch: boolean;
   readonly pendingLaunch: boolean;
+  readonly effectView: "blast" | "fallout";
+  readonly activeFalloutId: FalloutBandId | null;
+  readonly hoveredFalloutId: FalloutBandId | null;
+  readonly focusedFalloutId: FalloutBandId | null;
+  readonly pinnedFalloutId: FalloutBandId | null;
   readonly launchGroups: readonly LaunchGroup[];
   readonly nowMs: number;
   readonly launch: Launch | null;
@@ -81,6 +89,11 @@ export type SimulatorAction = ScenarioSelectionAction
   | { readonly type: "tick"; readonly nowMs: number; readonly launchId: number }
   | { readonly type: "setMultiLaunch"; readonly enabled: boolean }
   | { readonly type: "setPendingLaunch"; readonly pending: boolean }
+  | { readonly type: "setEffectView"; readonly view: "blast" | "fallout" }
+  | { readonly type: "hoverFallout"; readonly id: FalloutBandId | null }
+  | { readonly type: "focusFallout"; readonly id: FalloutBandId | null }
+  | { readonly type: "pinFallout"; readonly id: FalloutBandId }
+  | { readonly type: "clearFalloutInspection" }
   | { readonly type: "reset" }
   | { readonly type: "hoverZone"; readonly zoneId: BlastZoneId | null }
   | { readonly type: "focusZone"; readonly zoneId: BlastZoneId | null }
@@ -93,6 +106,11 @@ export const INITIAL_SIMULATOR_STATE: SimulatorState = {
   phase: "armed",
   multiLaunch: false,
   pendingLaunch: false,
+  effectView: "blast",
+  activeFalloutId: null,
+  hoveredFalloutId: null,
+  focusedFalloutId: null,
+  pinnedFalloutId: null,
   launchGroups: [],
   nowMs: 0,
   launch: null,
@@ -126,6 +144,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       flightMs: flightMs + (carrier ? index * staggerMs : 0),
       blastMs: BLAST_MS,
       radii,
+      ...(action.deviceId !== "moab" && action.deviceId !== "foab" ? { fallout: modelFallout(target, yieldMt, state.nextLaunchId + index) } : {}),
       ...(carrier ? { mirv: { route: carrier.route, splitMs: carrier.splitMs, carrierFlightMs: flightMs, lead: index === 0 } } : {}),
     }));
     const group: LaunchGroup = { id: state.nextLaunchId, launches };
@@ -137,6 +156,11 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       nowMs: action.nowMs,
       launch,
       elapsedMs: 0,
+      effectView: "blast",
+      activeFalloutId: null,
+      hoveredFalloutId: null,
+      focusedFalloutId: null,
+      pinnedFalloutId: null,
       activeZoneId: null,
       hoveredZoneId: null,
       focusedZoneId: null,
@@ -163,6 +187,11 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       launch,
       elapsedMs: launch ? elapsedForLaunch(launch, state.nowMs) : 0,
       phase: phaseForGroups(launchGroups, state.nowMs),
+      effectView: launchGroups.some((group) => group.launches.some((delivery) => delivery.fallout)) ? state.effectView : "blast",
+      activeFalloutId: null,
+      hoveredFalloutId: null,
+      focusedFalloutId: null,
+      pinnedFalloutId: null,
       activeZoneId: null,
       hoveredZoneId: null,
       focusedZoneId: null,
@@ -170,8 +199,38 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     };
   }
   if (action.type === "setPendingLaunch") {
-    return state.pendingLaunch === action.pending ? state : { ...state, pendingLaunch: action.pending };
+    if (state.pendingLaunch === action.pending) return state;
+    return {
+      ...state,
+      pendingLaunch: action.pending,
+      ...(action.pending ? {
+        effectView: "blast" as const,
+        activeFalloutId: null,
+        hoveredFalloutId: null,
+        focusedFalloutId: null,
+        pinnedFalloutId: null,
+      } : {}),
+    };
   }
+  if (action.type === "setEffectView") {
+    if (state.phase !== "complete" || state.pendingLaunch || (action.view === "fallout" && !falloutAvailable(state))) return state;
+    return {
+      ...state,
+      effectView: action.view,
+      activeZoneId: null,
+      hoveredZoneId: null,
+      focusedZoneId: null,
+      pinnedZoneId: null,
+      activeFalloutId: null,
+      hoveredFalloutId: null,
+      focusedFalloutId: null,
+      pinnedFalloutId: null,
+    };
+  }
+  if (action.type === "hoverFallout") return updateFalloutInspection(state, action.id, state.focusedFalloutId, state.pinnedFalloutId);
+  if (action.type === "focusFallout") return updateFalloutInspection(state, state.hoveredFalloutId, action.id, state.pinnedFalloutId);
+  if (action.type === "pinFallout") return updateFalloutInspection(state, state.hoveredFalloutId, state.focusedFalloutId, state.pinnedFalloutId === action.id ? null : action.id);
+  if (action.type === "clearFalloutInspection") return updateFalloutInspection(state, null, null, null);
   if (action.type === "hoverZone") {
     if (action.zoneId === state.hoveredZoneId) return state;
     return updateInspection(state, action.zoneId, state.focusedZoneId, state.pinnedZoneId);
@@ -188,8 +247,19 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     return state.activeZoneId === null && state.hoveredZoneId === null && state.focusedZoneId === null && state.pinnedZoneId === null
       ? state : updateInspection(state, null, null, null);
   }
-  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, pendingLaunch: false, elapsedMs: 0, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
+  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, pendingLaunch: false, elapsedMs: 0, effectView: "blast", activeFalloutId: null, hoveredFalloutId: null, focusedFalloutId: null, pinnedFalloutId: null, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
   return { ...state, ...reduceScenarioSelection(state, action) };
+}
+
+/** Nuclear fallout eligibility follows retained launches, never the current device selection. */
+export function falloutAvailable(state: Pick<SimulatorState, "launchGroups">): boolean {
+  return state.launchGroups.some((group) => group.launches.some((launch) => launch.fallout));
+}
+
+/** Resolve pointer, focus and pinned fallout inspection without crossing into UI state. */
+function updateFalloutInspection(state: SimulatorState, hoveredFalloutId: FalloutBandId | null, focusedFalloutId: FalloutBandId | null, pinnedFalloutId: FalloutBandId | null): SimulatorState {
+  if (state.effectView !== "fallout") return state;
+  return { ...state, hoveredFalloutId, focusedFalloutId, pinnedFalloutId, activeFalloutId: hoveredFalloutId ?? focusedFalloutId ?? pinnedFalloutId };
 }
 
 /** Clamp one delivery's age to its finite flight plus expansion interval. */

@@ -1,6 +1,6 @@
 # Model assumptions and limits
 
-The model calculates geographic positions, illustrative blast radii, cloud height, and overlap intensity. It is calibrated to the read-only prototype's visual behavior and is not a measured effects forecast. Fallout, audible, and visible-range models remain future capabilities.
+The model calculates geographic positions, illustrative blast radii, cloud height, deterministic wind and fallout footprints, and normalized display intensity. It is calibrated to the read-only prototype's visual behavior and is not a measured effects forecast. Blast and Fallout are available; audible and visible-range models remain future capabilities.
 
 `src/domain/geodesy.ts` uses a spherical Earth with mean radius **6371 km**, matching the reference prototype. Great-circle distance uses the haversine formula. Destination calculations use a spherical bearing formula. Longitudes are normalized to [−180°, 180°), so a route crossing the antimeridian remains short. Inputs with non-finite coordinates, latitude outside [−90°, 90°], negative distance, or travel beyond the antipodal surface distance are rejected.
 
@@ -8,7 +8,7 @@ These formulas are appropriate for a map-scale illustrative simulator. They do n
 
 ## Device input
 
-The fixed catalog preserves the prototype's 47 displayed choices. Internal yields are megatons of TNT equivalent. Conventional entries are labeled separately from nuclear entries; the planned fallout view must exclude conventional-only strikes. MIRV entries store both displayed aggregate yield and explicit per-warhead yield. Each delivered impact uses the latter value. The three modeled loadouts are 3 × 0.175 Mt, 10 × 0.12 Mt, and 10 × 0.5 Mt.
+The fixed catalog preserves the prototype's 47 displayed choices. Internal yields are megatons of TNT equivalent. Conventional entries are labeled separately from nuclear entries; MOAB and FOAB do not create fallout footprints. MIRV entries store both displayed aggregate yield and explicit per-warhead yield. Each delivered impact uses the latter value. The three modeled loadouts are 3 × 0.175 Mt, 10 × 0.12 Mt, and 10 × 0.5 Mt.
 
 Custom input accepts finite megatons from 0.000000001 Mt, the prototype's minimum, through 1,000,000,000 Mt, the catalog's 1 Pt upper study. These bounds keep model calculations within a defined range. Group separators must divide three digits consistently; malformed text cannot resolve to a device profile and must not launch.
 
@@ -64,6 +64,46 @@ The multi-field renderer applies a separate **display-only** `intensity^1.85` tr
 
 The map-distance bar is a separate camera reference: meters per CSS pixel at center latitude are approximated by `156543.03392 × max(0.04, cos(latitude)) / 2^zoom`. The renderer chooses a nearby 1/2/5 kilometer label and bounds the drawn width to 54–158 CSS pixels. On a pitched map, scale varies across the screen, so the bar is an illustrative center-scale reference rather than a survey measure at every point. The legend's four bands retain the single-strike descriptions; a tooltip gives the **latest strike's** modeled zone span, while the color field displays bounded combined intensity.
 
-Overlap brightness, palette, shockwave glow, and the scale bar are illustrative presentation choices. The response does not estimate additive pressure, thermal dose, casualties, fallout, or uncertainty. Independent per-click groups and their individual timing are preserved by the application state. A MIRV click places several warheads in one group, each with its own intensity field and impact clock. Multi-session carriers share the first group's general entry bearing, but each clicked geographic target and curved route is separate. Turning the mode off preserves and renders the latest whole group, including its individual missiles and fireballs, while the single ruler describes the latest delivery.
+Overlap brightness, palette, shockwave glow, and the scale bar are illustrative presentation choices. This Blast response does not estimate additive pressure, thermal dose, casualties, fallout, or uncertainty. The separate Fallout composition below is also a normalized display field. Independent per-click groups and their individual timing are preserved by the application state. A MIRV click places several warheads in one group, each with its own intensity field and impact clock. Multi-session carriers share the first group's general entry bearing, but each clicked geographic target and curved route is separate. Turning the mode off preserves and renders the latest whole group, including its individual missiles and fireballs, while the single ruler describes the latest delivery.
 
 The compositor unprojects one shared viewport grid and keeps only per-sample peak and sum values; it does not retain a distance grid for every strike. The grid uses 560 × 380 samples for fewer than six strikes, 420 × 280 for six to fifteen, and a fixed 320 × 220 for sixteen or more. The fixed dense tier protects small fields from disappearing as strike count grows. Geographic work proceeds in chunks of at most 600,000 sample evaluations and 1,024 candidate strikes per repaint; total work can grow with the number of strikes. A conservative geographic bound skips only effects outside the visible ground. Retained rendering memory and per-repaint work stay bounded, while every application strike remains eligible for later chunks. The cost is softer spatial detail in dense scenes and possible partial field frames after a camera change while remaining contributions finish. No fixed completion time is promised. The WebGL renderer also skips a fireball dome only when its full transformed bound lies outside a viewport clip plane, retaining pitched or edge-crossing domes. None of these drawing limits changes a strike's modeled radius in kilometers.
+
+## Fallout screening envelope
+
+`src/domain/fallout.ts` rebuilds the plume construction, latitude-band wind proxy, band copy, and H+24 surface-burst presentation in `prototype-code/app/page.tsx`, with `Fallout.png` as the visual reference. A nuclear impact freezes its own geographic origin, wind, dimensions, and deterministic deposition lobes. MIRV fields use each warhead's yield and target, not the aggregate catalog yield; mixed scenes omit conventional deliveries. Changing the selected device cannot alter an existing footprint. H+24 means the illustrative envelope at 24 hours after impact; it is not a time-integrated radiation-transport solution or a live plume animation.
+
+### Transport and dimensions
+
+The wind proxy depends on location, not current weather or clock time. Bearings are degrees **toward** the downwind direction, and speeds are kilometers per hour. The prototype's bands are:
+
+| Absolute latitude | Band | Base downwind bearing, north/south | Speed | Curve, north/south |
+| --- | --- | --- | --- | --- |
+| Below 7° | Equatorial flow | 270° / 270° | 12 km/h | −7° / +7° |
+| 7° to below 30° | Trade wind | 228° / 312° | 26 km/h | −10° / +10° |
+| 30° to below 60° | Prevailing westerly | 76° / 104° | 38 km/h | +9° / −9° |
+| 60° and above | Polar easterly | 252° / 288° | 31 km/h | −8° / +8° |
+
+A smooth location variation adds `7 × sin((0.73 × longitude + 1.17 × latitude) × π/180)` degrees to the base bearing. A secondary surface bearing adds `1.9 × curve`. These are deterministic climatological cues, not observed wind profiles. For progress `t` along the plume, the ruler's geodesic destination uses distance `length × t` and bearing `windBearing + curve × t × 0.52`.
+
+For yield `Y` in megatons, let `s = cbrt(Y / 0.01)` and `w = 0.82 + 0.24 × min(1.45, speedKph / 38)`. The illustrative dimensions in kilometers are `length = max(0.75, 31 × s × w)`, `width = max(0.35, 4.5 × s)`, and `localRadius = max(0.2, 0.78 × width)`. They are capped respectively at one, 0.34, and 0.2 times the spherical antipodal surface distance to keep extreme study yields finite. The default 21 kt Fat Man near New York produces the prototype's rounded H+24 42.1 km eastward label. These constants are visual calibration, not empirically validated fallout scaling laws.
+
+### Field, bands, and inspection
+
+A local skirt, 35 downwind lobes, deterministic lateral hotspots, and 11 secondary surface-wind lobes create the footprint in local east/north kilometers. The geographic evaluator converts a sample to great-circle distance and bearing from the origin, including short-path antimeridian wrapping. A second entry point evaluates the same kernel directly in those local east/north kilometers, letting rendering cache physical samples without repeating the geographic conversion. Each stretched lobe contributes a piecewise radial kernel with normalized radius/intensity anchors `(0,1)`, `(0.24,0.78)`, `(0.58,0.34)`, `(0.82,0.1)`, and `(1,0)`. The summed field receives the prototype-calibrated `raw^1.08 × 1.08` transfer and is capped at one. Two smooth physical-coordinate noise scales modulate the result by at most ±12%, giving ragged contours without camera-dependent shimmer. The deterministic seed changes appearance, not wind or nominal dimensions.
+
+The bands associate normalized scalar thresholds with prototype labels. **Intensity is unitless. The printed Gy ranges and health descriptions are illustrative reference copy, not computed absorbed dose, measured deposition, or a forecast of individual exposure.** No conversion from field intensity to grays is performed.
+
+| Outer-to-inner band | Prototype label | Printed illustrative range | Scalar threshold | Downwind / width factors |
+| --- | --- | --- | --- | --- |
+| Trace | Contaminated | Below ~0.5 Gy | 0.04 | 1 / 1 |
+| Elevated | Acute Sickness | ~0.5–2 Gy | 0.16 | 0.74 / 0.72 |
+| High | Critical Dose | ~2–6 Gy | 0.38 | 0.48 / 0.48 |
+| Extreme | Lethal Dose | Above ~6 Gy | 0.72 | 0.24 / 0.27 |
+
+Inspection uses these broad envelope factors, not a numerical integration of the noisy contours. For each band, outer downwind distance is `length × lengthFactor`. Enclosed approximate area is `π × outerDistance × width × widthFactor × 0.36 + π × (localRadius × widthFactor)^2` km²; a band's area subtracts the inner enclosed area and is clamped nonnegative. Thus the displayed span and area need not trace every ragged colored pixel. Four markers identify the nested spans along a curved dashed ruler. In a retained MIRV single scene, fields from all warheads remain visible while the ruler describes the first nuclear delivery. In multi mode, the legend describes the newest nuclear delivery; neither it nor the map scale claims a combined-dose contour.
+
+Multiple nuclear footprints sum their normalized intensities at each geographic location and clamp the result to one. Rendering approximates this composition by projecting cached strike-local scalar textures into an additive mask before applying the thermal palette and screen blend. A coarse texture makes every retained plume visible before bounded refinement adds detail. Camera changes reproject those textures and their geographic contours rather than resampling the model. The shared texel allowance and small mesh limit rendering detail; extreme chart coordinates beyond the antipodal disk are transparent to avoid folding a second copy onto Earth. A separate local white-yellow optical core restores the prototype's brightness without changing the scalar field or inspection values. View changes, Reset, and disposal cancel pending refinement and release cached fields. These are rendering approximations, not additional physics.
+
+### Limits and uncertainty (M-04)
+
+The envelope assumes a surface burst for visual consistency even when another instrument's device profile uses an illustrative burst height. Actual fallout depends strongly on burst height and ground coupling; the model does not decide whether a given airburst would produce this envelope. It does not calculate fission fraction, radionuclide inventory, particle size or settling, activity decay, shielding, breathing or ingestion exposure, or absorbed dose. Weather and vertical wind shear can change transport; precipitation can create rainout and local hotspots; terrain can channel flow or alter deposition. None of these inputs is measured here, and the deterministic surface shear lobe is no substitute for them. The model supplies neither uncertainty bounds nor a validated meteorological forecast. Its purpose is to reproduce the prototype's screening illustration, and it must not be used for emergency decisions or casualty estimates.

@@ -3,6 +3,10 @@ import type { Launch, LaunchFrame, FlightRoute, LaunchIntent } from "../../appli
 import { MissileCanvasRenderer } from "../animation/MissileCanvasRenderer";
 import { BlastCanvasRenderer } from "../effects/BlastCanvasRenderer";
 import { MultiBlastCanvasRenderer } from "../effects/MultiBlastCanvasRenderer";
+import { FalloutCanvasRenderer } from "../effects/FalloutCanvasRenderer";
+import type { FalloutBandId } from "../../domain/fallout";
+import type { FalloutInspectionGeometry } from "../overlays/falloutInspection";
+import { falloutCameraFrame } from "../../application/effectPresentation";
 import { createFireballRenderer, type FireballCamera, type FireballRenderer } from "../animation/FireballRenderer";
 import { viewportFlightRoute } from "../animation/flightGeometry";
 import { projectedMirvPlan } from "../animation/mirvProjectionSafety";
@@ -46,6 +50,7 @@ export interface SatelliteMapCallbacks {
   /** Explain when no safe camera and carrier route can be found. */
   readonly onLaunchUnavailable?: (message: string | null) => void;
   readonly onInspectionChange?: (geometry: BlastInspectionGeometry | null) => void;
+  readonly onFalloutInspectionChange?: (geometry: FalloutInspectionGeometry | null) => void;
   /** Return the lower edge of controls covering the narrow map, in CSS pixels from its top. */
   readonly clearMapTopPx?: () => number;
 }
@@ -83,8 +88,11 @@ export class SatelliteMapController {
   private lastFramedMirvGroupId: number | null = null;
   private pendingClicks: PendingMapClick[] = [];
   private pendingFrameAttempt = 0;
+  private effectView: "blast" | "fallout" = "blast";
+  private activeFalloutId: FalloutBandId | null = null;
+  private blastCamera: MapCameraSnapshot | null = null;
 
-  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null, private readonly multiBlastRenderer?: MultiBlastCanvasRenderer) {
+  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null, private readonly multiBlastRenderer?: MultiBlastCanvasRenderer, private readonly falloutRenderer?: FalloutCanvasRenderer) {
     this.camera = new MapCameraAdapter(map);
     map.on("load", this.handleLoad);
     map.on("idle", this.handleIdle);
@@ -114,15 +122,23 @@ export class SatelliteMapController {
   }
 
   /** Draw all click groups; turning multi mode off restores one group's ruler. */
-  setSceneFrame(frames: readonly LaunchFrame[], multiLaunch: boolean, highlightedZoneId: BlastZoneId | null = null): void {
+  setSceneFrame(frames: readonly LaunchFrame[], multiLaunch: boolean, highlightedZoneId: BlastZoneId | null = null, effectView: "blast" | "fallout" = "blast", activeFalloutId: FalloutBandId | null = null): void {
+    const changedView = this.effectView !== effectView;
+    if (changedView) { this.multiBlastRenderer?.dispose(); this.falloutRenderer?.dispose(); }
+    this.effectView = effectView;
+    this.activeFalloutId = activeFalloutId;
     const latest = frames.at(-1);
+    // A replacement launch must keep the camera at the clicked target. Only an
+    // explicit tab return within the same settled scene restores Blast framing.
+    if (changedView && effectView === "blast" && this.launch?.id !== latest?.launch.id) this.blastCamera = null;
     if (!latest || (this.launch && this.launch.id !== latest.launch.id) || this.multiLaunch !== multiLaunch) this.fireballRenderer?.clear();
     this.sceneFrames = frames;
     this.multiLaunch = multiLaunch;
     this.launch = latest?.launch ?? null;
     this.elapsedMs = latest?.elapsedMs ?? 0;
     this.highlightedZoneId = highlightedZoneId;
-    this.frameHiddenNarrowMirv(frames);
+    if (this.effectView === "blast") this.frameHiddenNarrowMirv(frames);
+    if (changedView) this.frameEffectView();
     this.repaintFlight();
     if (this.fireballRenderer && !this.fireballFailed) {
       if (this.fireballMatrix) this.repaintFireball();
@@ -219,6 +235,7 @@ export class SatelliteMapController {
     window.removeEventListener("focus", this.handleResume);
     this.cancelPendingLaunch();
     this.multiBlastRenderer?.dispose();
+    this.falloutRenderer?.dispose();
     this.fireballRenderer?.dispose();
     this.map.remove();
   }
@@ -254,6 +271,7 @@ export class SatelliteMapController {
 
   /** Reuse the latest camera matrix between map frames; only the small WebGL canvas changes. */
   private repaintFireball(): void {
+    if (this.effectView === "fallout") { this.fireballRenderer?.clear(); return; }
     if (!this.fireballRenderer || !this.fireballMatrix || !this.fireballCamera || this.fireballFailed) return;
     try {
       const container = this.map.getContainer();
@@ -279,6 +297,14 @@ export class SatelliteMapController {
 
   private readonly repaintFlight = (): void => {
     const container = this.map.getContainer();
+    if (this.effectView === "fallout") {
+      const geometry = this.falloutRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch, this.activeFalloutId) ?? null;
+      this.callbacks.onFalloutInspectionChange?.(geometry);
+      if (this.inspection) { this.inspection = null; this.callbacks.onInspectionChange?.(null); }
+      this.missileRenderer?.render(null, 0, container.clientWidth, container.clientHeight);
+      return;
+    }
+    this.callbacks.onFalloutInspectionChange?.(null);
     const groupedSingle = !this.multiLaunch && this.sceneFrames.length > 1;
     if (this.multiLaunch || groupedSingle) this.multiBlastRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch);
     const inspection = this.multiLaunch ? null : groupedSingle
@@ -297,12 +323,36 @@ export class SatelliteMapController {
     this.invalidateFireballProjection();
     this.blastRenderer?.invalidateProjection();
     this.multiBlastRenderer?.invalidateProjection();
+    this.falloutRenderer?.invalidateProjection();
     this.repaintFlight();
     if (this.fireballRenderer && !this.fireballFailed && !document.hidden) this.map.triggerRepaint();
     // The map-distance instrument follows the same moving camera frame as the
     // geographic field, including animated zoom and container resize.
     this.emitCamera();
   };
+
+  /** Preserve the Blast camera while the alternate field uses its model-supplied frame. */
+  private frameEffectView(): void {
+    // Multi mode keeps the user's scene framing: choosing a view must not hide
+    // distant retained strikes by fitting only one delivery's plume.
+    if (this.multiLaunch) {
+      this.blastCamera = null;
+      return;
+    }
+    if (this.effectView === "fallout") {
+      const snapshot = this.camera.snapshot();
+      this.blastCamera = { longitude: snapshot.center.longitude, latitude: snapshot.center.latitude, zoom: snapshot.zoom, pitch: snapshot.pitch, bearing: snapshot.bearing };
+      const frame = falloutCameraFrame(this.sceneFrames);
+      if (frame) {
+        const container = this.map.getContainer();
+        this.map.easeTo({ center: [frame.center.longitude, frame.center.latitude], zoom: scenarioZoom(frame.horizonKm, frame.center.latitude, container.clientWidth, container.clientHeight), duration: 650 });
+      }
+    } else if (this.blastCamera && this.sceneFrames.length > 0) {
+      const camera = this.blastCamera;
+      this.map.easeTo({ center: [camera.longitude, camera.latitude], zoom: camera.zoom, pitch: camera.pitch, bearing: camera.bearing, duration: 650 });
+      this.blastCamera = null;
+    } else this.blastCamera = null;
+  }
 
   /** Never combine a matrix from an older map frame with a newer camera. */
   private invalidateFireballProjection(): void {
@@ -339,6 +389,8 @@ export class SatelliteMapController {
     const prepared = this.callbacks.prepareLaunch?.(target) ?? null;
     if (!prepared) return;
     const { intent, mirvTargets: targets } = prepared;
+    // Pending MIRV framing can switch the view before a launch object exists.
+    this.blastCamera = null;
     if (this.pendingClicks.length > 0) {
       if (this.multiLaunch) this.pendingClicks.push({ target, angle, targets, intent });
       else {
@@ -529,5 +581,6 @@ export function createSatelliteMapController(
   const blast = blastCanvas ? new BlastCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
   const multiBlast = blastCanvas ? new MultiBlastCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
   const fireball = fireballCanvas ? createFireballRenderer(fireballCanvas, () => map.triggerRepaint()) : undefined;
-  return new SatelliteMapController(map, callbacks, missile, blast, fireball, multiBlast);
+  const fallout = blastCanvas && inspectionCanvas ? new FalloutCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
+  return new SatelliteMapController(map, callbacks, missile, blast, fireball, multiBlast, fallout);
 }
