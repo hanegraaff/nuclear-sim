@@ -3,6 +3,9 @@ import type { ScenarioSelectionAction, ScenarioSelectionState } from "./scenario
 import { INITIAL_SCENARIO_SELECTION, reduceScenarioSelection } from "./scenarioSelection";
 import { blastRadiiForYield, type BlastRadii } from "../domain/blast";
 import type { BlastZoneId } from "../domain/blastZones";
+import { getDeviceById } from "../catalog/devices";
+import { mirvImpactTargets } from "../domain/mirv";
+import { planMirvCarrier } from "./mirvCarrierPlan";
 
 /** Normal carrier travel time in milliseconds, taken from the prototype. */
 export const FLIGHT_MS = 6500;
@@ -16,7 +19,21 @@ export interface FlightRoute {
   readonly target: GeoPoint;
 }
 
-/** A click's selected device, geographic route, and monotonic launch time. */
+/** Selected delivery frozen at a map click; yield is total megatons. */
+export interface LaunchIntent {
+  readonly deviceId: string;
+  readonly yieldMt: number;
+}
+
+/** Shared geographic carrier route and millisecond split timing for one MIRV click. */
+export interface MirvCarrier {
+  readonly route: FlightRoute;
+  readonly splitMs: number;
+  readonly carrierFlightMs: number;
+  readonly lead: boolean;
+}
+
+/** One delivered warhead with geographic route, megaton yield, and monotonic millisecond timing. */
 export interface Launch {
   readonly id: number;
   readonly deviceId: string;
@@ -26,6 +43,8 @@ export interface Launch {
   readonly flightMs: number;
   readonly blastMs: number;
   readonly radii: BlastRadii;
+  /** Absent for a single device; all reentry vehicles share one carrier route. */
+  readonly mirv?: MirvCarrier;
 }
 
 /** One map click and all of its geographically anchored deliveries. */
@@ -44,6 +63,7 @@ export interface LaunchFrame {
 export interface SimulatorState extends ScenarioSelectionState {
   readonly phase: "armed" | "inbound" | "detonating" | "complete";
   readonly multiLaunch: boolean;
+  readonly pendingLaunch: boolean;
   readonly launchGroups: readonly LaunchGroup[];
   readonly nowMs: number;
   readonly launch: Launch | null;
@@ -60,6 +80,7 @@ export type SimulatorAction = ScenarioSelectionAction
   | { readonly type: "launchAt"; readonly route: FlightRoute; readonly deviceId: string; readonly yieldMt: number; readonly nowMs: number; readonly flightMs?: number }
   | { readonly type: "tick"; readonly nowMs: number; readonly launchId: number }
   | { readonly type: "setMultiLaunch"; readonly enabled: boolean }
+  | { readonly type: "setPendingLaunch"; readonly pending: boolean }
   | { readonly type: "reset" }
   | { readonly type: "hoverZone"; readonly zoneId: BlastZoneId | null }
   | { readonly type: "focusZone"; readonly zoneId: BlastZoneId | null }
@@ -71,6 +92,7 @@ export const INITIAL_SIMULATOR_STATE: SimulatorState = {
   ...INITIAL_SCENARIO_SELECTION,
   phase: "armed",
   multiLaunch: false,
+  pendingLaunch: false,
   launchGroups: [],
   nowMs: 0,
   launch: null,
@@ -88,8 +110,26 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     if (!Number.isFinite(action.nowMs) || !Number.isFinite(action.yieldMt) || action.yieldMt <= 0) return state;
     const flightMs = action.flightMs ?? FLIGHT_MS;
     if (!Number.isFinite(flightMs) || flightMs <= 0) return state;
-    const launch: Launch = { id: state.nextLaunchId, deviceId: action.deviceId, yieldMt: action.yieldMt, route: action.route, launchedAtMs: action.nowMs, flightMs, blastMs: BLAST_MS, radii: blastRadiiForYield(action.yieldMt) };
-    const group: LaunchGroup = { id: launch.id, launches: [launch] };
+    const device = getDeviceById(action.deviceId);
+    const count = device?.warheadCount ?? 1;
+    const yieldMt = device?.warheadYieldMt ?? action.yieldMt;
+    const radii = blastRadiiForYield(yieldMt);
+    const targets = count > 1 ? mirvImpactTargets(action.route.target, count, radii.light) : [action.route.target];
+    const staggerMs = flightMs < 1000 ? 8 : 45;
+    const carrier = count > 1 ? planMirvCarrier(action.route, targets, flightMs, flightMs + (count - 1) * staggerMs) : null;
+    const launches: readonly Launch[] = targets.map((target, index) => ({
+      id: state.nextLaunchId + index,
+      deviceId: action.deviceId,
+      yieldMt,
+      route: carrier ? { ...carrier.route, target } : action.route,
+      launchedAtMs: action.nowMs,
+      flightMs: flightMs + (carrier ? index * staggerMs : 0),
+      blastMs: BLAST_MS,
+      radii,
+      ...(carrier ? { mirv: { route: carrier.route, splitMs: carrier.splitMs, carrierFlightMs: flightMs, lead: index === 0 } } : {}),
+    }));
+    const group: LaunchGroup = { id: state.nextLaunchId, launches };
+    const launch = launches.at(-1)!;
     return {
       ...state,
       phase: state.multiLaunch ? phaseForGroups([...state.launchGroups, group], action.nowMs) : "inbound",
@@ -101,7 +141,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       hoveredZoneId: null,
       focusedZoneId: null,
       pinnedZoneId: null,
-      nextLaunchId: state.nextLaunchId + 1,
+      nextLaunchId: state.nextLaunchId + launches.length,
     };
   }
   if (action.type === "tick") {
@@ -129,6 +169,9 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       pinnedZoneId: null,
     };
   }
+  if (action.type === "setPendingLaunch") {
+    return state.pendingLaunch === action.pending ? state : { ...state, pendingLaunch: action.pending };
+  }
   if (action.type === "hoverZone") {
     if (action.zoneId === state.hoveredZoneId) return state;
     return updateInspection(state, action.zoneId, state.focusedZoneId, state.pinnedZoneId);
@@ -145,7 +188,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     return state.activeZoneId === null && state.hoveredZoneId === null && state.focusedZoneId === null && state.pinnedZoneId === null
       ? state : updateInspection(state, null, null, null);
   }
-  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, elapsedMs: 0, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
+  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, pendingLaunch: false, elapsedMs: 0, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
   return { ...state, ...reduceScenarioSelection(state, action) };
 }
 

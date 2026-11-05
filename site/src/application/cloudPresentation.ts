@@ -1,7 +1,7 @@
 import { getDeviceById, perWarheadYieldMt } from "../catalog/devices";
 import { cloudGrowthAt, cloudPeakForProfile, type CloudProfileInput } from "../domain/cloud";
 import { resolveDeviceSelection } from "./deviceSelection";
-import type { SimulatorState } from "./launch";
+import { elapsedForLaunch, type SimulatorState } from "./launch";
 
 /** UI-ready cloud instrument values. Heights are kilometers above surface. */
 export interface CloudPresentation {
@@ -53,13 +53,17 @@ function profileForDevice(deviceId: string, aggregateYieldMt: number): CloudProf
  */
 export function cloudPresentationForState(state: SimulatorState): CloudPresentation {
   const selection = resolveDeviceSelection(state);
-  const deviceId = state.launch?.deviceId ?? (selection.valid ? selection.device.id : "fat-man");
-  const yieldMt = state.launch?.yieldMt ?? (selection.valid ? selection.device.yieldMt : 0.021);
+  const latestGroup = state.launchGroups.at(-1);
+  // During a staggered MIRV arrival, show the first ignited warhead rather
+  // than leaving the monitor at standby until the final vehicle arrives.
+  const ignited = latestGroup?.launches.find((launch) => elapsedForLaunch(launch, state.nowMs) >= launch.flightMs);
+  const currentLaunch = ignited ?? latestGroup?.launches.at(-1);
+  const deviceId = currentLaunch?.deviceId ?? (selection.valid ? selection.device.id : "fat-man");
+  const yieldMt = currentLaunch?.yieldMt ?? (selection.valid ? selection.device.yieldMt : 0.021);
   const profile = profileForDevice(deviceId, yieldMt);
   const peak = cloudPeakForProfile(profile);
-  const blastElapsedMs = state.launch ? state.elapsedMs - state.launch.flightMs : 0;
-  const progress = state.phase === "complete" ? 1
-    : state.phase === "detonating" && state.launch ? Math.min(1, Math.max(0, blastElapsedMs / state.launch.blastMs)) : 0;
+  const blastElapsedMs = currentLaunch ? elapsedForLaunch(currentLaunch, state.nowMs) - currentLaunch.flightMs : 0;
+  const progress = currentLaunch ? Math.min(1, Math.max(0, blastElapsedMs / currentLaunch.blastMs)) : 0;
   const growth = cloudGrowthAt(progress);
   const plumeLabel = profile.nuclear ? peak.orbitalScale ? "LUMINOUS PLUME" : "MUSHROOM CLOUD" : "DETONATION PLUME";
   const phaseLabel = progress === 0 ? "STANDBY"

@@ -1,6 +1,6 @@
 import type { Launch, LaunchFrame } from "../../application/launch";
 import type { ScreenPoint } from "../map/MapCameraAdapter";
-import { projectFlightRoute, screenFlightPoint, smokeParticle, SMOKE_SAMPLE_STEP_MS, type FlightProjector, type ProjectedFlightRoute } from "./flightGeometry";
+import { projectFlightRoute, screenFlightPoint, screenMirvPoint, smokeParticle, SMOKE_SAMPLE_STEP_MS, type FlightProjector, type ProjectedFlightRoute, type ProjectedMirvRoute } from "./flightGeometry";
 
 /** Draws the prototype target, smoke, and white-hot carrier on a transparent canvas. */
 export class MissileCanvasRenderer {
@@ -29,11 +29,47 @@ export class MissileCanvasRenderer {
     const smokeStep = frames.length >= 10 ? 3 : frames.length >= 5 ? 2 : 1;
     for (const { launch, elapsedMs } of frames) {
       if (elapsedMs >= launch.flightMs + 3000) continue;
+      if (launch.mirv) {
+        this.drawMirvFlight(context, launch, elapsedMs, smokeStep);
+        continue;
+      }
       const route = projectFlightRoute(launch.route, this.projector);
       if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
       this.drawSmoke(context, launch, route, elapsedMs, smokeStep);
       if (elapsedMs < launch.flightMs) this.drawCore(context, screenFlightPoint(route, elapsedMs / launch.flightMs));
     }
+  }
+
+  /** Draw a temporary geographic target while an unsafe MIRV camera is framed. */
+  paintPendingTarget(target: import("../../domain/geodesy").GeoPoint): void {
+    const context = this.canvas.getContext("2d");
+    if (context) this.drawTarget(context, this.projector.toScreen(target), 0);
+  }
+
+  /** Paint one shared carrier before split and geographically distinct branches afterwards. */
+  private drawMirvFlight(context: CanvasRenderingContext2D, launch: Launch, elapsedMs: number, smokeStep: number): void {
+    const mirv = launch.mirv!;
+    const carrier = projectFlightRoute(mirv.route, this.projector);
+    const route: ProjectedMirvRoute = {
+      carrier,
+      target: this.projector.toScreen(launch.route.target),
+      splitMs: mirv.splitMs,
+      carrierFlightMs: mirv.carrierFlightMs,
+      flightMs: launch.flightMs,
+    };
+    if (mirv.lead) {
+      if (elapsedMs < mirv.splitMs) this.drawTarget(context, carrier.target, elapsedMs);
+      this.drawSmoke(context, launch, carrier, elapsedMs, smokeStep, 0, mirv.splitMs,
+        (timeMs) => screenFlightPoint(carrier, timeMs / mirv.carrierFlightMs));
+    }
+    if (elapsedMs < mirv.splitMs) {
+      if (mirv.lead) this.drawCore(context, screenFlightPoint(carrier, elapsedMs / mirv.carrierFlightMs));
+      return;
+    }
+    if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
+    this.drawSmoke(context, launch, carrier, elapsedMs, smokeStep, mirv.splitMs, launch.flightMs,
+      (timeMs) => screenMirvPoint(route, timeMs), 0.7);
+    if (elapsedMs < launch.flightMs) this.drawCore(context, screenMirvPoint(route, elapsedMs), 8, 1);
   }
 
   private drawTarget(context: CanvasRenderingContext2D, point: ScreenPoint, elapsedMs: number): void {
@@ -66,27 +102,29 @@ export class MissileCanvasRenderer {
     context.restore();
   }
 
-  private drawSmoke(context: CanvasRenderingContext2D, launch: Launch, route: ProjectedFlightRoute, elapsedMs: number, sampleStep = 1): void {
+  private drawSmoke(context: CanvasRenderingContext2D, launch: Launch, route: ProjectedFlightRoute, elapsedMs: number, sampleStep = 1,
+    firstBornMs = 0, lastBornMs = launch.flightMs, pointAtMs?: (timeMs: number) => ScreenPoint, opacityScale = 1): void {
     const stepMs = SMOKE_SAMPLE_STEP_MS * sampleStep;
-    const startMs = Math.max(0, Math.ceil((elapsedMs - 3000) / stepMs) * stepMs);
+    const startMs = Math.max(firstBornMs, Math.ceil((elapsedMs - 3000) / stepMs) * stepMs);
     context.save();
     context.lineCap = "round";
-    for (let bornMs = startMs; bornMs < Math.min(elapsedMs, launch.flightMs); bornMs += stepMs) {
-      const particle = smokeParticle(route, bornMs, elapsedMs, launch.flightMs, launch.id * 193);
-      if (particle.opacity < 0.008) continue;
+    for (let bornMs = startMs; bornMs < Math.min(elapsedMs, lastBornMs); bornMs += stepMs) {
+      const particle = smokeParticle(route, bornMs, elapsedMs, lastBornMs, launch.id * 193, pointAtMs);
+      const opacity = particle.opacity * opacityScale;
+      if (opacity < 0.008) continue;
       const { x, y } = particle.center;
       if (particle.segmentEnd) {
-        context.globalAlpha = particle.opacity * 0.28;
+        context.globalAlpha = opacity * 0.28;
         context.strokeStyle = "rgb(18,25,23)";
         context.lineWidth = 1.9;
         context.beginPath(); context.moveTo(x, y); context.lineTo(particle.segmentEnd.x, particle.segmentEnd.y); context.stroke();
-        context.globalAlpha = particle.opacity;
+        context.globalAlpha = opacity;
         context.strokeStyle = "rgb(235,239,230)";
         context.lineWidth = 0.9;
         context.stroke();
       }
       if (Math.round(bornMs / stepMs) % 3 === 0) {
-        context.globalAlpha = particle.opacity * 0.3;
+        context.globalAlpha = opacity * 0.3;
         const size = particle.radius * 2;
         context.drawImage(this.getSmokeSprite(), x - particle.radius, y - particle.radius, size, size);
       }
@@ -94,19 +132,19 @@ export class MissileCanvasRenderer {
     context.restore();
   }
 
-  private drawCore(context: CanvasRenderingContext2D, point: ScreenPoint): void {
+  private drawCore(context: CanvasRenderingContext2D, point: ScreenPoint, radius = 12, coreRadius = 1.45): void {
     context.save();
     context.globalCompositeOperation = "screen";
-    const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, 12);
+    const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, radius);
     glow.addColorStop(0, "rgba(255,255,250,1)");
     glow.addColorStop(0.12, "rgba(255,250,213,1)");
     glow.addColorStop(0.32, "rgba(255,188,73,.8)");
     glow.addColorStop(0.65, "rgba(255,82,25,.22)");
     glow.addColorStop(1, "rgba(190,33,0,0)");
     context.fillStyle = glow;
-    context.beginPath(); context.arc(point.x, point.y, 12, 0, Math.PI * 2); context.fill();
+    context.beginPath(); context.arc(point.x, point.y, radius, 0, Math.PI * 2); context.fill();
     context.fillStyle = "#fffef2";
-    context.beginPath(); context.arc(point.x, point.y, 1.45, 0, Math.PI * 2); context.fill();
+    context.beginPath(); context.arc(point.x, point.y, coreRadius, 0, Math.PI * 2); context.fill();
     context.restore();
   }
 

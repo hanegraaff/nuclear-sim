@@ -72,6 +72,16 @@ test("conventional dust and MIRV mushroom profiles render with their own labels 
   await expect(monitor).toHaveScreenshot("plan-09-conventional.png");
   await page.getByRole("combobox", { name: "Weapon or delivery system" }).selectOption("rs-24-yars");
   await page.mouse.click(1100, 660);
+  // This second-angle MIRV may ease the camera to fit its geographic spread.
+  // Start the 11.2 s flight-and-blast interval only after the frozen click
+  // becomes a launch, so the cloud's peak assertion uses launch age.
+  const simulator = page.locator("main.simulator");
+  for (let attempt = 0; attempt < 6 && await simulator.getAttribute("data-launch-count") !== "3"; attempt += 1) {
+    await page.clock.runFor(500);
+  }
+  await expect(simulator).toHaveAttribute("data-launch-count", "3");
+  await expect(simulator).toHaveAttribute("data-launch-phase", "inbound");
+  await expect(monitor).toHaveAttribute("data-cloud-progress", "0.000");
   await page.clock.runFor(11_200);
   await expect(monitor).toContainText("PER WARHEAD · 3 RVs");
   await expect(monitor).toContainText("MUSHROOM CLOUD · MODELED PEAK");

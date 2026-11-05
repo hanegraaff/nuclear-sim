@@ -16,6 +16,7 @@ const browserClock: AnimationClock = {
 /** Root application view: controls dispatch semantic actions to a pure simulator reducer. */
 export function App({ clock = browserClock }: { readonly clock?: AnimationClock }) {
   const [store] = useState(() => new SimulatorStore(clock));
+  const [cancelPendingVersion, setCancelPendingVersion] = useState(0);
   const state = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const panelState = useMemo(() => ({
     tab: state.tab,
@@ -27,11 +28,12 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   const cloud = useMemo(() => cloudPresentationForState(state), [state]);
   const frames = useMemo(() => launchFramesForState(state), [state]);
   const impactCount = frames.filter((frame) => frame.elapsedMs >= frame.launch.flightMs).length;
+  const cancelPending = useCallback(() => setCancelPendingVersion((version) => version + 1), []);
   const selectTab = useCallback((tab: "scenario" | "device") => store.dispatch({ type: "selectTab", tab }), [store]);
   const selectScenario = useCallback((id: string) => store.dispatch({ type: "selectScenario", id }), [store]);
   const selectDevice = useCallback((id: string) => store.dispatch({ type: "selectDevice", id }), [store]);
   const setCustomYieldInput = useCallback((value: string) => store.dispatch({ type: "setCustomYieldInput", value }), [store]);
-  const reset = useCallback(() => store.dispatch({ type: "reset" }), [store]);
+  const reset = useCallback(() => { cancelPending(); store.dispatch({ type: "reset" }); }, [cancelPending, store]);
   const setMultiLaunch = useCallback((enabled: boolean) => store.dispatch({ type: "setMultiLaunch", enabled }), [store]);
   const hoverZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "hoverZone", zoneId }), [store]);
   const focusZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "focusZone", zoneId }), [store]);
@@ -39,7 +41,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   const clearZoneInspection = useCallback(() => store.dispatch({ type: "clearZoneInspection" }), [store]);
 
   return (
-    <MapViewport cameraRequest={state.cameraRequest} launch={state} frames={frames} onLaunch={store.launchAt} launchAngle={store.nextLaunchAngle} onHoverZone={hoverZone} onFocusZone={focusZone} onPinZone={pinZone} onClearZoneInspection={clearZoneInspection}>
+    <MapViewport cameraRequest={state.cameraRequest} launch={state} frames={frames} onLaunch={store.launchAtWithIntent} prepareLaunch={store.prepareLaunchAt} launchAngle={store.nextLaunchAngle} cancelPendingVersion={cancelPendingVersion} onPendingChange={store.setPendingLaunch} onHoverZone={hoverZone} onFocusZone={focusZone} onPinZone={pinZone} onClearZoneInspection={clearZoneInspection}>
       <DevicePanel
         state={panelState}
         selection={selection}
@@ -48,6 +50,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
         multiLaunch={state.multiLaunch}
         impactCount={impactCount}
         totalCount={frames.length}
+        pendingLaunch={state.pendingLaunch}
         onReset={reset}
         onSetMultiLaunch={setMultiLaunch}
         onSelectTab={selectTab}

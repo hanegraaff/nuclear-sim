@@ -1,13 +1,16 @@
 import type { CustomLayerInterface, ErrorEvent as MapErrorEvent, Map as MapLibreMap, MapMouseEvent, MapSourceDataEvent } from "maplibre-gl";
-import type { Launch, LaunchFrame, FlightRoute } from "../../application/launch";
+import type { Launch, LaunchFrame, FlightRoute, LaunchIntent } from "../../application/launch";
 import { MissileCanvasRenderer } from "../animation/MissileCanvasRenderer";
 import { BlastCanvasRenderer } from "../effects/BlastCanvasRenderer";
 import { MultiBlastCanvasRenderer } from "../effects/MultiBlastCanvasRenderer";
-import { createFireballRenderer, type FireballRenderer } from "../animation/FireballRenderer";
+import { createFireballRenderer, type FireballCamera, type FireballRenderer } from "../animation/FireballRenderer";
 import { viewportFlightRoute } from "../animation/flightGeometry";
+import { projectedMirvPlan } from "../animation/mirvProjectionSafety";
 import { MapCameraAdapter } from "./MapCameraAdapter";
 import { createSatelliteMap } from "./createSatelliteMap";
-import type { GeoPoint } from "../../domain/geodesy";
+import { normalizeLongitude, type GeoPoint } from "../../domain/geodesy";
+import { FLIGHT_MS } from "../../application/launch";
+import type { PreparedLaunch } from "../../application/launchPreparation";
 import type { BlastZoneId } from "../../domain/blastZones";
 import type { BlastInspectionGeometry } from "../overlays/blastInspection";
 
@@ -23,13 +26,28 @@ export interface MapCameraSnapshot {
   readonly bearing: number;
 }
 
+interface PendingMapClick {
+  readonly target: GeoPoint;
+  readonly angle: number;
+  readonly targets: readonly GeoPoint[] | null;
+  readonly intent: LaunchIntent;
+}
+
 /** Notifications from the map renderer; the UI does not receive MapLibre objects. */
 export interface SatelliteMapCallbacks {
   readonly onStateChange: (state: MapLoadState) => void;
   readonly onCameraChange: (camera: MapCameraSnapshot) => void;
-  readonly onLaunch?: (route: FlightRoute) => void;
+  readonly onLaunch?: (route: FlightRoute, intent: LaunchIntent) => void;
+  /** Freeze selected device and modeled targets at the geographic click. */
+  readonly prepareLaunch?: (aim: GeoPoint) => PreparedLaunch | null;
   readonly launchAngle?: () => number;
+  /** Inform controls that a geographic target is waiting for camera framing. */
+  readonly onPendingChange?: (pending: boolean) => void;
+  /** Explain when no safe camera and carrier route can be found. */
+  readonly onLaunchUnavailable?: (message: string | null) => void;
   readonly onInspectionChange?: (geometry: BlastInspectionGeometry | null) => void;
+  /** Return the lower edge of controls covering the narrow map, in CSS pixels from its top. */
+  readonly clearMapTopPx?: () => number;
 }
 
 const IMAGERY_SOURCE_ID = "satellite";
@@ -61,18 +79,25 @@ export class SatelliteMapController {
   private inspection: BlastInspectionGeometry | null = null;
   private fireballFailed = false;
   private fireballMatrix: Float64Array | null = null;
+  private fireballCamera: FireballCamera | null = null;
+  private lastFramedMirvGroupId: number | null = null;
+  private pendingClicks: PendingMapClick[] = [];
+  private pendingFrameAttempt = 0;
 
   constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null, private readonly multiBlastRenderer?: MultiBlastCanvasRenderer) {
     this.camera = new MapCameraAdapter(map);
     map.on("load", this.handleLoad);
     map.on("idle", this.handleIdle);
     map.on("moveend", this.emitCamera);
+    map.on("moveend", this.finishPendingMirv);
     map.on("error", this.handleError);
     map.on("sourcedata", this.handleSourceData);
     map.on("resize", this.updateCameraPadding);
     map.on("resize", this.repaintCamera);
     map.on("move", this.repaintCamera);
     map.on("click", this.handleMapClick);
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
+    window.addEventListener("focus", this.handleResume);
     this.updateCameraPadding();
     this.emitCamera();
   }
@@ -97,10 +122,53 @@ export class SatelliteMapController {
     this.launch = latest?.launch ?? null;
     this.elapsedMs = latest?.elapsedMs ?? 0;
     this.highlightedZoneId = highlightedZoneId;
+    this.frameHiddenNarrowMirv(frames);
     this.repaintFlight();
     if (this.fireballRenderer && !this.fireballFailed) {
       if (this.fireballMatrix) this.repaintFireball();
       else this.map.triggerRepaint();
+    }
+  }
+
+  /**
+   * On a narrow screen only, reveal a new MIRV group's impact centers if its
+   * spread falls behind the control stack or outside the viewport. The model's
+   * geographic targets and routes stay fixed while MapLibre eases the camera.
+   */
+  private frameHiddenNarrowMirv(frames: readonly LaunchFrame[]): void {
+    const container = this.map.getContainer();
+    if (container.clientWidth >= 600 || !frames.at(-1)?.launch.mirv) return;
+    let leadIndex = frames.length - 1;
+    while (leadIndex > 0 && !frames[leadIndex]!.launch.mirv?.lead) leadIndex -= 1;
+    const lead = frames[leadIndex]?.launch;
+    if (!lead?.mirv || this.lastFramedMirvGroupId === lead.id) return;
+    this.lastFramedMirvGroupId = lead.id;
+    const group = frames.slice(leadIndex);
+    const clearTop = Math.min(container.clientHeight - 100,
+      Math.max(16, this.panelsVisible ? this.callbacks.clearMapTopPx?.() ?? 80 : 16));
+    const visible = group.filter(({ launch }) => {
+      const point = this.camera.toScreen(launch.route.target);
+      return point.x >= 16 && point.x <= container.clientWidth - 16 && point.y >= clearTop && point.y <= container.clientHeight - 75;
+    }).length;
+    if (visible >= 2) return;
+
+    const aim = lead.mirv.route.target;
+    const points = [aim, ...group.map(({ launch }) => launch.route.target)];
+    const longitudes = points.map((point) => aim.longitude + normalizeLongitude(point.longitude - aim.longitude));
+    const west = Math.min(...longitudes);
+    const east = Math.max(...longitudes);
+    const south = Math.min(...points.map((point) => point.latitude));
+    const north = Math.max(...points.map((point) => point.latitude));
+    const longitudeMargin = Math.max(0.002, (east - west) * 0.08);
+    const latitudeMargin = Math.max(0.002, (north - south) * 0.08);
+    try {
+      this.map.fitBounds([[west - longitudeMargin, south - latitudeMargin], [east + longitudeMargin, north + latitudeMargin]], {
+        padding: { top: clearTop, right: 24, bottom: 75, left: 24 },
+        maxZoom: this.map.getZoom(),
+        duration: 650,
+      });
+    } catch (error) {
+      console.warn("Unable to frame narrow MIRV impacts; geographic launch remains available.", error);
     }
   }
 
@@ -125,17 +193,31 @@ export class SatelliteMapController {
     }
   }
 
+  /** Cancel all targets still waiting for MIRV framing, including queued multi clicks. */
+  cancelPendingLaunch(): void {
+    if (this.pendingClicks.length === 0) return;
+    this.pendingClicks = [];
+    this.pendingFrameAttempt = 0;
+    this.callbacks.onPendingChange?.(false);
+    this.map.stop();
+    this.repaintFlight();
+  }
+
   /** Remove listeners and release the MapLibre instance owned by this controller. */
   dispose(): void {
     this.map.off("load", this.handleLoad);
     this.map.off("idle", this.handleIdle);
     this.map.off("moveend", this.emitCamera);
+    this.map.off("moveend", this.finishPendingMirv);
     this.map.off("error", this.handleError);
     this.map.off("sourcedata", this.handleSourceData);
     this.map.off("resize", this.updateCameraPadding);
     this.map.off("resize", this.repaintCamera);
     this.map.off("move", this.repaintCamera);
     this.map.off("click", this.handleMapClick);
+    document.removeEventListener("visibilitychange", this.handleVisibilityChange);
+    window.removeEventListener("focus", this.handleResume);
+    this.cancelPendingLaunch();
     this.multiBlastRenderer?.dispose();
     this.fireballRenderer?.dispose();
     this.map.remove();
@@ -157,6 +239,7 @@ export class SatelliteMapController {
       render: (_gl, options) => {
         if (this.fireballFailed) return;
         this.fireballMatrix = new Float64Array(options.defaultProjectionData.mainMatrix);
+        this.fireballCamera = { longitude: this.map.getCenter().lng, zoom: this.map.getZoom() };
         this.repaintFireball();
       },
     };
@@ -171,12 +254,11 @@ export class SatelliteMapController {
 
   /** Reuse the latest camera matrix between map frames; only the small WebGL canvas changes. */
   private repaintFireball(): void {
-    if (!this.fireballRenderer || !this.fireballMatrix || this.fireballFailed) return;
+    if (!this.fireballRenderer || !this.fireballMatrix || !this.fireballCamera || this.fireballFailed) return;
     try {
       const container = this.map.getContainer();
-      const camera = { longitude: this.map.getCenter().lng, zoom: this.map.getZoom() };
-      if (this.multiLaunch || this.sceneFrames.length > 1) this.fireballRenderer.renderMany(this.fireballMatrix, camera, this.sceneFrames, container.clientWidth, container.clientHeight);
-      else this.fireballRenderer.render(this.fireballMatrix, camera, this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
+      if (this.multiLaunch || this.sceneFrames.length > 1) this.fireballRenderer.renderMany(this.fireballMatrix, this.fireballCamera, this.sceneFrames, container.clientWidth, container.clientHeight);
+      else this.fireballRenderer.render(this.fireballMatrix, this.fireballCamera, this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
     } catch (error) {
       this.fireballFailed = true;
       this.fireballRenderer.clear();
@@ -208,15 +290,40 @@ export class SatelliteMapController {
     }
     if (this.multiLaunch || groupedSingle) this.missileRenderer?.renderMany(this.sceneFrames, container.clientWidth, container.clientHeight);
     else this.missileRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight);
+    for (const click of this.pendingClicks) this.missileRenderer?.paintPendingTarget(click.target);
   };
 
   private readonly repaintCamera = (): void => {
+    this.invalidateFireballProjection();
     this.blastRenderer?.invalidateProjection();
     this.multiBlastRenderer?.invalidateProjection();
     this.repaintFlight();
+    if (this.fireballRenderer && !this.fireballFailed && !document.hidden) this.map.triggerRepaint();
     // The map-distance instrument follows the same moving camera frame as the
     // geographic field, including animated zoom and container resize.
     this.emitCamera();
+  };
+
+  /** Never combine a matrix from an older map frame with a newer camera. */
+  private invalidateFireballProjection(): void {
+    if (!this.fireballMatrix) return;
+    this.fireballMatrix = null;
+    this.fireballCamera = null;
+    this.fireballRenderer?.clear();
+  }
+
+  /** Drop stale pixels while the map's render loop may be suspended. */
+  private readonly handleVisibilityChange = (): void => {
+    if (document.hidden) this.invalidateFireballProjection();
+    else this.handleResume();
+  };
+
+  /** Force a fresh MapLibre matrix after tab or application focus returns. */
+  private readonly handleResume = (): void => {
+    if (document.hidden) return;
+    this.invalidateFireballProjection();
+    this.map.resize();
+    if (this.fireballRenderer && !this.fireballFailed) this.map.triggerRepaint();
   };
 
   private readonly handleMapClick = (event: MapMouseEvent): void => {
@@ -227,12 +334,154 @@ export class SatelliteMapController {
     const aim = { x: event.point.x, y: event.point.y };
     const angle = this.callbacks.launchAngle?.() ?? -Math.PI / 4;
     if (!Number.isFinite(angle)) return;
-    const route = viewportFlightRoute(container.clientWidth, container.clientHeight, aim, angle);
-    this.callbacks.onLaunch?.({
-      start: this.camera.toGeo(route.start),
-      control: this.camera.toGeo(route.control),
-      target: this.camera.toGeo(aim),
+    const target = this.camera.toGeo(aim);
+    this.callbacks.onLaunchUnavailable?.(null);
+    const prepared = this.callbacks.prepareLaunch?.(target) ?? null;
+    if (!prepared) return;
+    const { intent, mirvTargets: targets } = prepared;
+    if (this.pendingClicks.length > 0) {
+      if (this.multiLaunch) this.pendingClicks.push({ target, angle, targets, intent });
+      else {
+        this.pendingClicks = [];
+        this.map.stop();
+        this.pendingFrameAttempt = 0;
+        if (!targets) {
+          this.callbacks.onPendingChange?.(false);
+          this.callbacks.onLaunch?.(this.geographicFlightRoute(aim, target, angle, false), intent);
+          this.repaintFlight();
+          return;
+        }
+        this.pendingClicks = [{ target, angle, targets, intent }];
+        this.framePendingMirv();
+      }
+      this.repaintFlight();
+      return;
+    }
+    if (!targets) {
+      this.callbacks.onLaunch?.(this.geographicFlightRoute(aim, target, angle, false), intent);
+      return;
+    }
+    const click = { target, angle, targets, intent };
+    const route = this.safeMirvRoute(click);
+    if (route) this.callbacks.onLaunch?.(route, intent);
+    else {
+      this.pendingClicks = [click];
+      this.pendingFrameAttempt = 0;
+      this.callbacks.onPendingChange?.(true);
+      this.repaintFlight();
+      this.framePendingMirv();
+    }
+  };
+
+  /** Convert the current camera's visible entry into a stored geographic route. */
+  private geographicFlightRoute(aim: { x: number; y: number }, target: GeoPoint, angle: number, mirv: boolean): FlightRoute {
+    const container = this.map.getContainer();
+    const edge = viewportFlightRoute(container.clientWidth, container.clientHeight, aim, angle, mirv);
+    return { start: this.camera.toGeo(edge.start), control: this.camera.toGeo(edge.control), target };
+  }
+
+  /** Try same-side entries against the actual pitched/rotated map projection. */
+  private safeMirvRoute(click: PendingMapClick): FlightRoute | null {
+    if (!click.targets) return null;
+    const container = this.map.getContainer();
+    const aim = this.camera.toScreen(click.target);
+    const targets = click.targets;
+    const spreadVisible = targets.every((target) => {
+      const point = this.camera.toScreen(target);
+      return point.x >= 8 && point.x <= container.clientWidth - 8 && point.y >= 8 && point.y <= container.clientHeight - 8;
     });
+    if (!spreadVisible && this.map.getZoom() >= 12.5) return null;
+    for (const offset of [0, -Math.PI / 8, Math.PI / 8, -Math.PI / 4, Math.PI / 4]) {
+      const route = this.geographicFlightRoute(aim, click.target, click.angle + offset, true);
+      let result;
+      try {
+        result = projectedMirvPlan(route, targets, this.camera, FLIGHT_MS, 45, container.clientWidth, container.clientHeight);
+      } catch {
+        continue;
+      }
+      if (result.safe) return route;
+    }
+    return null;
+  }
+
+  /** Include all modeled impacts in a deliberate map ease before routing. */
+  private framePendingMirv(): void {
+    const click = this.pendingClicks[0];
+    if (!click) return;
+    if (!click.targets) {
+      this.dispatchQueuedSingleClicks();
+      return;
+    }
+    const points = [click.target, ...click.targets];
+    const longitudes = points.map((point) => click.target.longitude + normalizeLongitude(point.longitude - click.target.longitude));
+    const west = Math.min(...longitudes);
+    const east = Math.max(...longitudes);
+    const south = Math.min(...points.map((point) => point.latitude));
+    const north = Math.max(...points.map((point) => point.latitude));
+    const container = this.map.getContainer();
+    const shorterSide = Math.min(container.clientWidth, container.clientHeight);
+    const inset = Math.min(shorterSide * 0.4, Math.max(24, shorterSide * (0.16 + this.pendingFrameAttempt * 0.07)));
+    // A route that failed the pitch-safe check needs more entry runway even
+    // when all impacts already fit the current viewport.
+    const initialMaxZoom = Math.min(this.map.getZoom(), 9.5);
+    try {
+      this.map.fitBounds([[west, south], [east, north]], {
+        padding: { top: inset, right: inset, bottom: inset, left: inset },
+        maxZoom: Math.max(0.75, initialMaxZoom - this.pendingFrameAttempt * 1.25),
+        duration: 450,
+      });
+    } catch {
+      this.failPendingMirv();
+    }
+  }
+
+  /** Leave the map interactive and report a bounded framing failure. */
+  private failPendingMirv(): void {
+    this.pendingClicks.shift();
+    this.pendingFrameAttempt = 0;
+    this.callbacks.onLaunchUnavailable?.("Could not frame this MIRV launch. Zoom out and try again.");
+    if (this.pendingClicks.length > 0) this.dispatchQueuedSingleClicks();
+    else {
+      this.callbacks.onPendingChange?.(false);
+      this.repaintFlight();
+    }
+  }
+
+  /** Complete queued single-device clicks after the preceding MIRV camera ease. */
+  private dispatchQueuedSingleClicks(): void {
+    while (this.pendingClicks[0] && !this.pendingClicks[0].targets) {
+      const click = this.pendingClicks.shift()!;
+      this.callbacks.onLaunch?.(this.geographicFlightRoute(this.camera.toScreen(click.target), click.target, click.angle, false), click.intent);
+    }
+    if (this.pendingClicks.length > 0) this.framePendingMirv();
+    else this.callbacks.onPendingChange?.(false);
+    this.repaintFlight();
+  }
+
+  /** Launch queued clicks in order after each camera ease reaches a safe route. */
+  private readonly finishPendingMirv = (): void => {
+    const click = this.pendingClicks[0];
+    if (!click) return;
+    if (!click.targets) {
+      this.dispatchQueuedSingleClicks();
+      return;
+    }
+    const route = this.safeMirvRoute(click);
+    if (!route && this.pendingFrameAttempt < 6) {
+      this.pendingFrameAttempt += 1;
+      this.framePendingMirv();
+      return;
+    }
+    if (!route) {
+      this.failPendingMirv();
+      return;
+    }
+    this.pendingClicks.shift();
+    this.pendingFrameAttempt = 0;
+    this.callbacks.onLaunch?.(route, click.intent);
+    if (this.pendingClicks.length > 0) this.dispatchQueuedSingleClicks();
+    else this.callbacks.onPendingChange?.(false);
+    this.repaintFlight();
   };
 
   private readonly updateCameraPadding = (): void => {

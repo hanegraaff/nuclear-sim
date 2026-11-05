@@ -1,15 +1,15 @@
-# Domain
+# Domain model
 
-Pure calculations in physical and geographic units. This area has no React, MapLibre, Canvas, or browser dependencies.
+This package calculates geographic and physical values without React, MapLibre, Canvas, WebGL, browser globals, or an animation clock. Inputs and outputs use geographic degrees, kilometers, megatons of TNT equivalent, and normalized display intensities as stated by each API. Rendering may change its palette without changing these calculations.
 
-Plan 01 provides `GeoPoint`, coordinate validation, great-circle surface distance, and destination calculations in `geodesy.ts`. Distances are kilometers; coordinates and bearings are degrees. Callers should validate inputs at this boundary. Tests in `tests/unit/` cover representative distance, round-trip, antimeridian, and invalid-input behavior.
+| Module | Public purpose and invariant |
+| --- | --- |
+| `geodesy.ts` | `GeoPoint` validation, great-circle distance, destination points, and longitude normalization on a 6371 km sphere. Antimeridian routes use the short wrapped path. |
+| `scenarioScale.ts` | A bounded light-effect horizon in kilometers to frame a selected scenario; it is a camera aid, not a rendered effect. |
+| `blast.ts` | `blastRadiiForYield` maps one positive impact yield in megatons to ordered fireball, severe, moderate, and light radii in kilometers. |
+| `blastZones.ts` | `blastZones` and `sphericalCapAreaKm2` turn those radii into non-overlapping spans and spherical surface areas in square kilometers. |
+| `mirv.ts` | `mirvImpactTargets` places a catalog loadout deterministically around the clicked geographic aim point. Count and the light-damage radius describe **individual** warheads; repeated inputs give the same distinct targets. |
+| `cloud.ts` | `cloudPeakForProfile` estimates one impact's peak height in kilometers; `cloudGrowthAt` maps normalized blast progress to a bounded rise. |
+| `overlap.ts` | `blastDamageIntensity` evaluates one field at a great-circle distance. `combineBlastIntensities` and `combineBlastPeakAndSum` produce bounded, order-independent display intensity without adding yields or changing radii. |
 
-`scenarioScale.ts` estimates the prototype's light-effect horizon in kilometers from per-warhead megatons and warhead count for map framing. It is a camera aid; later blast modeling can evolve independently of map projection.
-
-`blast.ts` supplies `blastRadiiForYield` for one positive megaton yield. It returns nested fireball, severe, moderate, and light radii in kilometers, capped at the antipodal surface distance. The module uses the prototype's 10 kt calibration and has no camera or browser dependency. Tests cover its constants, representative yields, ordering, and monotonicity; [model notes](../../docs/model.md) state its limits.
-
-`blastZones.ts` turns those radii into four non-overlapping geographic annuli and spherical surface areas in km². Its public `blastZones` and `sphericalCapAreaKm2` functions have no UI or projection dependency. The inner and outer distances remain authoritative when the camera pans, zooms, or crosses the antimeridian.
-
-`cloud.ts` adds `cloudPeakForProfile` and `cloudGrowthAt` for the separate cloud instrument. The first accepts one impact's yield in megatons, burst height in kilometers, and nuclear/conventional kind; it returns an illustrative peak height above the surface in kilometers and an orbital-scale presentation flag. The second maps normalized blast progress to a bounded, monotone rise. Neither function reads the clock, map camera, or Canvas. The formulas and their physical limits are in [model notes](../../docs/model.md).
-
-`overlap.ts` adds `blastDamageIntensity` for one strike's normalized display strength at a great-circle distance in kilometers. `combineBlastIntensities` and `combineBlastPeakAndSum` merge strengths through a bounded, commutative response: a second field can brighten a location but cannot change either strike's yield or radii. These values are visual intensities, not probabilities of damage. The module has no camera, Canvas, or application-state dependency; its calibration and limits are in [model notes](../../docs/model.md).
+Application state owns which inputs belong to a click, when each warhead arrives, and which effect is active. This package does not use screen coordinates or time to decide a physical range. Tests in `tests/unit/` cover representative values, monotonicity, invalid input, antimeridian crossings, deterministic MIRV spread, and overlap invariants. [Model notes](../../docs/model.md) give sources, equations, and limits; none of these outputs is a measured forecast.

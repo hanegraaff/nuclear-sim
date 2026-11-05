@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { FlightRoute, LaunchFrame, SimulatorState } from "../application/launch";
+import type { FlightRoute, LaunchFrame, LaunchIntent, SimulatorState } from "../application/launch";
 import type { ScenarioCameraRequest } from "../application/scenarioSelection";
 import type { BlastZoneId } from "../domain/blastZones";
 import type { BlastInspectionGeometry } from "../rendering/overlays/blastInspection";
@@ -12,6 +12,8 @@ import {
 import { BlastInspectionOverlay } from "./BlastInspectionOverlay";
 import { MultiLaunchLegend } from "./MultiLaunchLegend";
 import { mapDistanceScale } from "../rendering/overlays/mapDistanceScale";
+import type { GeoPoint } from "../domain/geodesy";
+import type { PreparedLaunch } from "../application/launchPreparation";
 
 /** UI inputs and semantic callbacks; no MapLibre object crosses this boundary. */
 interface MapViewportProps {
@@ -19,8 +21,12 @@ interface MapViewportProps {
   readonly cameraRequest: ScenarioCameraRequest | null;
   readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "multiLaunch" | "activeZoneId" | "pinnedZoneId">;
   readonly frames: readonly LaunchFrame[];
-  readonly onLaunch: (route: FlightRoute) => void;
+  readonly onLaunch: (route: FlightRoute, intent: LaunchIntent) => void;
+  readonly prepareLaunch: (aim: GeoPoint) => PreparedLaunch | null;
   readonly launchAngle: () => number;
+  /** Increments when Reset or a selection/mode change invalidates a queued click. */
+  readonly cancelPendingVersion: number;
+  readonly onPendingChange: (pending: boolean) => void;
   readonly onHoverZone: (zoneId: BlastZoneId | null) => void;
   readonly onFocusZone: (zoneId: BlastZoneId | null) => void;
   readonly onPinZone: (zoneId: BlastZoneId) => void;
@@ -28,7 +34,7 @@ interface MapViewportProps {
 }
 
 /** Full-viewport map mount that places controls above imagery and map feedback. */
-export function MapViewport({ children, cameraRequest, launch, frames, onLaunch, launchAngle, onHoverZone, onFocusZone, onPinZone, onClearZoneInspection }: MapViewportProps) {
+export function MapViewport({ children, cameraRequest, launch, frames, onLaunch, prepareLaunch, launchAngle, cancelPendingVersion, onPendingChange, onHoverZone, onFocusZone, onPinZone, onClearZoneInspection }: MapViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
   const blastCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -37,9 +43,14 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
   const controllerRef = useRef<SatelliteMapController | null>(null);
   const onLaunchRef = useRef(onLaunch);
   onLaunchRef.current = onLaunch;
+  const prepareLaunchRef = useRef(prepareLaunch);
+  prepareLaunchRef.current = prepareLaunch;
   const launchAngleRef = useRef(launchAngle);
   launchAngleRef.current = launchAngle;
+  const onPendingChangeRef = useRef(onPendingChange);
+  onPendingChangeRef.current = onPendingChange;
   const [loadState, setLoadState] = useState<MapLoadState>("loading");
+  const [launchError, setLaunchError] = useState<string | null>(null);
   const [inspection, setInspection] = useState<BlastInspectionGeometry | null>(null);
   const [camera, setCamera] = useState({
     longitude: INITIAL_MAP_CENTER.longitude,
@@ -58,8 +69,16 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
         onStateChange: setLoadState,
         onCameraChange: setCamera,
         onInspectionChange: setInspection,
-        onLaunch: (route) => onLaunchRef.current(route),
+        onLaunch: (route, intent) => onLaunchRef.current(route, intent),
+        prepareLaunch: (aim) => prepareLaunchRef.current(aim),
         launchAngle: () => launchAngleRef.current(),
+        onPendingChange: (pending) => onPendingChangeRef.current(pending),
+        onLaunchUnavailable: setLaunchError,
+        clearMapTopPx: () => {
+          const panel = container.parentElement?.querySelector(".left-instrument-stack");
+          if (!panel) return 80;
+          return panel.getBoundingClientRect().bottom - container.getBoundingClientRect().top + 14;
+        },
       }, missileCanvasRef.current, blastCanvasRef.current, fireballCanvasRef.current, inspectionCanvasRef.current);
     } catch {
       setLoadState("map-error");
@@ -75,6 +94,10 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
   useEffect(() => {
     if (cameraRequest) controllerRef.current?.focusScenario(cameraRequest);
   }, [cameraRequest]);
+
+  useEffect(() => {
+    controllerRef.current?.cancelPendingLaunch();
+  }, [cancelPendingVersion]);
 
   useEffect(() => {
     controllerRef.current?.setSceneFrame(frames, launch.multiLaunch, launch.activeZoneId);
@@ -136,6 +159,7 @@ export function MapViewport({ children, cameraRequest, launch, frames, onLaunch,
           <button type="button" onClick={() => window.location.reload()}>Reload map</button>
         </div>
       )}
+      {launchError && <div className="map-message map-message-error" role="alert">{launchError}</div>}
     </main>
   );
 }
