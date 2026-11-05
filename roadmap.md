@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-05**. Plans 01–11 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -26,8 +26,8 @@ The roadmap is current as of **2026-11-05**. Plans 01–11 are published to the 
 | 09 | Animated cloud-profile monitor | Complete | 08 |
 | 10 | Additive multi launch | Complete | 09 |
 | 11 | MIRV separation and multiple impacts | Complete | 10 |
-| 12 | Fallout view | In progress | 11 |
-| 13 | Audible view | Not started | 12 |
+| 12 | Fallout view | Complete | 11 |
+| 13 | Audible view | Ready | 12 |
 | 14 | Visible view | Not started | 13 |
 | 15 | Night map and hide/show controls | Not started | 14 |
 | 16 | Narrow-screen layout | Not started | 15 |
@@ -203,7 +203,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–11 are published to the 
 
 **Completion evidence.** Model and view tests pass; compare a pitched New York capture with `Fallout.png`.
 
-**Current status.** In progress on branch `plan-12`.
+**Current status.** Complete on 2026-11-05 from branch `plan-12`. Private [Site version 24](https://nuke-simulator-rebuild.maquaman.chatgpt.site) is published from GitHub application commit `8b829c79eda04927e76874ff128d705296f60e04` and Sites source commit `e0f75a24df4a3519843a6aaa64559b4f3719f35f`; the exact `site/` trees matched. Clean-release `npm run verify` passed type checking, lint, 194 unit tests, 45 integration tests, build, and 47 browser tests. Exploratory Chromium testing covered four popups, focus/pin/Escape, camera gestures, rapid view changes, new-launch→Blast, Reset, conventional exclusion, mixed scenes, and MIRV fields. The correction recheck confirmed pointer-accessible controls at 430 × 844, viewport-contained popups, and unchanged multi-scene camera through view switching. Reviewed [2208 × 1276 CSS capture](site/tests/e2e/fallout.spec.ts-snapshots/plan-12-fallout-pitched-darwin.png), [closer CSS/DPR composition](site/tests/e2e/fallout.spec.ts-snapshots/plan-12-fallout-prototype-composition-darwin.png), and [hosted live-imagery capture](docs/plan-12-hosted.png) against `Fallout.png`. The local core and ragged contours now follow the visible reference more closely; the geographic plume remains somewhat slimmer under pitch than the prototype's screen-space puffs. Hosted Chromium returned HTTP 200, ready imagery, four markers and screening popup, visible field pixels, reversible Blast/Fallout switching, Reset, and no page errors. The printed Gy labels remain illustrative prototype bands rather than calculated dose; model documentation records the wind, surface-burst, weather, and deposition limitations.
 
 **Blocking decisioning.** None. The architecture commits to a climatological proxy; live weather is outside this roadmap.
 
@@ -217,7 +217,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–11 are published to the 
 
 **Completion evidence.** Range and rendering tests pass; compare the multi-mode green state with the selected Audible tab in `Additive Blasts.png`. Do not use `Audible.png` as the green target because it shows Blast selected.
 
-**Current status.** Not started; depends on Plan 12.
+**Current status.** Ready; Plan 12 is complete.
 
 **Blocking decisioning.** None. Decibel descriptions remain illustrative rather than precise predictions.
 
@@ -294,7 +294,7 @@ Fill this table as plans finish. Record the deployed version and stable Site URL
 | 09 | 2026-11-03; review fix 2026-11-03 | [Version 18](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Workspace and clean-release `npm run verify`: 144 unit, 25 integration, 29 browser tests, type checking, lint, build; four reviewed [cloud states](site/tests/e2e/cloud-profile.spec.ts-snapshots/plan-09-settled-darwin.png); hosted HTTP 200, Fat Man 12.1 km, MOAB 123 m with meter scale ticks, Reset, 60° marker hover, no page errors; GitHub source `4fdf5f21bc20b4278eb794c0240a26c08a2bf8a1`, Sites source `3cd24c0bd3798dc8c8dd41995b98f12da0d0e70a` | Prototype smoke is slightly denser/softer; fixed-tile and live-imagery compositions differ. |
 | 10 | 2026-11-05 | [Version 20](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 155 unit, 37 integration, 33 browser tests; GitHub source `fb19e8ad65a950ed5caf4f69a834d0302781e39e`, Sites source `03539e4cbdbe3f17fff2ff027945836b802568d6` | Live imagery, camera, and dome size differ from the prototype reference. |
 | 11 | 2026-11-05 | [Version 23](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 181 unit, 41 integration, 43 browser tests, type checking, lint, build; [narrow overlay gate](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-narrow-overlay-darwin.png); GitHub source `6cb6474c2fb9580c88565617b77319e138d01d0a`, Sites source `078d4ea31767a8617a7c7af4c8ed75d1e580f95b` | Native background-return events were unavailable for direct testing; no dedicated MIRV prototype screenshot exists. |
-| 12 | — | — | — | — |
+| 12 | 2026-11-05 | [Version 24](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 194 unit, 45 integration, 47 browser tests, type checking, lint, build; [hosted capture](docs/plan-12-hosted.png); GitHub source `8b829c79eda04927e76874ff128d705296f60e04`, Sites source `e0f75a24df4a3519843a6aaa64559b4f3719f35f` | Pitched plume silhouette remains slimmer than the prototype; imagery and exact source DPR differ. |
 | 13 | — | — | — | — |
 | 14 | — | — | — | — |
 | 15 | — | — | — | — |
