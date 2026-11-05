@@ -31,6 +31,21 @@ describe("MIRV carrier separation", () => {
     expect(Math.abs((at.y - before.y) / epsilonMs - (after.y - at.y) / epsilonMs)).toBeLessThan(0.001);
   });
 
+  it("matches the prototype's middle branch and nonzero approach velocity", () => {
+    const middle = screenMirvPoint(route, 5222.5);
+    const nearImpact = screenMirvPoint(route, route.flightMs - 1);
+    const impact = screenMirvPoint(route, route.flightMs);
+    // These fixed CSS-pixel samples come from prototype-code/app/missile-flight.mjs
+    // for the route above. 0.01 px allows arithmetic rounding, not a different
+    // cubic handle; the latter shifts the middle by tens of pixels.
+    expect(middle.x).toBeCloseTo(913.0724, 2);
+    expect(middle.y).toBeCloseTo(469.0843, 2);
+    // The prototype still travels toward the target during its last 1 ms.
+    // 0.001 px admits finite-difference curvature over that short interval.
+    expect(impact.x - nearImpact.x).toBeCloseTo(-0.06702, 3);
+    expect(impact.y - nearImpact.y).toBeCloseTo(0.06090, 3);
+  });
+
   it("rejects malformed split timing", () => {
     expect(() => screenMirvPoint({ ...route, splitMs: 7000 }, 4000)).toThrow(RangeError);
   });

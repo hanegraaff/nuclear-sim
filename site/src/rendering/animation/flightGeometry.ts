@@ -94,11 +94,17 @@ export function screenMirvPoint(route: ProjectedMirvRoute, elapsedMs: number): S
     y: 2 * ((1 - eased) * (route.carrier.control.y - route.carrier.start.y) + eased * (route.carrier.target.y - route.carrier.control.y)) * tangentScale,
   };
   const control = { x: start.x + tangent.x / 3, y: start.y + tangent.y / 3 };
+  // The prototype's second handle keeps each vehicle moving through impact
+  // instead of easing to a complete stop at the target.
+  const approach = {
+    x: route.target.x - (route.target.x - start.x) * 0.18,
+    y: route.target.y - (route.target.y - start.y) * 0.18,
+  };
   const u = Math.max(0, Math.min(1, (elapsedMs - route.splitMs) / (route.flightMs - route.splitMs)));
   const inverse = 1 - u;
   return {
-    x: inverse ** 3 * start.x + 3 * inverse ** 2 * u * control.x + 3 * inverse * u ** 2 * route.target.x + u ** 3 * route.target.x,
-    y: inverse ** 3 * start.y + 3 * inverse ** 2 * u * control.y + 3 * inverse * u ** 2 * route.target.y + u ** 3 * route.target.y,
+    x: inverse ** 3 * start.x + 3 * inverse ** 2 * u * control.x + 3 * inverse * u ** 2 * approach.x + u ** 3 * route.target.x,
+    y: inverse ** 3 * start.y + 3 * inverse ** 2 * u * control.y + 3 * inverse * u ** 2 * approach.y + u ** 3 * route.target.y,
   };
 }
 
