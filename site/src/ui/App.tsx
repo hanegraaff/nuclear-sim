@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { SimulatorStore, type AnimationClock } from "../application/SimulatorStore";
 import { resolveDeviceSelection } from "../application/deviceSelection";
 import { cloudPresentationForState } from "../application/cloudPresentation";
+import { launchFramesForState } from "../application/launch";
 import type { BlastZoneId } from "../domain/blastZones";
 import { DevicePanel } from "./DevicePanel";
 import { MapViewport } from "./MapViewport";
@@ -24,24 +25,31 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   }), [state.tab, state.scenarioId, state.selectedId, state.customYieldInput]);
   const selection = useMemo(() => resolveDeviceSelection(panelState), [panelState]);
   const cloud = useMemo(() => cloudPresentationForState(state), [state]);
+  const frames = useMemo(() => launchFramesForState(state), [state]);
+  const impactCount = frames.filter((frame) => frame.elapsedMs >= frame.launch.flightMs).length;
   const selectTab = useCallback((tab: "scenario" | "device") => store.dispatch({ type: "selectTab", tab }), [store]);
   const selectScenario = useCallback((id: string) => store.dispatch({ type: "selectScenario", id }), [store]);
   const selectDevice = useCallback((id: string) => store.dispatch({ type: "selectDevice", id }), [store]);
   const setCustomYieldInput = useCallback((value: string) => store.dispatch({ type: "setCustomYieldInput", value }), [store]);
   const reset = useCallback(() => store.dispatch({ type: "reset" }), [store]);
+  const setMultiLaunch = useCallback((enabled: boolean) => store.dispatch({ type: "setMultiLaunch", enabled }), [store]);
   const hoverZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "hoverZone", zoneId }), [store]);
   const focusZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "focusZone", zoneId }), [store]);
   const pinZone = useCallback((zoneId: BlastZoneId) => store.dispatch({ type: "pinZone", zoneId }), [store]);
   const clearZoneInspection = useCallback(() => store.dispatch({ type: "clearZoneInspection" }), [store]);
 
   return (
-    <MapViewport cameraRequest={state.cameraRequest} launch={state} onLaunch={store.launchAt} launchAngle={store.nextLaunchAngle} onHoverZone={hoverZone} onFocusZone={focusZone} onPinZone={pinZone} onClearZoneInspection={clearZoneInspection}>
+    <MapViewport cameraRequest={state.cameraRequest} launch={state} frames={frames} onLaunch={store.launchAt} launchAngle={store.nextLaunchAngle} onHoverZone={hoverZone} onFocusZone={focusZone} onPinZone={pinZone} onClearZoneInspection={clearZoneInspection}>
       <DevicePanel
         state={panelState}
         selection={selection}
         launchPhase={state.phase}
         cloud={cloud}
+        multiLaunch={state.multiLaunch}
+        impactCount={impactCount}
+        totalCount={frames.length}
         onReset={reset}
+        onSetMultiLaunch={setMultiLaunch}
         onSelectTab={selectTab}
         onSelectScenario={selectScenario}
         onSelectDevice={selectDevice}

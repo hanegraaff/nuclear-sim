@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import type { FlightRoute, SimulatorState } from "../application/launch";
+import type { FlightRoute, LaunchFrame, SimulatorState } from "../application/launch";
 import type { ScenarioCameraRequest } from "../application/scenarioSelection";
 import type { BlastZoneId } from "../domain/blastZones";
 import type { BlastInspectionGeometry } from "../rendering/overlays/blastInspection";
@@ -10,12 +10,15 @@ import {
   type SatelliteMapController,
 } from "../rendering/map/SatelliteMapController";
 import { BlastInspectionOverlay } from "./BlastInspectionOverlay";
+import { MultiLaunchLegend } from "./MultiLaunchLegend";
+import { mapDistanceScale } from "../rendering/overlays/mapDistanceScale";
 
 /** UI inputs and semantic callbacks; no MapLibre object crosses this boundary. */
 interface MapViewportProps {
   readonly children?: ReactNode;
   readonly cameraRequest: ScenarioCameraRequest | null;
-  readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "activeZoneId" | "pinnedZoneId">;
+  readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "multiLaunch" | "activeZoneId" | "pinnedZoneId">;
+  readonly frames: readonly LaunchFrame[];
   readonly onLaunch: (route: FlightRoute) => void;
   readonly launchAngle: () => number;
   readonly onHoverZone: (zoneId: BlastZoneId | null) => void;
@@ -25,7 +28,7 @@ interface MapViewportProps {
 }
 
 /** Full-viewport map mount that places controls above imagery and map feedback. */
-export function MapViewport({ children, cameraRequest, launch, onLaunch, launchAngle, onHoverZone, onFocusZone, onPinZone, onClearZoneInspection }: MapViewportProps) {
+export function MapViewport({ children, cameraRequest, launch, frames, onLaunch, launchAngle, onHoverZone, onFocusZone, onPinZone, onClearZoneInspection }: MapViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
   const blastCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -74,8 +77,8 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
   }, [cameraRequest]);
 
   useEffect(() => {
-    controllerRef.current?.setFlightFrame(launch.launch, launch.elapsedMs, launch.activeZoneId);
-  }, [launch.launch, launch.elapsedMs, launch.activeZoneId]);
+    controllerRef.current?.setSceneFrame(frames, launch.multiLaunch, launch.activeZoneId);
+  }, [frames, launch.multiLaunch, launch.activeZoneId]);
 
   const retryImagery = () => {
     const controller = controllerRef.current;
@@ -97,6 +100,9 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
       data-pitch={camera.pitch.toFixed(3)}
       data-bearing={camera.bearing.toFixed(3)}
       data-launch-phase={launch.phase}
+      data-multi-launch={launch.multiLaunch}
+      data-launch-count={frames.length}
+      data-impact-count={frames.filter((frame) => frame.elapsedMs >= frame.launch.flightMs).length}
       data-launch-elapsed={Math.round(launch.elapsedMs)}
       data-target-longitude={launch.launch?.route.target.longitude.toFixed(6) ?? ""}
       data-target-latitude={launch.launch?.route.target.latitude.toFixed(6) ?? ""}
@@ -108,6 +114,11 @@ export function MapViewport({ children, cameraRequest, launch, onLaunch, launchA
       <canvas className="missile-canvas" ref={missileCanvasRef} aria-hidden="true" />
       <canvas className="inspection-canvas" ref={inspectionCanvasRef} aria-hidden="true" />
       <BlastInspectionOverlay geometry={inspection} activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onHover={onHoverZone} onFocusZone={onFocusZone} onPin={onPinZone} onClear={onClearZoneInspection} />
+      {launch.multiLaunch && (
+        <MultiLaunchLegend scale={mapDistanceScale(camera.latitude, camera.zoom)} latestRadii={launch.launch?.radii ?? null}
+          activeZoneId={launch.activeZoneId} pinnedZoneId={launch.pinnedZoneId} onHoverZone={onHoverZone}
+          onFocusZone={onFocusZone} onPinZone={onPinZone} onClearZoneInspection={onClearZoneInspection} />
+      )}
       <p className="model-qualification">IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE</p>
       {children}
       {loadState === "loading" && (

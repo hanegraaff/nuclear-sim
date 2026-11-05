@@ -76,6 +76,20 @@ describe("application launch scheduling", () => {
     unsubscribe();
   });
 
+  it("keeps every multi carrier on one viewport entry bearing while preserving distinct routes", () => {
+    const time = fakeClock();
+    const store = new SimulatorStore(time.clock);
+    store.dispatch({ type: "setMultiLaunch", enabled: true });
+    const angle = store.nextLaunchAngle();
+    store.launchAt(route);
+    store.launchAt({ ...route, target: { longitude: -73.7, latitude: 40.6 } });
+    expect(store.nextLaunchAngle()).toBe(angle);
+    expect(store.getSnapshot().launchGroups).toHaveLength(2);
+    expect(store.getSnapshot().launchGroups[0]?.launches[0]?.route.target).not.toEqual(store.getSnapshot().launchGroups[1]?.launches[0]?.route.target);
+    store.dispatch({ type: "reset" });
+    expect(store.nextLaunchAngle()).not.toBe(angle);
+  });
+
   it("cancels expansion frames on Reset and preserves the selected device", () => {
     const time = fakeClock();
     const store = new SimulatorStore(time.clock);

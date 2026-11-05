@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-05**. Plans 01–10 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -24,8 +24,8 @@ The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the 
 | 07 | Blast field grounded in pitched views | Complete | 06 |
 | 08 | 3D fireball | Complete | 07 |
 | 09 | Animated cloud-profile monitor | Complete | 08 |
-| 10 | Additive multi launch | Not started | 09 |
-| 11 | MIRV separation and multiple impacts | Not started | 10 |
+| 10 | Additive multi launch | Complete | 09 |
+| 11 | MIRV separation and multiple impacts | Ready | 10 |
 | 12 | Fallout view | Not started | 11 |
 | 13 | Audible view | Not started | 12 |
 | 14 | Visible view | Not started | 13 |
@@ -171,7 +171,9 @@ The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the 
 
 **Completion evidence.** State and composition tests pass; inspect two, five, and dense overlapping strikes and compare the five-strike state with `Multi-Launch.png`.
 
-**Current status.** Not started; depends on Plan 09.
+**Prior release.** Published on 2026-11-05 from branch `plan-10`. Private [Site version 19](https://nuke-simulator-rebuild.maquaman.chatgpt.site) is published from GitHub application commit `0c308fbe0bb0a35f3323fc2939b91bcb2627dc8e` and Sites source commit `16ea378f677739f7b612f89517742273b0c983a5`. Workspace and clean-release-checkout `npm run verify` both passed type checking, lint, 151 unit tests, 30 integration tests, the production build, and 31 browser tests. Direct Chromium checks exercised two, five, and 16 overlapping strikes; missile flight during an earlier blast; hover/focus legend popups; pan, zoom, pitch, resize, narrow layout, mode switching, and Reset. An authenticated browser check of the published Site confirmed five impacts, the latest-group single view, Reset, and no page errors. The reviewed [fixed-time inbound](site/tests/e2e/multi-launch.spec.ts-snapshots/plan-10-second-inbound-darwin.png) and [five-strike](site/tests/e2e/multi-launch.spec.ts-snapshots/plan-10-five-strikes-darwin.png) baselines and a live-Esri pitched comparison were inspected against `Multi-Launch.png`. A display-only tone adjustment localized the bright overlap while retaining geographic radii. The remaining camera/scene differences are documented in [visual reference notes](site/docs/visual-reference.md).
+
+**Current status.** Complete on 2026-11-05 after the user-reported correction. Private [Site version 20](https://nuke-simulator-rebuild.maquaman.chatgpt.site) is published from GitHub application commit `fb19e8ad65a950ed5caf4f69a834d0302781e39e` and Sites source commit `03539e4cbdbe3f17fff2ff027945836b802568d6`. Workspace and clean-release-checkout `npm run verify` both passed type checking, lint, 155 unit tests, 37 integration tests, build, and 33 browser tests. Multi-launch missiles now share the first group's general entry bearing; overlap advances the visible palette color while keeping each strike's radii and yield. The latest whole group stays rendered when multi mode turns off. A fixed shared ground mask and chunked composition retain older small visible fields in dense scenes, and fully offscreen fireballs are culled. Direct Chromium checks of the published Site confirmed upper-right missile entry, a partial-overlap red-minus-blue shift of 143 channel values, five settled impacts, legend hover/focus, 17 W54 impacts with the oldest field still visible after a pan, camera gestures, mode switching, Reset, and no page errors. The final five-strike live-Esri pitched view was inspected against `Multi-Launch.png`; [visual reference notes](site/docs/visual-reference.md) record the remaining camera and dome-size differences. Independent review found no new actionable issues after the corrections.
 
 **Blocking decisioning.** None. Do not combine multiple strikes by adding their yields into a single virtual device.
 
@@ -185,7 +187,7 @@ The roadmap is current as of **2026-11-03**. Plans 01–08 are published to the 
 
 **Completion evidence.** Continuity and catalog tests pass; a fixed-time capture shows pre-split, split, and multiple impacts.
 
-**Current status.** Not started; depends on Plan 10.
+**Current status.** Ready; Plan 10 is complete.
 
 **Blocking decisioning.** None. Use the representative modeled loadouts in the prototype, visibly labeled as modeled.
 

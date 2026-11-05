@@ -1,14 +1,7 @@
 import type { CSSProperties } from "react";
 import type { BlastZoneId } from "../domain/blastZones";
 import { formatArea, formatDistance, type BlastInspectionGeometry } from "../rendering/overlays/blastInspection";
-
-/** Prototype wording for the four blast effects; physical spans come from the model. */
-const ZONE_COPY: Record<BlastZoneId, { readonly label: string; readonly description: string }> = {
-  light: { label: "LIGHT", description: "Windows burst. Roofs fail. Flying glass turns streets into a hazard." },
-  moderate: { label: "MODERATE", description: "Homes collapse, fires spread and trapped survivors face severe burns." },
-  severe: { label: "SEVERE", description: "Most buildings are crushed. Survival above ground is unlikely." },
-  fireball: { label: "FIREBALL", description: "People and structures are consumed in incandescent heat." },
-};
+import { BLAST_ZONE_COPY } from "./blastZoneCopy";
 
 /** Inner projected marks take pointer priority where pitch brings their targets close. */
 const MARKER_STACK: Record<BlastZoneId, number> = { fireball: 4, severe: 3, moderate: 2, light: 1 };
@@ -40,7 +33,7 @@ export function BlastInspectionOverlay({ geometry, activeZoneId, pinnedZoneId, o
   return (
     <div className="blast-inspection-layer" aria-label="Blast-zone inspection markers">
       {visible.map(({ zone, marker }) => {
-        const copy = ZONE_COPY[zone.id];
+        const copy = BLAST_ZONE_COPY[zone.id];
         return (
           <button
             type="button"
@@ -70,8 +63,8 @@ export function BlastInspectionOverlay({ geometry, activeZoneId, pinnedZoneId, o
           role="tooltip"
           style={{ ...tooltipPosition(active.marker.x, active.marker.y, geometry.width, geometry.height), "--zone-color": active.color } as CSSProperties}
         >
-          <span className="blast-zone-tooltip-title"><i aria-hidden="true" />{ZONE_COPY[active.zone.id].label} DESTRUCTION</span>
-          <span className="blast-zone-tooltip-copy">{ZONE_COPY[active.zone.id].description}</span>
+          <span className="blast-zone-tooltip-title"><i aria-hidden="true" />{BLAST_ZONE_COPY[active.zone.id].label} DESTRUCTION</span>
+          <span className="blast-zone-tooltip-copy">{BLAST_ZONE_COPY[active.zone.id].description}</span>
           <span className="blast-zone-tooltip-stats">
             <span><small>ZONE SPAN</small><b>{formatDistance(active.zone.innerKm)} – {formatDistance(active.zone.outerKm)}</b></span>
             <span><small>DAMAGE AREA</small><b>{formatArea(active.zone.areaKm2)}</b></span>
