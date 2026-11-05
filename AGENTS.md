@@ -25,6 +25,7 @@ Reimplement the application described in [requirements.md](requirements.md) so i
 ## Documentation
 
 - The root README must explain setup, commands, controls, architecture, model assumptions, map imagery/attribution, and how to run tests.
+- Describe the application's current capabilities as a cohesive whole. Revise existing prose when behavior changes; keep plan-by-plan history in `roadmap.md` and PRs.
 - Each logical package or source area has a short README describing its responsibility, public API, dependencies, and important invariants. At minimum document `domain`, `application`, `rendering`, and `ui`.
 - Every exported class, interface, type, and function needs a documentation comment stating purpose, units, inputs, outputs, and relevant assumptions. Document nontrivial private functions and algorithms as well. Avoid comments that merely restate the code.
 - Every test suite needs a short purpose statement. Document fixtures, fake time or tile data, and why each numerical tolerance or visual threshold is used. A test name must describe observable behavior.
