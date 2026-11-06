@@ -221,7 +221,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the 
 
 **Completion evidence.** Range and rendering tests pass; compare the multi-mode green state with the selected Audible tab in `Additive Blasts.png`. Do not use `Audible.png` as the green target because it shows Blast selected.
 
-**Current status.** Ready; Plan 12 review and performance corrections are complete.
+**Current status.** In progress on branch `plan-13`; Plan 12 review and performance corrections are complete.
 
 **Blocking decisioning.** None. Decibel descriptions remain illustrative rather than precise predictions.
 

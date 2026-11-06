@@ -2,9 +2,10 @@ import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
 import { SimulatorStore, type AnimationClock } from "../application/SimulatorStore";
 import { resolveDeviceSelection } from "../application/deviceSelection";
 import { cloudPresentationForState } from "../application/cloudPresentation";
-import { falloutLegendForFrames } from "../application/effectPresentation";
+import { audibleLegendForFrames, falloutLegendForFrames } from "../application/effectPresentation";
 import { falloutAvailable, launchFramesForState } from "../application/launch";
 import type { FalloutBandId } from "../domain/fallout";
+import type { AudibleBandId } from "../domain/audible";
 import type { BlastZoneId } from "../domain/blastZones";
 import { DevicePanel } from "./DevicePanel";
 import { MapViewport } from "./MapViewport";
@@ -30,6 +31,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   const cloud = useMemo(() => cloudPresentationForState(state), [state]);
   const frames = useMemo(() => launchFramesForState(state), [state]);
   const falloutLegend = useMemo(() => falloutLegendForFrames(frames), [frames]);
+  const audibleLegend = useMemo(() => audibleLegendForFrames(frames), [frames]);
   const impactCount = frames.filter((frame) => frame.elapsedMs >= frame.launch.flightMs).length;
   const cancelPending = useCallback(() => setCancelPendingVersion((version) => version + 1), []);
   const selectTab = useCallback((tab: "scenario" | "device") => store.dispatch({ type: "selectTab", tab }), [store]);
@@ -42,7 +44,11 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   const focusZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "focusZone", zoneId }), [store]);
   const pinZone = useCallback((zoneId: BlastZoneId) => store.dispatch({ type: "pinZone", zoneId }), [store]);
   const clearZoneInspection = useCallback(() => store.dispatch({ type: "clearZoneInspection" }), [store]);
-  const selectEffectView = useCallback((view: "blast" | "fallout") => store.dispatch({ type: "setEffectView", view }), [store]);
+  const selectEffectView = useCallback((view: "blast" | "fallout" | "audible") => store.dispatch({ type: "setEffectView", view }), [store]);
+  const hoverAudible = useCallback((id: AudibleBandId | null) => store.dispatch({ type: "hoverAudible", id }), [store]);
+  const focusAudible = useCallback((id: AudibleBandId | null) => store.dispatch({ type: "focusAudible", id }), [store]);
+  const pinAudible = useCallback((id: AudibleBandId) => store.dispatch({ type: "pinAudible", id }), [store]);
+  const clearAudible = useCallback(() => store.dispatch({ type: "clearAudibleInspection" }), [store]);
   const hoverFallout = useCallback((id: FalloutBandId | null) => store.dispatch({ type: "hoverFallout", id }), [store]);
   const focusFallout = useCallback((id: FalloutBandId | null) => store.dispatch({ type: "focusFallout", id }), [store]);
   const pinFallout = useCallback((id: FalloutBandId) => store.dispatch({ type: "pinFallout", id }), [store]);
@@ -55,6 +61,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
       cancelPendingVersion={cancelPendingVersion} onPendingChange={store.setPendingLaunch}
       onHoverZone={hoverZone} onFocusZone={focusZone} onPinZone={pinZone} onClearZoneInspection={clearZoneInspection}
       falloutEligible={falloutAvailable(state)} falloutLegendZones={falloutLegend} onSelectEffectView={selectEffectView}
+      audibleLegendBands={audibleLegend} onHoverAudible={hoverAudible} onFocusAudible={focusAudible} onPinAudible={pinAudible} onClearAudible={clearAudible}
       onHoverFallout={hoverFallout} onFocusFallout={focusFallout} onPinFallout={pinFallout} onClearFallout={clearFallout}
     >
       <DevicePanel

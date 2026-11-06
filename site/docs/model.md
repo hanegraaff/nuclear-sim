@@ -1,6 +1,6 @@
 # Model assumptions and limits
 
-The model calculates geographic positions, illustrative blast radii, cloud height, deterministic wind and fallout footprints, and normalized display intensity. It is calibrated to the read-only prototype's visual behavior and is not a measured effects forecast. Blast and Fallout are available; audible and visible-range models remain future capabilities.
+The model calculates geographic positions, illustrative blast and outdoor audible radii, cloud height, deterministic wind and fallout footprints, and normalized display intensity. It is calibrated to the read-only prototype's visual behavior and is not a measured effects forecast. Blast, Fallout, and Audible are available; direct-fireball visibility remains a future capability.
 
 `src/domain/geodesy.ts` uses a spherical Earth with mean radius **6371 km**, matching the reference prototype. Great-circle distance uses the haversine formula. Destination calculations use a spherical bearing formula. Longitudes are normalized to [−180°, 180°), so a route crossing the antimeridian remains short. Inputs with non-finite coordinates, latitude outside [−90°, 90°], negative distance, or travel beyond the antipodal surface distance are rejected.
 
@@ -67,6 +67,23 @@ The map-distance bar is a separate camera reference: meters per CSS pixel at cen
 Overlap brightness, palette, shockwave glow, and the scale bar are illustrative presentation choices. This Blast response does not estimate additive pressure, thermal dose, casualties, fallout, or uncertainty. The separate Fallout composition below is also a normalized display field. Independent per-click groups and their individual timing are preserved by the application state. A MIRV click places several warheads in one group, each with its own intensity field and impact clock. Multi-session carriers share the first group's general entry bearing, but each clicked geographic target and curved route is separate. Turning the mode off preserves and renders the latest whole group, including its individual missiles and fireballs, while the single ruler describes the latest delivery.
 
 The compositor unprojects one shared viewport grid and keeps only per-sample peak and sum values; it does not retain a distance grid for every strike. The grid uses 560 × 380 samples for fewer than six strikes, 420 × 280 for six to fifteen, and a fixed 320 × 220 for sixteen or more. The fixed dense tier protects small fields from disappearing as strike count grows. Geographic work proceeds in chunks of at most 600,000 sample evaluations and 1,024 candidate strikes per repaint; total work can grow with the number of strikes. A conservative geographic bound skips only effects outside the visible ground. Retained rendering memory and per-repaint work stay bounded, while every application strike remains eligible for later chunks. The cost is softer spatial detail in dense scenes and possible partial field frames after a camera change while remaining contributions finish. No fixed completion time is promised. The WebGL renderer also skips a fireball dome only when its full transformed bound lies outside a viewport clip plane, retaining pitched or edge-crossing domes. None of these drawing limits changes a strike's modeled radius in kilometers.
+
+## Outdoor audible range (M-05)
+
+The source is the `rangeModel` and hearing-band copy in `prototype-code/app/page.tsx`, with the green selected Audible view in `prototype-screenshots/Additive Blasts.png` as the appearance reference. This is a visual calibration of an outdoor, low-frequency hearing range, **separate from the overpressure radii used for Blast damage**. For one warhead yield `Y` in megatons and illustrative burst height `H` in kilometers, the nominal surface radius is `min(MAX_SURFACE_DISTANCE_KM, 155 × Y^0.32 × (1 + min(0.18, H / 60)))` kilometers. Known prototype device heights are used for selected devices; the remaining devices receive the prototype's yield-scaled height estimate. The radius is capped below the antipodal distance so extreme study yields do not wrap a hearing field around Earth. Invalid, nonpositive yield and invalid or negative height are rejected. The default 21 kt Fat Man is about 45.4 km with its 0.503 km burst height; this number is a model label, not an observed audible distance.
+
+Four non-overlapping annuli use fractions of that radius, ordered from the edge inward. The model computes their approximate areas as differences between spherical-cap surface areas; the UI reports kilometer spans, and neither figure traces a measured sound contour.
+
+| Experience | Radius fraction | Illustrative prototype phrase |
+| --- | --- | --- |
+| Faint | 0.72–1.00 | ~45–75 dB peak; faint rumble |
+| Loud | 0.45–0.72 | ~75–100 dB peak; distant thunder |
+| Painful | 0.22–0.45 | ~100–120 dB peak; thunderous boom |
+| Deafening | 0–0.22 | ~120–140+ dB peak; possible pain and hearing damage |
+
+The colored field is **continuous**, not four hard rings. A smooth piecewise curve maps distance divided by nominal radius to unitless intensity, from one at ground zero to 0.04 at the radius and zero at 1.12 times the radius. The 12% feather is drawing behavior, not an enlargement of the labeled range. Multiple impacts combine bounded, order-independent normalized intensities before one green palette lookup; their yields and individual radii remain unchanged. Single mode draws a dashed geodesic ruler and markers, while multi mode shows a camera-center distance bar and legend. The palette is a rendering choice, not a decibel scale.
+
+No propagation simulation, acoustic waveform, time of sound arrival, terrain obstruction, temperature gradient, wind, humidity, cloud cover, building shielding, or hearing-protection input is calculated. The printed dB phrases are illustrative experience labels copied from the prototype; they are **not values derived from the field intensity** and should not be used to estimate injury at a location. Weather and terrain can dominate actual outdoor audibility. The model has no empirical uncertainty interval or forecast validity.
 
 ## Fallout screening envelope
 
