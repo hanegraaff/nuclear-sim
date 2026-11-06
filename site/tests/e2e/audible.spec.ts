@@ -77,6 +77,28 @@ test("multiple Audible fields retain a green gradient and inspectable legend whi
   await expect(page.getByRole("complementary", { name: "Audible map and effect scales" })).toHaveCount(0);
 });
 
+test("dense Audible strikes remain responsive to pan and restore earlier visible fields", async ({ page }) => {
+  await page.getByRole("button", { name: "Multi-Launch Mode OFF" }).click();
+  const targets = [430, 520, 620, 730].flatMap((y) => [580, 800, 1050, 1250].map((x) => ({ x, y })));
+  for (const { x, y } of targets) await page.mouse.click(x, y);
+  await page.clock.fastForward(11_300);
+  const simulator = page.locator("main.simulator");
+  await expect(simulator).toHaveAttribute("data-impact-count", "16");
+  await page.getByRole("tab", { name: "AUDIBLE", exact: true }).click();
+  await page.clock.runFor(1_800); // 16 retained fields require several bounded animation frames.
+  const alphaAt = (x: number, y: number) => page.locator(".blast-canvas").evaluate((canvas, point) =>
+    (canvas as HTMLCanvasElement).getContext("2d")!.getImageData(point.x, point.y, 1, 1).data[3]!, { x, y });
+  await expect.poll(() => alphaAt(580, 430)).toBeGreaterThan(20);
+  const before = await simulator.getAttribute("data-center-longitude");
+  await page.mouse.move(1700, 900);
+  await page.mouse.down();
+  await page.mouse.move(1780, 900, { steps: 5 });
+  await page.mouse.up();
+  await page.clock.runFor(1_800);
+  expect(await simulator.getAttribute("data-center-longitude")).not.toBe(before);
+  await expect.poll(() => alphaAt(660, 430)).toBeGreaterThan(20);
+});
+
 test.describe("narrow hearing controls", () => {
   test.use({ viewport: { width: 430, height: 844 }, deviceScaleFactor: 1 });
 
