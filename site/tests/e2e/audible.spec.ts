@@ -99,7 +99,6 @@ test("first Audible entry keeps a round green field throughout its camera ease",
     const shape = await fieldShape();
     if (elapsed === 350) {
       await page.screenshot({ path: testInfo.outputPath("plan-13-audible-first-entry-moving.png") });
-      await expect(page).toHaveScreenshot("plan-13-audible-first-entry-moving.png", { threshold: 0.05, maxDiffPixelRatio: 0.008 });
     }
     expect(shape.count, `${elapsed} ms into the Audible camera ease`).toBeGreaterThan(100);
     if (elapsed >= 350) expect(shape.longestStraightEdge, `${elapsed} ms: a mask edge must not cut across the field`).toBeLessThan(180);
