@@ -2,7 +2,6 @@ import { AUDIBLE_BANDS, audibleBands, audibleIntensity, type AudibleBand, type A
 import { destinationPoint, type GeoPoint } from "../../domain/geodesy";
 import { audibleColor } from "../effects/audiblePalette";
 import type { MapCameraAdapter, ScreenPoint } from "../map/MapCameraAdapter";
-import { formatDistance } from "./blastInspection";
 
 /** One hearing band marker attached to its geographic midpoint. */
 export interface ProjectedAudibleBand {
@@ -37,7 +36,7 @@ export function buildAudibleInspection(camera: MapCameraAdapter, origin: GeoPoin
   } catch { return null; }
 }
 
-/** Paint a subtle dashed ruler and markers without hard field-band outlines. */
+/** Paint a subtle dashed ruler and markers; the DOM label can avoid fixed controls. */
 export function drawAudibleInspection(context: CanvasRenderingContext2D, geometry: AudibleInspectionGeometry, active: AudibleBandId | null): void {
   context.save(); context.strokeStyle = "#e1ffe9"; context.globalAlpha = 0.9; context.lineWidth = 1.2; context.setLineDash([4, 4]);
   context.beginPath(); geometry.ruler.forEach((point, index) => index ? context.lineTo(point.x, point.y) : context.moveTo(point.x, point.y)); context.stroke(); context.setLineDash([]);
@@ -49,14 +48,7 @@ export function drawAudibleInspection(context: CanvasRenderingContext2D, geometr
     context.beginPath(); context.arc(marker.x, marker.y, band.id === active ? 7 : 6, 0, Math.PI * 2); context.stroke();
     context.fillStyle = color; context.beginPath(); context.arc(marker.x, marker.y, band.id === active ? 4.5 : 3.5, 0, Math.PI * 2); context.fill();
   }
-  const end = geometry.ruler.at(-1)!;
-  const label = `AUDIBLE  ${formatDistance(geometry.radiusKm)}`;
-  context.font = "700 10px monospace";
-  const textWidth = context.measureText(label).width + 16;
-  const x = Math.max(8, Math.min(geometry.width - textWidth - 8, end.x + 9));
-  const y = Math.max(18, Math.min(geometry.height - 12, end.y - 10));
-  context.fillStyle = "rgba(7,9,9,.9)"; context.fillRect(x, y - 13, textWidth, 22);
-  context.fillStyle = "#65ffa0"; context.fillText(label, x + 8, y + 2); context.restore();
+  context.restore();
 }
 
 /** Color of one legend marker, sharing the same scalar palette as map pixels. */
