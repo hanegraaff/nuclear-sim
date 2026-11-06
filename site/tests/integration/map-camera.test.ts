@@ -35,6 +35,9 @@ describe("map camera boundary", () => {
     const camera = new MapCameraAdapter(fakeMap);
     expect(camera.snapshot()).toMatchObject({ pitch: 50, bearing: 25 });
     expect(camera.toScreen(geoPoint(-179.9, 20)).x).toBeCloseTo(180.1, 10);
+    expect(camera.toGeoUnwrapped({ x: 540.1, y: 20 })).toEqual({ longitude: 540.1, latitude: 20 });
+    expect(camera.toScreenUnwrapped({ longitude: 540.1, latitude: 20 }).x).toBeCloseTo(540.1, 10);
+    expect(camera.unwrappedCenterLongitude()).toBe(179.8);
     const route = projectFlightRoute({
       start: geoPoint(179.7, 20),
       control: geoPoint(-179.9, 20.1),

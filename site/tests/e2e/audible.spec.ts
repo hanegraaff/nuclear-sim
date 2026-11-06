@@ -55,6 +55,79 @@ test("settled Audible view shows a continuous green field, focusable range marke
   await expect(simulator).toHaveAttribute("data-launch-count", "0");
 });
 
+test("first Audible entry keeps a round green field throughout its camera ease", async ({ page }, testInfo) => {
+  await page.mouse.click(1050, 700);
+  await page.clock.runFor(11_300);
+  await page.getByRole("tab", { name: "AUDIBLE", exact: true }).click();
+  const firstPaintAlpha = () => page.locator(".blast-canvas").evaluate((canvas) => {
+    const context = (canvas as HTMLCanvasElement).getContext("2d")!;
+    return [450, 1050, 1650].map((x) => context.getImageData(x, 700, 1, 1).data[3]!);
+  });
+  for (const elapsed of [0, 32]) {
+    if (elapsed) await page.clock.runFor(32);
+    expect(Math.min(...await firstPaintAlpha()), `${elapsed} ms: complete field across the impact, never a partial raster`).toBeGreaterThan(10);
+  }
+  /** A viewport-clipped source mask forms an internal straight edge for hundreds of pixels during the 650 ms ease. */
+  const fieldShape = () => page.locator(".blast-canvas").evaluate((canvas) => {
+    const element = canvas as HTMLCanvasElement;
+    const { width, height } = element;
+    const data = element.getContext("2d")!.getImageData(0, 0, width, height).data;
+    let count = 0;
+    for (let offset = 0; offset < data.length; offset += 4) {
+      if (data[offset + 1]! > data[offset]! * 1.25 && data[offset + 3]! > 30) count++;
+    }
+    let longestStraightEdge = 0;
+    for (const side of ["left", "right"] as const) {
+      let previous = -1;
+      let run = 0;
+      for (let y = 40; y < height - 40; y += 4) {
+        let edge = -1;
+        for (let x = side === "left" ? 16 : width - 17; side === "left" ? x < width - 16 : x >= 16; x += side === "left" ? 1 : -1) {
+          const offset = (y * width + x) * 4;
+          if (data[offset + 1]! > data[offset]! * 1.25 && data[offset + 3]! > 30) { edge = x; break; }
+        }
+        if (edge >= 16 && edge < width - 16 && previous >= 0 && Math.abs(edge - previous) <= 1) run += 4;
+        else run = 0;
+        previous = edge;
+        longestStraightEdge = Math.max(longestStraightEdge, run);
+      }
+    }
+    return { count, longestStraightEdge };
+  });
+  for (const elapsed of [120, 350, 550]) {
+    await page.clock.runFor(elapsed === 120 ? 88 : elapsed === 350 ? 230 : 200);
+    const shape = await fieldShape();
+    if (elapsed === 350) {
+      await page.screenshot({ path: testInfo.outputPath("plan-13-audible-first-entry-moving.png") });
+      await expect(page).toHaveScreenshot("plan-13-audible-first-entry-moving.png", { threshold: 0.05, maxDiffPixelRatio: 0.008 });
+    }
+    expect(shape.count, `${elapsed} ms into the Audible camera ease`).toBeGreaterThan(100);
+    if (elapsed >= 350) expect(shape.longestStraightEdge, `${elapsed} ms: a mask edge must not cut across the field`).toBeLessThan(180);
+  }
+  await page.clock.runFor(400);
+  await expect(page.locator(".audible-marker")).toHaveCount(4);
+});
+
+test("20 Tt Audible entry keeps its capped full-world field visible during camera motion", async ({ page }) => {
+  await page.getByRole("combobox", { name: "Weapon or delivery system" }).selectOption("large-continent");
+  await page.mouse.click(1050, 700);
+  await page.clock.fastForward(11_300);
+  await expect(page.locator("main.simulator")).toHaveAttribute("data-launch-phase", "complete");
+  await page.getByRole("tab", { name: "AUDIBLE", exact: true }).click();
+  for (const elapsed of [120, 350, 550]) {
+    await page.clock.runFor(elapsed === 120 ? 120 : elapsed === 350 ? 230 : 200);
+    const minimumAlpha = await page.locator(".blast-canvas").evaluate((canvas) => {
+      const element = canvas as HTMLCanvasElement;
+      const context = element.getContext("2d")!;
+      // The capped radius is half the Earth's circumference, so every valid
+      // ground point is inside the field. Sample across repeated world copies.
+      return Math.min(...[200, 800, 1400, 2000].flatMap((x) => [150, 600, 1050]
+        .map((y) => context.getImageData(x, y, 1, 1).data[3]!)));
+    });
+    expect(minimumAlpha, `${elapsed} ms into the capped-radius transition`).toBeGreaterThan(10);
+  }
+});
+
 test("multiple Audible fields retain a green gradient and inspectable legend while camera moves", async ({ page }, testInfo) => {
   await page.getByRole("button", { name: "Multi-Launch Mode OFF" }).click();
   await page.mouse.click(1100, 650); await page.clock.runFor(11_300);
@@ -85,18 +158,60 @@ test("dense Audible strikes remain responsive to pan and restore earlier visible
   const simulator = page.locator("main.simulator");
   await expect(simulator).toHaveAttribute("data-impact-count", "16");
   await page.getByRole("tab", { name: "AUDIBLE", exact: true }).click();
-  await page.clock.runFor(1_800); // 16 retained fields require several bounded animation frames.
+  await page.clock.runFor(5_000); // 16 retained fields require several bounded animation frames.
   const alphaAt = (x: number, y: number) => page.locator(".blast-canvas").evaluate((canvas, point) =>
     (canvas as HTMLCanvasElement).getContext("2d")!.getImageData(point.x, point.y, 1, 1).data[3]!, { x, y });
   await expect.poll(() => alphaAt(580, 430)).toBeGreaterThan(20);
+  const olderFieldAlpha = await alphaAt(1250, 730);
+  expect(olderFieldAlpha).toBeGreaterThan(20);
   const before = await simulator.getAttribute("data-center-longitude");
   await page.mouse.move(1700, 900);
   await page.mouse.down();
   await page.mouse.move(1780, 900, { steps: 5 });
+  await page.clock.runFor(32); // Inspect while the pointer is down, before moveend rebuilds the mask.
+  const movingAlpha = await alphaAt(1330, 730);
+  expect(movingAlpha).toBeGreaterThan(20);
+  expect(Math.abs(movingAlpha - olderFieldAlpha)).toBeLessThan(35);
   await page.mouse.up();
   await page.clock.runFor(1_800);
   expect(await simulator.getAttribute("data-center-longitude")).not.toBe(before);
   await expect.poll(() => alphaAt(660, 430)).toBeGreaterThan(20);
+});
+
+test("pitched Audible pan keeps interior alpha continuous across reprojection mesh rows", async ({ page }, testInfo) => {
+  await page.mouse.click(1050, 700);
+  await page.clock.fastForward(11_300);
+  await page.getByRole("tab", { name: "AUDIBLE", exact: true }).click();
+  await page.clock.runFor(1_000);
+  await page.mouse.move(1900, 850); await page.mouse.down({ button: "right" });
+  await page.mouse.move(1900, 500, { steps: 10 }); await page.mouse.up({ button: "right" });
+  await page.clock.runFor(100);
+  await expect.poll(async () => Number(await page.locator("main.simulator").getAttribute("data-pitch"))).toBeGreaterThan(20);
+  await page.clock.runFor(1_000);
+  await page.mouse.move(1800, 900); await page.mouse.down();
+  await page.mouse.move(1870, 900, { steps: 5 });
+  await page.clock.runFor(32); // Moving projection, before the moveend raster rebuild.
+  const seamRatios = await page.locator(".blast-canvas").evaluate((canvas) => {
+    const element = canvas as HTMLCanvasElement;
+    const { width, height } = element;
+    const bytes = element.getContext("2d")!.getImageData(0, 0, width, height).data;
+    let worst = 1;
+    let brightest = 1;
+    for (const x of [1000, 1300, 1600]) for (let y = 420; y < 900; y++) {
+      const above = bytes[((y - 2) * width + x) * 4 + 3]!;
+      const center = bytes[(y * width + x) * 4 + 3]!;
+      const below = bytes[((y + 2) * width + x) * 4 + 3]!;
+      if (above < 80 || below < 80) continue; // Inspect interior field, not its natural outer fade.
+      const ratio = center / ((above + below) / 2);
+      worst = Math.min(worst, ratio);
+      brightest = Math.max(brightest, ratio);
+    }
+    return { minimum: worst, maximum: brightest };
+  });
+  await page.screenshot({ path: testInfo.outputPath("plan-13-pitched-pan-moving.png") });
+  expect(seamRatios.minimum, "mesh boundaries preserve the interior field opacity while panning").toBeGreaterThan(0.8);
+  expect(seamRatios.maximum, "mesh overlap must not brighten interior grid lines").toBeLessThan(1.2);
+  await page.mouse.up();
 });
 
 test.describe("narrow hearing controls", () => {

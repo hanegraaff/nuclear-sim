@@ -103,10 +103,11 @@ export class SatelliteMapController {
     map.on("idle", this.handleIdle);
     map.on("moveend", this.emitCamera);
     map.on("moveend", this.finishPendingMirv);
+    map.on("moveend", this.finishAudibleProjection);
     map.on("error", this.handleError);
     map.on("sourcedata", this.handleSourceData);
     map.on("resize", this.updateCameraPadding);
-    map.on("resize", this.repaintCamera);
+    map.on("resize", this.repaintResize);
     map.on("move", this.repaintCamera);
     map.on("click", this.handleMapClick);
     document.addEventListener("visibilitychange", this.handleVisibilityChange);
@@ -144,6 +145,13 @@ export class SatelliteMapController {
     this.elapsedMs = latest?.elapsedMs ?? 0;
     this.highlightedZoneId = highlightedZoneId;
     if (this.effectView === "blast") this.frameHiddenNarrowMirv(frames);
+    // A complete coarse geographic preview is ready before easeTo starts
+    // emitting move events; full sampling resumes after camera settlement.
+    if (changedView && effectView === "audible" && !multiLaunch) {
+      const container = this.map.getContainer();
+      this.audibleRenderer?.primeFirstEntry(frames, container.clientWidth, container.clientHeight);
+      this.repaintFlight();
+    }
     if (changedView) this.frameEffectView();
     this.repaintFlight();
     if (this.fireballRenderer && !this.fireballFailed) {
@@ -231,10 +239,11 @@ export class SatelliteMapController {
     this.map.off("idle", this.handleIdle);
     this.map.off("moveend", this.emitCamera);
     this.map.off("moveend", this.finishPendingMirv);
+    this.map.off("moveend", this.finishAudibleProjection);
     this.map.off("error", this.handleError);
     this.map.off("sourcedata", this.handleSourceData);
     this.map.off("resize", this.updateCameraPadding);
-    this.map.off("resize", this.repaintCamera);
+    this.map.off("resize", this.repaintResize);
     this.map.off("move", this.repaintCamera);
     this.map.off("click", this.handleMapClick);
     document.removeEventListener("visibilitychange", this.handleVisibilityChange);
@@ -346,6 +355,18 @@ export class SatelliteMapController {
     // The map-distance instrument follows the same moving camera frame as the
     // geographic field, including animated zoom and container resize.
     this.emitCamera();
+  };
+
+  /** A resize may not emit moveend, so start its bounded rebuild immediately. */
+  private readonly repaintResize = (): void => {
+    this.repaintCamera();
+    this.finishAudibleProjection();
+  };
+
+  /** Atomically replace the moving cache after one settled-camera composition. */
+  private readonly finishAudibleProjection = (): void => {
+    this.audibleRenderer?.settleProjection();
+    if (this.effectView === "audible") this.repaintFlight();
   };
 
   /** Preserve the Blast camera while the alternate field uses its model-supplied frame. */
