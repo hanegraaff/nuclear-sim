@@ -1,7 +1,7 @@
 /** Fake-time state tests keep view eligibility tied to retained nuclear deliveries, not selection. */
 import { describe, expect, it } from "vitest";
 import { falloutAvailable, INITIAL_SIMULATOR_STATE, reduceSimulator, type SimulatorState } from "../../src/application/launch";
-import { audibleCameraFrame, audibleLegendForFrames, audibleRadiusForLaunch, falloutCameraFrame, falloutLegendForFrames } from "../../src/application/effectPresentation";
+import { audibleCameraFrame, audibleLegendForFrames, audibleRadiusForLaunch, falloutCameraFrame, falloutLegendForFrames, visibleCameraFrame, visibleLegendForFrames, visibleRadiusForLaunch } from "../../src/application/effectPresentation";
 import { falloutZones } from "../../src/domain/fallout";
 import { launchFramesForState } from "../../src/application/launch";
 
@@ -92,5 +92,33 @@ describe("settled effect views", () => {
     const mirv = complete(launch(INITIAL_SIMULATOR_STATE, "rs-24-yars", 0.525));
     expect(audibleRadiusForLaunch(mirv.launch!)).toBeLessThan(audibleRadiusForLaunch({ deviceId: "rs-24-yars", yieldMt: 0.525 }));
     expect(audibleLegendForFrames(launchFramesForState(mirv))[0]!.outerKm).toBeCloseTo(audibleRadiusForLaunch(mirv.launch!), 8);
+  });
+
+  it("offers Visible for settled conventional and nuclear strikes and clears inspection on view or launch changes", () => {
+    const conventional = complete(launch(INITIAL_SIMULATOR_STATE, "moab", 0.000011));
+    let state = reduceSimulator(conventional, { type: "setEffectView", view: "visible" });
+    expect(state.effectView).toBe("visible");
+    state = reduceSimulator(state, { type: "pinVisible", id: "brilliant" });
+    state = reduceSimulator(state, { type: "hoverVisible", id: "faint" });
+    expect(state.activeVisibleId).toBe("faint");
+    state = reduceSimulator(state, { type: "hoverVisible", id: null });
+    expect(state.activeVisibleId).toBe("brilliant");
+    expect(reduceSimulator(state, { type: "setEffectView", view: "blast" }).pinnedVisibleId).toBeNull();
+    const next = launch(state, "fat-man", 0.021, 13_000);
+    expect(next.effectView).toBe("blast");
+    expect(next.activeVisibleId).toBeNull();
+    expect(reduceSimulator(state, { type: "setPendingLaunch", pending: true }).effectView).toBe("blast");
+    expect(reduceSimulator(state, { type: "reset" }).pinnedVisibleId).toBeNull();
+  });
+
+  it("frames the latest per-warhead fireball's direct horizon and legend outside React", () => {
+    const fatMan = complete(launch(INITIAL_SIMULATOR_STATE, "fat-man", 0.021));
+    const range = visibleRadiusForLaunch(fatMan.launch!);
+    expect(range).toBeCloseTo(98.5, 0);
+    expect(visibleCameraFrame(launchFramesForState(fatMan))!.horizonKm).toBeCloseTo(range * 1.08, 8);
+    expect(visibleLegendForFrames(launchFramesForState(fatMan)).map((band) => band.id)).toEqual(["faint", "clear", "brilliant", "blinding"]);
+    const mirv = complete(launch(INITIAL_SIMULATOR_STATE, "rs-24-yars", 0.525));
+    expect(visibleRadiusForLaunch(mirv.launch!)).toBeLessThan(visibleRadiusForLaunch({ ...mirv.launch!, radii: { ...mirv.launch!.radii, fireball: 1 } }));
+    expect(visibleLegendForFrames(launchFramesForState(mirv))[0]!.outerKm).toBeCloseTo(visibleRadiusForLaunch(mirv.launch!), 8);
   });
 });

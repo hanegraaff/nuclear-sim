@@ -1,8 +1,8 @@
 /** Implemented effect views and semantic selection action. */
 export interface EffectViewSelectorProps {
-  readonly view: "blast" | "fallout" | "audible";
+  readonly view: "blast" | "fallout" | "audible" | "visible";
   readonly falloutAvailable: boolean;
-  readonly onSelect: (view: "blast" | "fallout" | "audible") => void;
+  readonly onSelect: (view: "blast" | "fallout" | "audible" | "visible") => void;
 }
 
 /** Prototype's upper-right effect tabs, shown only after the launch settles. */
@@ -26,6 +26,11 @@ export function EffectViewSelector({ view, falloutAvailable, onSelect }: EffectV
         className={`effect-view audible-view ${view === "audible" ? "selected" : ""}`}
         onClick={() => onSelect("audible")}
       >AUDIBLE</button>
+      <button
+        type="button" role="tab" aria-selected={view === "visible"}
+        className={`effect-view visible-view ${view === "visible" ? "selected" : ""}`}
+        onClick={() => onSelect("visible")}
+      >VISIBLE</button>
     </div>
   );
 }

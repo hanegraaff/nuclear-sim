@@ -5,11 +5,14 @@ import { BlastCanvasRenderer } from "../effects/BlastCanvasRenderer";
 import { MultiBlastCanvasRenderer } from "../effects/MultiBlastCanvasRenderer";
 import { FalloutCanvasRenderer } from "../effects/FalloutCanvasRenderer";
 import { AudibleCanvasRenderer } from "../effects/AudibleCanvasRenderer";
+import { VisibleCanvasRenderer } from "../effects/VisibleCanvasRenderer";
 import type { AudibleBandId } from "../../domain/audible";
+import type { VisibleBandId } from "../../domain/visible";
 import type { AudibleInspectionGeometry } from "../overlays/audibleInspection";
+import type { VisibleInspectionGeometry } from "../overlays/visibleInspection";
 import type { FalloutBandId } from "../../domain/fallout";
 import type { FalloutInspectionGeometry } from "../overlays/falloutInspection";
-import { audibleCameraFrame, falloutCameraFrame } from "../../application/effectPresentation";
+import { audibleCameraFrame, falloutCameraFrame, visibleCameraFrame } from "../../application/effectPresentation";
 import { createFireballRenderer, type FireballCamera, type FireballRenderer } from "../animation/FireballRenderer";
 import { viewportFlightRoute } from "../animation/flightGeometry";
 import { projectedMirvPlan } from "../animation/mirvProjectionSafety";
@@ -55,6 +58,7 @@ export interface SatelliteMapCallbacks {
   readonly onInspectionChange?: (geometry: BlastInspectionGeometry | null) => void;
   readonly onFalloutInspectionChange?: (geometry: FalloutInspectionGeometry | null) => void;
   readonly onAudibleInspectionChange?: (geometry: AudibleInspectionGeometry | null) => void;
+  readonly onVisibleInspectionChange?: (geometry: VisibleInspectionGeometry | null) => void;
   /** Return the lower edge of controls covering the narrow map, in CSS pixels from its top. */
   readonly clearMapTopPx?: () => number;
 }
@@ -92,12 +96,13 @@ export class SatelliteMapController {
   private lastFramedMirvGroupId: number | null = null;
   private pendingClicks: PendingMapClick[] = [];
   private pendingFrameAttempt = 0;
-  private effectView: "blast" | "fallout" | "audible" = "blast";
+  private effectView: "blast" | "fallout" | "audible" | "visible" = "blast";
   private activeFalloutId: FalloutBandId | null = null;
   private activeAudibleId: AudibleBandId | null = null;
+  private activeVisibleId: VisibleBandId | null = null;
   private blastCamera: MapCameraSnapshot | null = null;
 
-  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null, private readonly multiBlastRenderer?: MultiBlastCanvasRenderer, private readonly falloutRenderer?: FalloutCanvasRenderer, private readonly audibleRenderer?: AudibleCanvasRenderer) {
+  constructor(private readonly map: MapLibreMap, private readonly callbacks: SatelliteMapCallbacks, private readonly missileRenderer?: MissileCanvasRenderer, private readonly blastRenderer?: BlastCanvasRenderer, private readonly fireballRenderer?: FireballRenderer | null, private readonly multiBlastRenderer?: MultiBlastCanvasRenderer, private readonly falloutRenderer?: FalloutCanvasRenderer, private readonly audibleRenderer?: AudibleCanvasRenderer, private readonly visibleRenderer?: VisibleCanvasRenderer) {
     this.camera = new MapCameraAdapter(map);
     map.on("load", this.handleLoad);
     map.on("idle", this.handleIdle);
@@ -128,12 +133,13 @@ export class SatelliteMapController {
   }
 
   /** Draw all click groups; turning multi mode off restores one group's ruler. */
-  setSceneFrame(frames: readonly LaunchFrame[], multiLaunch: boolean, highlightedZoneId: BlastZoneId | null = null, effectView: "blast" | "fallout" | "audible" = "blast", activeFalloutId: FalloutBandId | null = null, activeAudibleId: AudibleBandId | null = null): void {
+  setSceneFrame(frames: readonly LaunchFrame[], multiLaunch: boolean, highlightedZoneId: BlastZoneId | null = null, effectView: "blast" | "fallout" | "audible" | "visible" = "blast", activeFalloutId: FalloutBandId | null = null, activeAudibleId: AudibleBandId | null = null, activeVisibleId: VisibleBandId | null = null): void {
     const changedView = this.effectView !== effectView;
-    if (changedView) { this.multiBlastRenderer?.dispose(); this.falloutRenderer?.dispose(); this.audibleRenderer?.dispose(); }
+    if (changedView) { this.multiBlastRenderer?.dispose(); this.falloutRenderer?.dispose(); this.audibleRenderer?.dispose(); this.visibleRenderer?.dispose(); }
     this.effectView = effectView;
     this.activeFalloutId = activeFalloutId;
     this.activeAudibleId = activeAudibleId;
+    this.activeVisibleId = activeVisibleId;
     const latest = frames.at(-1);
     // A replacement launch must keep the camera at the clicked target. Only an
     // explicit tab return within the same settled scene restores Blast framing.
@@ -147,9 +153,10 @@ export class SatelliteMapController {
     if (this.effectView === "blast") this.frameHiddenNarrowMirv(frames);
     // A complete coarse geographic preview is ready before easeTo starts
     // emitting move events; full sampling resumes after camera settlement.
-    if (changedView && effectView === "audible" && !multiLaunch) {
+    if (changedView && (effectView === "audible" || effectView === "visible") && !multiLaunch) {
       const container = this.map.getContainer();
-      this.audibleRenderer?.primeFirstEntry(frames, container.clientWidth, container.clientHeight);
+      if (effectView === "audible") this.audibleRenderer?.primeFirstEntry(frames, container.clientWidth, container.clientHeight);
+      else this.visibleRenderer?.primeFirstEntry(frames, container.clientWidth, container.clientHeight);
       this.repaintFlight();
     }
     if (changedView) this.frameEffectView();
@@ -252,6 +259,7 @@ export class SatelliteMapController {
     this.multiBlastRenderer?.dispose();
     this.falloutRenderer?.dispose();
     this.audibleRenderer?.dispose();
+    this.visibleRenderer?.dispose();
     this.fireballRenderer?.dispose();
     this.map.remove();
   }
@@ -316,6 +324,8 @@ export class SatelliteMapController {
     if (this.effectView === "fallout") {
       const geometry = this.falloutRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch, this.activeFalloutId) ?? null;
       this.callbacks.onFalloutInspectionChange?.(geometry);
+      this.callbacks.onAudibleInspectionChange?.(null);
+      this.callbacks.onVisibleInspectionChange?.(null);
       if (this.inspection) { this.inspection = null; this.callbacks.onInspectionChange?.(null); }
       this.missileRenderer?.render(null, 0, container.clientWidth, container.clientHeight);
       return;
@@ -324,11 +334,22 @@ export class SatelliteMapController {
       const geometry = this.audibleRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch, this.activeAudibleId) ?? null;
       this.callbacks.onAudibleInspectionChange?.(geometry);
       this.callbacks.onFalloutInspectionChange?.(null);
+      this.callbacks.onVisibleInspectionChange?.(null);
+      if (this.inspection) { this.inspection = null; this.callbacks.onInspectionChange?.(null); }
+      this.missileRenderer?.render(null, 0, container.clientWidth, container.clientHeight);
+      return;
+    }
+    if (this.effectView === "visible") {
+      const geometry = this.visibleRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch, this.activeVisibleId) ?? null;
+      this.callbacks.onVisibleInspectionChange?.(geometry);
+      this.callbacks.onAudibleInspectionChange?.(null);
+      this.callbacks.onFalloutInspectionChange?.(null);
       if (this.inspection) { this.inspection = null; this.callbacks.onInspectionChange?.(null); }
       this.missileRenderer?.render(null, 0, container.clientWidth, container.clientHeight);
       return;
     }
     this.callbacks.onAudibleInspectionChange?.(null);
+    this.callbacks.onVisibleInspectionChange?.(null);
     this.callbacks.onFalloutInspectionChange?.(null);
     const groupedSingle = !this.multiLaunch && this.sceneFrames.length > 1;
     if (this.multiLaunch || groupedSingle) this.multiBlastRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch);
@@ -350,6 +371,7 @@ export class SatelliteMapController {
     this.multiBlastRenderer?.invalidateProjection();
     this.falloutRenderer?.invalidateProjection();
     this.audibleRenderer?.invalidateProjection();
+    this.visibleRenderer?.invalidateProjection();
     this.repaintFlight();
     if (this.fireballRenderer && !this.fireballFailed && !document.hidden) this.map.triggerRepaint();
     // The map-distance instrument follows the same moving camera frame as the
@@ -366,7 +388,8 @@ export class SatelliteMapController {
   /** Atomically replace the moving cache after one settled-camera composition. */
   private readonly finishAudibleProjection = (): void => {
     this.audibleRenderer?.settleProjection();
-    if (this.effectView === "audible") this.repaintFlight();
+    this.visibleRenderer?.settleProjection();
+    if (this.effectView === "audible" || this.effectView === "visible") this.repaintFlight();
   };
 
   /** Preserve the Blast camera while the alternate field uses its model-supplied frame. */
@@ -377,10 +400,11 @@ export class SatelliteMapController {
       this.blastCamera = null;
       return;
     }
-    if (this.effectView === "fallout" || this.effectView === "audible") {
+    if (this.effectView === "fallout" || this.effectView === "audible" || this.effectView === "visible") {
       const snapshot = this.camera.snapshot();
       this.blastCamera ??= { longitude: snapshot.center.longitude, latitude: snapshot.center.latitude, zoom: snapshot.zoom, pitch: snapshot.pitch, bearing: snapshot.bearing };
-      const frame = this.effectView === "fallout" ? falloutCameraFrame(this.sceneFrames) : audibleCameraFrame(this.sceneFrames);
+      const frame = this.effectView === "fallout" ? falloutCameraFrame(this.sceneFrames)
+        : this.effectView === "visible" ? visibleCameraFrame(this.sceneFrames) : audibleCameraFrame(this.sceneFrames);
       if (frame) {
         const container = this.map.getContainer();
         this.map.easeTo({ center: [frame.center.longitude, frame.center.latitude], zoom: scenarioZoom(frame.horizonKm, frame.center.latitude, container.clientWidth, container.clientHeight), duration: 650 });
@@ -621,5 +645,6 @@ export function createSatelliteMapController(
   const fireball = fireballCanvas ? createFireballRenderer(fireballCanvas, () => map.triggerRepaint()) : undefined;
   const fallout = blastCanvas && inspectionCanvas ? new FalloutCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
   const audible = blastCanvas && inspectionCanvas ? new AudibleCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
-  return new SatelliteMapController(map, callbacks, missile, blast, fireball, multiBlast, fallout, audible);
+  const visible = blastCanvas && inspectionCanvas ? new VisibleCanvasRenderer(blastCanvas, camera, inspectionCanvas) : undefined;
+  return new SatelliteMapController(map, callbacks, missile, blast, fireball, multiBlast, fallout, audible, visible);
 }

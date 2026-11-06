@@ -8,6 +8,7 @@ import { mirvImpactTargets } from "../domain/mirv";
 import { planMirvCarrier } from "./mirvCarrierPlan";
 import { modelFallout, type FalloutBandId, type FalloutFootprint } from "../domain/fallout";
 import type { AudibleBandId } from "../domain/audible";
+import type { VisibleBandId } from "../domain/visible";
 
 /** Normal carrier travel time in milliseconds, taken from the prototype. */
 export const FLIGHT_MS = 6500;
@@ -68,11 +69,15 @@ export interface SimulatorState extends ScenarioSelectionState {
   readonly phase: "armed" | "inbound" | "detonating" | "complete";
   readonly multiLaunch: boolean;
   readonly pendingLaunch: boolean;
-  readonly effectView: "blast" | "fallout" | "audible";
+  readonly effectView: "blast" | "fallout" | "audible" | "visible";
   readonly activeAudibleId: AudibleBandId | null;
   readonly hoveredAudibleId: AudibleBandId | null;
   readonly focusedAudibleId: AudibleBandId | null;
   readonly pinnedAudibleId: AudibleBandId | null;
+  readonly activeVisibleId: VisibleBandId | null;
+  readonly hoveredVisibleId: VisibleBandId | null;
+  readonly focusedVisibleId: VisibleBandId | null;
+  readonly pinnedVisibleId: VisibleBandId | null;
   readonly activeFalloutId: FalloutBandId | null;
   readonly hoveredFalloutId: FalloutBandId | null;
   readonly focusedFalloutId: FalloutBandId | null;
@@ -94,11 +99,15 @@ export type SimulatorAction = ScenarioSelectionAction
   | { readonly type: "tick"; readonly nowMs: number; readonly launchId: number }
   | { readonly type: "setMultiLaunch"; readonly enabled: boolean }
   | { readonly type: "setPendingLaunch"; readonly pending: boolean }
-  | { readonly type: "setEffectView"; readonly view: "blast" | "fallout" | "audible" }
+  | { readonly type: "setEffectView"; readonly view: "blast" | "fallout" | "audible" | "visible" }
   | { readonly type: "hoverAudible"; readonly id: AudibleBandId | null }
   | { readonly type: "focusAudible"; readonly id: AudibleBandId | null }
   | { readonly type: "pinAudible"; readonly id: AudibleBandId }
   | { readonly type: "clearAudibleInspection" }
+  | { readonly type: "hoverVisible"; readonly id: VisibleBandId | null }
+  | { readonly type: "focusVisible"; readonly id: VisibleBandId | null }
+  | { readonly type: "pinVisible"; readonly id: VisibleBandId }
+  | { readonly type: "clearVisibleInspection" }
   | { readonly type: "hoverFallout"; readonly id: FalloutBandId | null }
   | { readonly type: "focusFallout"; readonly id: FalloutBandId | null }
   | { readonly type: "pinFallout"; readonly id: FalloutBandId }
@@ -120,6 +129,10 @@ export const INITIAL_SIMULATOR_STATE: SimulatorState = {
   hoveredAudibleId: null,
   focusedAudibleId: null,
   pinnedAudibleId: null,
+  activeVisibleId: null,
+  hoveredVisibleId: null,
+  focusedVisibleId: null,
+  pinnedVisibleId: null,
   activeFalloutId: null,
   hoveredFalloutId: null,
   focusedFalloutId: null,
@@ -171,6 +184,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       elapsedMs: 0,
       effectView: "blast",
       activeAudibleId: null, hoveredAudibleId: null, focusedAudibleId: null, pinnedAudibleId: null,
+      activeVisibleId: null, hoveredVisibleId: null, focusedVisibleId: null, pinnedVisibleId: null,
       activeFalloutId: null,
       hoveredFalloutId: null,
       focusedFalloutId: null,
@@ -203,6 +217,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       phase: phaseForGroups(launchGroups, state.nowMs),
       effectView: state.effectView === "fallout" && !launchGroups.some((group) => group.launches.some((delivery) => delivery.fallout)) ? "blast" : state.effectView,
       activeAudibleId: null, hoveredAudibleId: null, focusedAudibleId: null, pinnedAudibleId: null,
+      activeVisibleId: null, hoveredVisibleId: null, focusedVisibleId: null, pinnedVisibleId: null,
       activeFalloutId: null,
       hoveredFalloutId: null,
       focusedFalloutId: null,
@@ -221,6 +236,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       ...(action.pending ? {
         effectView: "blast" as const,
         activeAudibleId: null, hoveredAudibleId: null, focusedAudibleId: null, pinnedAudibleId: null,
+        activeVisibleId: null, hoveredVisibleId: null, focusedVisibleId: null, pinnedVisibleId: null,
         activeFalloutId: null,
         hoveredFalloutId: null,
         focusedFalloutId: null,
@@ -234,6 +250,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       ...state,
       effectView: action.view,
       activeAudibleId: null, hoveredAudibleId: null, focusedAudibleId: null, pinnedAudibleId: null,
+      activeVisibleId: null, hoveredVisibleId: null, focusedVisibleId: null, pinnedVisibleId: null,
       activeZoneId: null,
       hoveredZoneId: null,
       focusedZoneId: null,
@@ -249,6 +266,10 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
   if (action.type === "focusAudible") return updateAudibleInspection(state, state.hoveredAudibleId, action.id, state.pinnedAudibleId);
   if (action.type === "pinAudible") return updateAudibleInspection(state, state.hoveredAudibleId, state.focusedAudibleId, state.pinnedAudibleId === action.id ? null : action.id);
   if (action.type === "clearAudibleInspection") return updateAudibleInspection(state, null, null, null);
+  if (action.type === "hoverVisible") return updateVisibleInspection(state, action.id, state.focusedVisibleId, state.pinnedVisibleId);
+  if (action.type === "focusVisible") return updateVisibleInspection(state, state.hoveredVisibleId, action.id, state.pinnedVisibleId);
+  if (action.type === "pinVisible") return updateVisibleInspection(state, state.hoveredVisibleId, state.focusedVisibleId, state.pinnedVisibleId === action.id ? null : action.id);
+  if (action.type === "clearVisibleInspection") return updateVisibleInspection(state, null, null, null);
   if (action.type === "focusFallout") return updateFalloutInspection(state, state.hoveredFalloutId, action.id, state.pinnedFalloutId);
   if (action.type === "pinFallout") return updateFalloutInspection(state, state.hoveredFalloutId, state.focusedFalloutId, state.pinnedFalloutId === action.id ? null : action.id);
   if (action.type === "clearFalloutInspection") return updateFalloutInspection(state, null, null, null);
@@ -268,7 +289,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
     return state.activeZoneId === null && state.hoveredZoneId === null && state.focusedZoneId === null && state.pinnedZoneId === null
       ? state : updateInspection(state, null, null, null);
   }
-  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, pendingLaunch: false, elapsedMs: 0, effectView: "blast", activeAudibleId: null, hoveredAudibleId: null, focusedAudibleId: null, pinnedAudibleId: null, activeFalloutId: null, hoveredFalloutId: null, focusedFalloutId: null, pinnedFalloutId: null, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
+  if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, pendingLaunch: false, elapsedMs: 0, effectView: "blast", activeAudibleId: null, hoveredAudibleId: null, focusedAudibleId: null, pinnedAudibleId: null, activeVisibleId: null, hoveredVisibleId: null, focusedVisibleId: null, pinnedVisibleId: null, activeFalloutId: null, hoveredFalloutId: null, focusedFalloutId: null, pinnedFalloutId: null, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
   return { ...state, ...reduceScenarioSelection(state, action) };
 }
 
@@ -287,6 +308,12 @@ function updateFalloutInspection(state: SimulatorState, hoveredFalloutId: Fallou
 function updateAudibleInspection(state: SimulatorState, hoveredAudibleId: AudibleBandId | null, focusedAudibleId: AudibleBandId | null, pinnedAudibleId: AudibleBandId | null): SimulatorState {
   if (state.effectView !== "audible") return state;
   return { ...state, hoveredAudibleId, focusedAudibleId, pinnedAudibleId, activeAudibleId: hoveredAudibleId ?? focusedAudibleId ?? pinnedAudibleId };
+}
+
+/** Resolve hovered, keyboard-focused, and pinned sightline bands in Visible view. */
+function updateVisibleInspection(state: SimulatorState, hoveredVisibleId: VisibleBandId | null, focusedVisibleId: VisibleBandId | null, pinnedVisibleId: VisibleBandId | null): SimulatorState {
+  if (state.effectView !== "visible") return state;
+  return { ...state, hoveredVisibleId, focusedVisibleId, pinnedVisibleId, activeVisibleId: hoveredVisibleId ?? focusedVisibleId ?? pinnedVisibleId };
 }
 
 /** Clamp one delivery's age to its finite flight plus expansion interval. */

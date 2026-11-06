@@ -6,6 +6,7 @@ import { normalizeLongitude, type GeoPoint } from "../../src/domain/geodesy";
 import { AUDIBLE_PREVIEW_SAMPLES, AUDIBLE_WORK_CHUNK, audibleFieldBounds, AudibleCanvasRenderer } from "../../src/rendering/effects/AudibleCanvasRenderer";
 import { captureAudibleReprojection, drawAudibleReprojection, restoreAudibleMeshAlpha } from "../../src/rendering/effects/audibleReprojection";
 import { audibleColor } from "../../src/rendering/effects/audiblePalette";
+import { VisibleCanvasRenderer } from "../../src/rendering/effects/VisibleCanvasRenderer";
 
 const WIDTH = 2208;
 const HEIGHT = 1276;
@@ -102,6 +103,39 @@ function alphaAt(image: ImageData | null, x: number, y: number): number {
 }
 
 describe("Audible raster work budget", () => {
+  it("refreshes an extreme Visible first-entry preview in complete bounded intervals during zoom", () => {
+    const harness = canvasHarness();
+    try {
+      const origin = { longitude: -74, latitude: 40 };
+      const camera = cameraAt(origin);
+      const renderer = new VisibleCanvasRenderer(harness.canvas(), camera as never, harness.canvas());
+      const frames = [frame(1, origin, "earth-spanning", 1_000_000_000)];
+      renderer.primeFirstEntry(frames, WIDTH, HEIGHT);
+      const initialMask = harness.image();
+      expect(initialMask).not.toBeNull();
+      expect(initialMask!.width * initialMask!.height).toBeLessThanOrEqual(AUDIBLE_PREVIEW_SAMPLES);
+      renderer.render(frames, WIDTH, HEIGHT, false, null);
+      const firstCanvas = harness.context.drawImage.mock.lastCall![0];
+      const sampled = camera.toGeo.mock.calls.length;
+      for (const pixelsPerDegree of [700, 450]) {
+        camera.zoomTo(pixelsPerDegree);
+        renderer.invalidateProjection();
+        renderer.render(frames, WIDTH, HEIGHT, false, null);
+        expect(camera.toGeo).toHaveBeenCalledTimes(sampled);
+        expect(harness.context.drawImage.mock.lastCall![0]).toBe(firstCanvas);
+      }
+      camera.zoomTo(250);
+      renderer.invalidateProjection();
+      renderer.render(frames, WIDTH, HEIGHT, false, null);
+      const refreshedMask = harness.image();
+      expect(harness.context.drawImage.mock.lastCall![0]).not.toBe(firstCanvas);
+      expect(refreshedMask!.width * refreshedMask!.height).toBeLessThanOrEqual(AUDIBLE_PREVIEW_SAMPLES);
+      expect(camera.toGeo.mock.calls.length - sampled).toBeLessThanOrEqual(AUDIBLE_PREVIEW_SAMPLES);
+      expect(harness.callbacks.size).toBe(0); // A preview can replace another only when complete.
+      renderer.dispose();
+    } finally { harness.restore(); }
+  });
+
   it("restores the same field opacity through partial triangle clip coverage", () => {
     const [red, green, blue, alpha] = audibleColor(0.6);
     const image = { width: 3, height: 1, data: new Uint8ClampedArray([

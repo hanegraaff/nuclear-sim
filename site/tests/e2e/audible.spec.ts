@@ -207,9 +207,24 @@ test("pitched Audible pan keeps interior alpha continuous across reprojection me
     }
     return { minimum: worst, maximum: brightest };
   });
+  const isolatedRimPixels = await page.locator(".blast-canvas").evaluate((canvas) => {
+    const element = canvas as HTMLCanvasElement;
+    const { width, height } = element;
+    const bytes = element.getContext("2d")!.getImageData(0, 0, width, height).data;
+    const alpha = (x: number, y: number) => bytes[(y * width + x) * 4 + 3]!;
+    let isolated = 0;
+    for (let y = 160; y < height - 160; y += 2) for (let x = 200; x < width - 200; x += 2) {
+      const center = alpha(x, y);
+      if (center < 24 || center > 100) continue;
+      if ([alpha(x - 4, y), alpha(x + 4, y), alpha(x, y - 4), alpha(x, y + 4)]
+        .every((neighbor) => neighbor < center * 0.45)) isolated++;
+    }
+    return isolated;
+  });
   await page.screenshot({ path: testInfo.outputPath("plan-13-pitched-pan-moving.png") });
   expect(seamRatios.minimum, "mesh boundaries preserve the interior field opacity while panning").toBeGreaterThan(0.8);
   expect(seamRatios.maximum, "mesh overlap must not brighten interior grid lines").toBeLessThan(1.2);
+  expect(isolatedRimPixels, "moving hearing tail must remain free of isolated mint dots").toBeLessThan(12);
   await page.mouse.up();
 });
 

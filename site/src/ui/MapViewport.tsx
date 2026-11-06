@@ -21,12 +21,15 @@ import { EffectViewSelector } from "./EffectViewSelector";
 import type { AudibleBand, AudibleBandId } from "../domain/audible";
 import type { AudibleInspectionGeometry } from "../rendering/overlays/audibleInspection";
 import { AudibleInspectionOverlay } from "./AudibleInspectionOverlay";
+import type { VisibleBand, VisibleBandId } from "../domain/visible";
+import type { VisibleInspectionGeometry } from "../rendering/overlays/visibleInspection";
+import { VisibleInspectionOverlay } from "./VisibleInspectionOverlay";
 
 /** UI inputs and semantic callbacks; no MapLibre object crosses this boundary. */
 interface MapViewportProps {
   readonly children?: ReactNode;
   readonly cameraRequest: ScenarioCameraRequest | null;
-  readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "multiLaunch" | "activeZoneId" | "pinnedZoneId" | "effectView" | "activeFalloutId" | "pinnedFalloutId" | "activeAudibleId" | "pinnedAudibleId">;
+  readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "multiLaunch" | "activeZoneId" | "pinnedZoneId" | "effectView" | "activeFalloutId" | "pinnedFalloutId" | "activeAudibleId" | "pinnedAudibleId" | "activeVisibleId" | "pinnedVisibleId">;
   readonly frames: readonly LaunchFrame[];
   readonly onLaunch: (route: FlightRoute, intent: LaunchIntent) => void;
   readonly prepareLaunch: (aim: GeoPoint) => PreparedLaunch | null;
@@ -40,12 +43,17 @@ interface MapViewportProps {
   readonly onClearZoneInspection: () => void;
   readonly falloutEligible: boolean;
   readonly falloutLegendZones: readonly FalloutZone[];
-  readonly onSelectEffectView: (view: "blast" | "fallout" | "audible") => void;
+  readonly onSelectEffectView: (view: "blast" | "fallout" | "audible" | "visible") => void;
   readonly audibleLegendBands: readonly AudibleBand[];
   readonly onHoverAudible: (id: AudibleBandId | null) => void;
   readonly onFocusAudible: (id: AudibleBandId | null) => void;
   readonly onPinAudible: (id: AudibleBandId) => void;
   readonly onClearAudible: () => void;
+  readonly visibleLegendBands: readonly VisibleBand[];
+  readonly onHoverVisible: (id: VisibleBandId | null) => void;
+  readonly onFocusVisible: (id: VisibleBandId | null) => void;
+  readonly onPinVisible: (id: VisibleBandId) => void;
+  readonly onClearVisible: () => void;
   readonly onHoverFallout: (id: FalloutBandId | null) => void;
   readonly onFocusFallout: (id: FalloutBandId | null) => void;
   readonly onPinFallout: (id: FalloutBandId) => void;
@@ -59,6 +67,7 @@ export function MapViewport({
   onClearZoneInspection, falloutEligible, falloutLegendZones, onSelectEffectView,
   onHoverFallout, onFocusFallout, onPinFallout, onClearFallout,
   audibleLegendBands, onHoverAudible, onFocusAudible, onPinAudible, onClearAudible,
+  visibleLegendBands, onHoverVisible, onFocusVisible, onPinVisible, onClearVisible,
 }: MapViewportProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const missileCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -79,6 +88,7 @@ export function MapViewport({
   const [inspection, setInspection] = useState<BlastInspectionGeometry | null>(null);
   const [falloutInspection, setFalloutInspection] = useState<FalloutInspectionGeometry | null>(null);
   const [audibleInspection, setAudibleInspection] = useState<AudibleInspectionGeometry | null>(null);
+  const [visibleInspection, setVisibleInspection] = useState<VisibleInspectionGeometry | null>(null);
   const [camera, setCamera] = useState({
     longitude: INITIAL_MAP_CENTER.longitude,
     latitude: INITIAL_MAP_CENTER.latitude,
@@ -98,6 +108,7 @@ export function MapViewport({
         onInspectionChange: setInspection,
         onFalloutInspectionChange: setFalloutInspection,
         onAudibleInspectionChange: setAudibleInspection,
+        onVisibleInspectionChange: setVisibleInspection,
         onLaunch: (route, intent) => onLaunchRef.current(route, intent),
         prepareLaunch: (aim) => prepareLaunchRef.current(aim),
         launchAngle: () => launchAngleRef.current(),
@@ -129,8 +140,8 @@ export function MapViewport({
   }, [cancelPendingVersion]);
 
   useEffect(() => {
-    controllerRef.current?.setSceneFrame(frames, launch.multiLaunch, launch.activeZoneId, launch.effectView, launch.activeFalloutId, launch.activeAudibleId);
-  }, [frames, launch.multiLaunch, launch.activeZoneId, launch.effectView, launch.activeFalloutId, launch.activeAudibleId]);
+    controllerRef.current?.setSceneFrame(frames, launch.multiLaunch, launch.activeZoneId, launch.effectView, launch.activeFalloutId, launch.activeAudibleId, launch.activeVisibleId);
+  }, [frames, launch.multiLaunch, launch.activeZoneId, launch.effectView, launch.activeFalloutId, launch.activeAudibleId, launch.activeVisibleId]);
 
   const retryImagery = () => {
     const controller = controllerRef.current;
@@ -186,6 +197,12 @@ export function MapViewport({
           active={launch.activeAudibleId} pinned={launch.pinnedAudibleId}
           onHover={onHoverAudible} onFocus={onFocusAudible} onPin={onPinAudible} onClear={onClearAudible} />
       )}
+      {launch.effectView === "visible" && (
+        <VisibleInspectionOverlay geometry={visibleInspection} legendBands={visibleLegendBands}
+          multi={launch.multiLaunch} scale={mapDistanceScale(camera.latitude, camera.zoom)}
+          active={launch.activeVisibleId} pinned={launch.pinnedVisibleId}
+          onHover={onHoverVisible} onFocus={onFocusVisible} onPin={onPinVisible} onClear={onClearVisible} />
+      )}
       {launch.phase === "complete" && (
         <EffectViewSelector view={launch.effectView} falloutAvailable={falloutEligible} onSelect={onSelectEffectView} />
       )}
@@ -194,6 +211,8 @@ export function MapViewport({
           ? "SURFACE-BURST H+24 SCREENING ENVELOPE · CLIMATOLOGICAL WIND PROXY, NOT LIVE METEOROLOGY"
           : launch.effectView === "audible"
             ? "OUTDOOR LOW-FREQUENCY ESTIMATE · STANDARD ATMOSPHERE; WEATHER AND TERRAIN CAN DOMINATE"
+          : launch.effectView === "visible"
+            ? "DIRECT-FIREBALL HORIZON · 1.7 M OBSERVER · CLEAR AIR; CLOUD GLOW MAY CARRY FARTHER"
           : "IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE"}
       </p>
       {children}
