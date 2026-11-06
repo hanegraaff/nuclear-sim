@@ -25,10 +25,28 @@ const alphaByRedAtMint = Uint8Array.from({ length: 256 }, (_, red) =>
 export function restoreAudibleMeshAlpha(image: ImageData): void {
   const bytes = image.data;
   for (let offset = 0; offset < bytes.length; offset += 4) {
-    if (bytes[offset + 3] === 0) continue;
+    // Tiny clip coverage leaves quantized RGB at the feathered edge; do not
+    // turn those isolated antialiased samples into opaque mint speckles.
+    if (bytes[offset + 3]! < 24) continue;
     bytes[offset + 3] = bytes[offset + 1]! < 255
       ? alphaByGreen[bytes[offset + 1]!]!
       : alphaByRedAtMint[bytes[offset]!]!;
+  }
+}
+
+/** Smooth only the bounded warp's faint alpha fringe, where mesh triangles can leave single-texel dots. */
+export function smoothRangeFeatherAlpha(image: ImageData): void {
+  const { width, height, data } = image;
+  if (width < 3 || height < 3) return;
+  const source = new Uint8Array(width * height);
+  for (let index = 0; index < source.length; index++) source[index] = data[index * 4 + 3]!;
+  for (let y = 1; y < height - 1; y++) for (let x = 1; x < width - 1; x++) {
+    const index = y * width + x;
+    if (source[index]! > 100) continue;
+    const axial = source[index - width]! + source[index + width]! + source[index - 1]! + source[index + 1]!;
+    const diagonal = source[index - width - 1]! + source[index - width + 1]!
+      + source[index + width - 1]! + source[index + width + 1]!;
+    data[index * 4 + 3] = Math.round((source[index]! * 4 + axial * 2 + diagonal) / 16);
   }
 }
 
@@ -146,7 +164,7 @@ function projectedVertex(mesh: AudibleReprojectionMesh, camera: MapCameraAdapter
  * camera. Flat Mercator uses one exact affine transform; pitch uses bounded
  * ground triangles. Returns false when no safe ground projection is available.
  */
-export function drawAudibleReprojection(context: CanvasRenderingContext2D, source: HTMLCanvasElement, mesh: AudibleReprojectionMesh, camera: MapCameraAdapter): boolean {
+export function drawAudibleReprojection(context: CanvasRenderingContext2D, source: HTMLCanvasElement, mesh: AudibleReprojectionMesh, camera: MapCameraAdapter, restoreAlpha: (image: ImageData) => void = restoreAudibleMeshAlpha): boolean {
   const stride = MESH_COLUMNS + 1;
   const shift = Math.round((camera.unwrappedCenterLongitude() - mesh.sourceCenterLongitude) / 360) * 360;
   if (Math.abs(mesh.pitch) < 0.01 && Math.abs(camera.snapshot().pitch) < 0.01) {
@@ -223,7 +241,8 @@ export function drawAudibleReprojection(context: CanvasRenderingContext2D, sourc
   }
   if (drawn && target) {
     const image = paint.getImageData(0, 0, target.scratch.canvas.width, target.scratch.canvas.height);
-    restoreAudibleMeshAlpha(image);
+    restoreAlpha(image);
+    smoothRangeFeatherAlpha(image);
     paint.putImageData(image, 0, 0);
     context.drawImage(target.scratch.canvas, 0, 0, target.width, target.height);
   }

@@ -519,8 +519,11 @@ body { overflow: hidden; }
 .effect-view.selected.blast-view { color: #211207; background: #ffb765; border-color: #ffd49c; }
 .effect-view.selected.fallout-view { color: #240c18; background: #ff82bb; border-color: #ffa7cf; box-shadow: 0 0 13px rgba(255,90,170,.18); }
 .effect-view.selected.audible-view { color: #06221a; background: #65ffa0; border-color: #a3ffc1; box-shadow: 0 0 13px rgba(75,255,145,.2); }
+.effect-view.selected.visible-view { color: #061d35; background: #70bfff; border-color: #a9dcff; box-shadow: 0 0 13px rgba(89,173,255,.2); }
 .audible-floating-tooltip { position: absolute; z-index: 9; bottom: auto; pointer-events: none; }
 .audible-range-label { position: absolute; z-index: 9; padding: 5px 8px; color: #65ffa0; background: rgba(7,9,9,.9); font: 700 10px var(--mono); white-space: nowrap; pointer-events: none; }
+.visible-floating-tooltip { position: absolute; z-index: 9; bottom: auto; pointer-events: none; }
+.visible-range-label { position: absolute; z-index: 9; padding: 5px 8px; color: #70bfff; background: rgba(7,9,16,.9); font: 700 10px var(--mono); white-space: nowrap; pointer-events: none; }
 .effect-view:focus-visible { outline: 2px solid white; outline-offset: 2px; }
 .fallout-tooltip { gap: 7px; }
 .fallout-dose { color: #f1e2cb; font-family: var(--mono); font-size: 9px; font-weight: 700; }

@@ -6,6 +6,7 @@ import type { MissileCanvasRenderer } from "../../src/rendering/animation/Missil
 import type { BlastCanvasRenderer } from "../../src/rendering/effects/BlastCanvasRenderer";
 import type { MultiBlastCanvasRenderer } from "../../src/rendering/effects/MultiBlastCanvasRenderer";
 import type { AudibleCanvasRenderer } from "../../src/rendering/effects/AudibleCanvasRenderer";
+import type { VisibleCanvasRenderer } from "../../src/rendering/effects/VisibleCanvasRenderer";
 import type { Launch } from "../../src/application/launch";
 import { blastRadiiForYield } from "../../src/domain/blast";
 import { INITIAL_SIMULATOR_STATE, launchFramesForState, reduceSimulator } from "../../src/application/launch";
@@ -80,6 +81,37 @@ describe("satellite map controller", () => {
     expect(primeFirstEntry).toHaveBeenCalledOnce();
     expect(primeFirstEntry.mock.invocationCallOrder[0]).toBeLessThan(runtime.easeTo.mock.invocationCallOrder[0]!);
     expect(render.mock.invocationCallOrder[0]).toBeLessThan(runtime.easeTo.mock.invocationCallOrder[0]!);
+    controller.dispose();
+  });
+
+  it("paints the Visible preview before first-entry ease and rebuilds after move or resize", () => {
+    const runtime = fakeMap();
+    const render = vi.fn().mockReturnValue(null);
+    const primeFirstEntry = vi.fn();
+    const invalidateProjection = vi.fn();
+    const settleProjection = vi.fn();
+    const visible = { render, primeFirstEntry, invalidateProjection, settleProjection, dispose: vi.fn() } as unknown as VisibleCanvasRenderer;
+    const controller = new SatelliteMapController(runtime.map,
+      { onStateChange: () => {}, onCameraChange: () => {} },
+      undefined, undefined, null, undefined, undefined, undefined, visible);
+    const origin = { longitude: -73.9857, latitude: 40.7484 };
+    const launched = reduceSimulator(INITIAL_SIMULATOR_STATE, {
+      type: "launchAt", route: { start: origin, control: origin, target: origin },
+      deviceId: "fat-man", yieldMt: 0.021, nowMs: 0,
+    });
+    controller.setSceneFrame(launchFramesForState(launched), false, null, "visible");
+    expect(primeFirstEntry).toHaveBeenCalledOnce();
+    expect(primeFirstEntry.mock.invocationCallOrder[0]).toBeLessThan(runtime.easeTo.mock.invocationCallOrder[0]!);
+    expect(render.mock.invocationCallOrder[0]).toBeLessThan(runtime.easeTo.mock.invocationCallOrder[0]!);
+    const paints = render.mock.calls.length;
+    runtime.emit("move");
+    expect(invalidateProjection).toHaveBeenCalledOnce();
+    expect(render).toHaveBeenCalledTimes(paints + 1);
+    runtime.emit("moveend");
+    expect(settleProjection).toHaveBeenCalledOnce();
+    runtime.emit("resize");
+    expect(invalidateProjection).toHaveBeenCalledTimes(2);
+    expect(settleProjection).toHaveBeenCalledTimes(2);
     controller.dispose();
   });
 

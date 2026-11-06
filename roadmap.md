@@ -28,7 +28,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–13 are published to the 
 | 11 | MIRV separation and multiple impacts | Complete | 10 |
 | 12 | Fallout view | Complete | 11 |
 | 13 | Audible view | Complete | 12 |
-| 14 | Visible view | Ready | 13 |
+| 14 | Visible view | In progress | 13 |
 | 15 | Night map and hide/show controls | Not started | 14 |
 | 16 | Narrow-screen layout | Not started | 15 |
 | 17 | Reduced motion and final review | Not started | 16 |
@@ -235,7 +235,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–13 are published to the 
 
 **Completion evidence.** Domain and browser tests pass; compare with `Vsible.png` (the prototype's filename spelling).
 
-**Current status.** Ready; Plan 13 is complete.
+**Current status.** In progress on branch `plan-14` from 2026-11-06; Plan 13 is complete.
 
 **Blocking decisioning.** None. Model direct fireball visibility, not the later cloud or scattered glow.
 
