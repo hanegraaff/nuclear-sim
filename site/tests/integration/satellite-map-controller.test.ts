@@ -5,6 +5,7 @@ import { SatelliteMapController, scenarioZoom, type MapLoadState } from "../../s
 import type { MissileCanvasRenderer } from "../../src/rendering/animation/MissileCanvasRenderer";
 import type { BlastCanvasRenderer } from "../../src/rendering/effects/BlastCanvasRenderer";
 import type { MultiBlastCanvasRenderer } from "../../src/rendering/effects/MultiBlastCanvasRenderer";
+import type { AudibleCanvasRenderer } from "../../src/rendering/effects/AudibleCanvasRenderer";
 import type { Launch } from "../../src/application/launch";
 import { blastRadiiForYield } from "../../src/domain/blast";
 import { INITIAL_SIMULATOR_STATE, launchFramesForState, reduceSimulator } from "../../src/application/launch";
@@ -60,6 +61,52 @@ function fakeMap() {
 }
 
 describe("satellite map controller", () => {
+  it("paints an Audible preview before starting its first camera ease", () => {
+    const runtime = fakeMap();
+    const render = vi.fn().mockReturnValue(null);
+    const primeFirstEntry = vi.fn();
+    const audible = { render, primeFirstEntry, invalidateProjection: vi.fn(), settleProjection: vi.fn(), dispose: vi.fn() } as unknown as AudibleCanvasRenderer;
+    const controller = new SatelliteMapController(runtime.map,
+      { onStateChange: () => {}, onCameraChange: () => {} },
+      undefined, undefined, null, undefined, undefined, audible);
+    const origin = { longitude: -73.9857, latitude: 40.7484 };
+    const launched = reduceSimulator(INITIAL_SIMULATOR_STATE, {
+      type: "launchAt", route: { start: origin, control: origin, target: origin },
+      deviceId: "fat-man", yieldMt: 0.021, nowMs: 0,
+    });
+    controller.setSceneFrame(launchFramesForState(launched), false, null, "audible");
+    expect(runtime.easeTo).toHaveBeenCalledOnce();
+    expect(render).toHaveBeenCalledTimes(2);
+    expect(primeFirstEntry).toHaveBeenCalledOnce();
+    expect(primeFirstEntry.mock.invocationCallOrder[0]).toBeLessThan(runtime.easeTo.mock.invocationCallOrder[0]!);
+    expect(render.mock.invocationCallOrder[0]).toBeLessThan(runtime.easeTo.mock.invocationCallOrder[0]!);
+    controller.dispose();
+  });
+
+  it("reprojects Audible during move and starts one settled or resized camera rebuild", () => {
+    const runtime = fakeMap();
+    const render = vi.fn().mockReturnValue(null);
+    const invalidateProjection = vi.fn();
+    const settleProjection = vi.fn();
+    const audible = { render, invalidateProjection, settleProjection, dispose: vi.fn() } as unknown as AudibleCanvasRenderer;
+    const controller = new SatelliteMapController(runtime.map,
+      { onStateChange: () => {}, onCameraChange: () => {} },
+      undefined, undefined, null, undefined, undefined, audible);
+    controller.setSceneFrame([], true, null, "audible");
+    const initialPaints = render.mock.calls.length;
+    runtime.emit("move");
+    expect(invalidateProjection).toHaveBeenCalledOnce();
+    expect(render).toHaveBeenCalledTimes(initialPaints + 1);
+    expect(settleProjection).not.toHaveBeenCalled();
+    runtime.emit("moveend");
+    expect(settleProjection).toHaveBeenCalledOnce();
+    expect(render).toHaveBeenCalledTimes(initialPaints + 2);
+    runtime.emit("resize");
+    expect(invalidateProjection).toHaveBeenCalledTimes(2);
+    expect(settleProjection).toHaveBeenCalledTimes(2);
+    controller.dispose();
+  });
+
   it("preserves a multi scene camera across views while single Fallout framing remains reversible", () => {
     const runtime = fakeMap();
     const controller = new SatelliteMapController(runtime.map, { onStateChange: () => {}, onCameraChange: () => {} });

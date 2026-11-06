@@ -1,6 +1,7 @@
 import { destinationPoint, type GeoPoint } from "../domain/geodesy";
-import type { LaunchFrame } from "./launch";
+import type { Launch, LaunchFrame } from "./launch";
 import { falloutZones, type FalloutZone } from "../domain/fallout";
+import { audibleBands, audibleRadiusKm, type AudibleBand } from "../domain/audible";
 
 /** View framing in geographic/physical units; map adapters choose actual zoom. */
 export interface EffectCameraFrame {
@@ -25,4 +26,28 @@ export function falloutLegendForFrames(frames: readonly LaunchFrame[]): readonly
     if (field) return falloutZones(field.dimensions);
   }
   return [];
+}
+
+/** Frame the latest retained audible field from its modeled radius in km. */
+export function audibleCameraFrame(frames: readonly LaunchFrame[]): EffectCameraFrame | null {
+  const launch = frames.at(-1)?.launch;
+  return launch ? { center: launch.route.target, horizonKm: audibleRadiusForLaunch(launch) * 1.08 } : null;
+}
+
+/** Return the latest delivery's hearing spans for the multi-strike legend. */
+export function audibleLegendForFrames(frames: readonly LaunchFrame[]): readonly AudibleBand[] {
+  const launch = frames.at(-1)?.launch;
+  return launch ? audibleBands(audibleRadiusForLaunch(launch)) : [];
+}
+
+/** Apply the prototype's device-specific burst height (km) to one warhead's sound radius (km). */
+export function audibleRadiusForLaunch(launch: Pick<Launch, "deviceId" | "yieldMt">): number {
+  const { deviceId, yieldMt } = launch;
+  const knownHeightKm: Record<string, number> = {
+    moab: 0.003, foab: 0.003, "rs-24-yars": 1.05, "rsm-56-bulava": 0.92,
+    "rs-28-sarmat": 1.45, w54: 0.012192, "little-boy": 0.58, "fat-man": 0.503,
+  };
+  const heightKm = knownHeightKm[deviceId]
+    ?? Math.max(0.05, Math.min(12, 0.48 * Math.cbrt(yieldMt / 0.015)));
+  return audibleRadiusKm(yieldMt, heightKm);
 }

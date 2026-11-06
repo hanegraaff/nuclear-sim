@@ -1,7 +1,7 @@
 /** Fake-time state tests keep view eligibility tied to retained nuclear deliveries, not selection. */
 import { describe, expect, it } from "vitest";
 import { falloutAvailable, INITIAL_SIMULATOR_STATE, reduceSimulator, type SimulatorState } from "../../src/application/launch";
-import { falloutCameraFrame, falloutLegendForFrames } from "../../src/application/effectPresentation";
+import { audibleCameraFrame, audibleLegendForFrames, audibleRadiusForLaunch, falloutCameraFrame, falloutLegendForFrames } from "../../src/application/effectPresentation";
 import { falloutZones } from "../../src/domain/fallout";
 import { launchFramesForState } from "../../src/application/launch";
 
@@ -63,5 +63,34 @@ describe("settled effect views", () => {
     state = reduceSimulator(state, { type: "hoverFallout", id: null });
     expect(state.activeFalloutId).toBe("high");
     expect(reduceSimulator(state, { type: "setEffectView", view: "blast" }).pinnedFalloutId).toBeNull();
+  });
+
+  it("offers Audible after either nuclear or conventional settlement and resets hearing inspection on launch", () => {
+    const conventional = complete(launch(INITIAL_SIMULATOR_STATE, "moab", 0.000011));
+    let state = reduceSimulator(conventional, { type: "setEffectView", view: "audible" });
+    expect(state.effectView).toBe("audible");
+    state = reduceSimulator(state, { type: "pinAudible", id: "painful" });
+    expect(state.activeAudibleId).toBe("painful");
+    state = reduceSimulator(state, { type: "hoverAudible", id: "faint" });
+    expect(state.activeAudibleId).toBe("faint");
+    state = reduceSimulator(state, { type: "hoverAudible", id: null });
+    expect(state.activeAudibleId).toBe("painful");
+    const next = launch(state, "fat-man", 0.021, 13_000);
+    expect(next.effectView).toBe("blast");
+    expect(next.activeAudibleId).toBeNull();
+    expect(next.pinnedAudibleId).toBeNull();
+    expect(reduceSimulator(state, { type: "setPendingLaunch", pending: true }).effectView).toBe("blast");
+    expect(reduceSimulator(state, { type: "reset" }).activeAudibleId).toBeNull();
+  });
+
+  it("uses device burst height and each MIRV warhead's yield for hearing framing and legend", () => {
+    const fatMan = complete(launch(INITIAL_SIMULATOR_STATE, "fat-man", 0.021));
+    const fatManRange = audibleRadiusForLaunch(fatMan.launch!);
+    expect(fatManRange).toBeGreaterThan(45.02);
+    expect(audibleCameraFrame(launchFramesForState(fatMan))!.horizonKm).toBeCloseTo(fatManRange * 1.08, 8);
+    expect(audibleLegendForFrames(launchFramesForState(fatMan)).map((band) => band.id)).toEqual(["faint", "loud", "painful", "deafening"]);
+    const mirv = complete(launch(INITIAL_SIMULATOR_STATE, "rs-24-yars", 0.525));
+    expect(audibleRadiusForLaunch(mirv.launch!)).toBeLessThan(audibleRadiusForLaunch({ deviceId: "rs-24-yars", yieldMt: 0.525 }));
+    expect(audibleLegendForFrames(launchFramesForState(mirv))[0]!.outerKm).toBeCloseTo(audibleRadiusForLaunch(mirv.launch!), 8);
   });
 });

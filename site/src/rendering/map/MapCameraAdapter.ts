@@ -6,6 +6,12 @@ export interface ScreenPoint {
   readonly y: number;
 }
 
+/** Rendering-only geographic coordinate retaining the map's world-copy longitude. */
+export interface UnwrappedGeoPoint {
+  readonly longitude: number;
+  readonly latitude: number;
+}
+
 /** Small projection contract supplied by MapLibre and easy to fake in tests. */
 export interface MapProjection {
   project(coordinates: [number, number]): ScreenPoint;
@@ -34,6 +40,23 @@ export class MapCameraAdapter {
     const coordinate = this.map.unproject([point.x, point.y]);
     return geoPoint(coordinate.lng, coordinate.lat);
   }
+
+  /** Unproject CSS pixels without normalizing longitude, so repeated world copies remain distinct. */
+  toGeoUnwrapped(point: ScreenPoint): UnwrappedGeoPoint {
+    const coordinate = this.map.unproject([point.x, point.y]);
+    if (!Number.isFinite(coordinate.lng) || !Number.isFinite(coordinate.lat) || Math.abs(coordinate.lat) > 90) {
+      throw new RangeError("Screen point cannot be projected onto Earth.");
+    }
+    return { longitude: coordinate.lng, latitude: coordinate.lat };
+  }
+
+  /** Project a specific unwrapped world copy into CSS pixels. */
+  toScreenUnwrapped(point: UnwrappedGeoPoint): ScreenPoint {
+    return this.map.project([point.longitude, point.latitude]);
+  }
+
+  /** Return the raw map-center longitude in degrees for choosing a matching world copy. */
+  unwrappedCenterLongitude(): number { return this.map.getCenter().lng; }
 
   /** Read the current center, zoom, pitch, and bearing in geographic/map degrees. */
   snapshot(): { center: GeoPoint; zoom: number; pitch: number; bearing: number } {

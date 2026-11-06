@@ -40,6 +40,7 @@ Reimplement the application described in [requirements.md](requirements.md) so i
 - Keep the root GitHub repository up to date after each completed roadmap increment. Commit and push the application source before publishing, checking for and reconciling remote changes first. Use the temporary release checkout described in `docs/sites-publishing.md`; do not create a nested Git repository in `site/`.
 - Keep tests independent of live map tiles, current weather, random launch angles, and wall-clock time. Inject or freeze these inputs.
 - Do not update visual baselines to make a failing comparison pass without inspecting the difference against `prototype-screenshots/`.
+- Run exploratory and operated browser checks in a background, headless Google Chrome session through Playwright on this host. Do not take over the user's visible Safari, Chrome, or desktop while testing. Keep the pinned Playwright Chromium project for deterministic screenshot baselines; inspect any new baseline against the prototype before accepting it. If headless Chrome is unavailable, use a background headless browser and report the substitution.
 
 ## Definition of done
 

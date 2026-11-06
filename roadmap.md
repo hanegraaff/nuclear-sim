@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-06**. Plans 01–13 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -27,8 +27,8 @@ The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the 
 | 10 | Additive multi launch | Complete | 09 |
 | 11 | MIRV separation and multiple impacts | Complete | 10 |
 | 12 | Fallout view | Complete | 11 |
-| 13 | Audible view | Ready | 12 |
-| 14 | Visible view | Not started | 13 |
+| 13 | Audible view | Complete | 12 |
+| 14 | Visible view | Ready | 13 |
 | 15 | Night map and hide/show controls | Not started | 14 |
 | 16 | Narrow-screen layout | Not started | 15 |
 | 17 | Reduced motion and final review | Not started | 16 |
@@ -221,7 +221,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the 
 
 **Completion evidence.** Range and rendering tests pass; compare the multi-mode green state with the selected Audible tab in `Additive Blasts.png`. Do not use `Audible.png` as the green target because it shows Blast selected.
 
-**Current status.** Ready; Plan 12 review and performance corrections are complete.
+**Current status.** Complete on 2026-11-06 from branch `plan-13`. The owner-private [Site version 29](https://nuke-simulator-rebuild.maquaman.chatgpt.site) is deployed from GitHub application commit `3643ce90bbac52865adaa7ef20144d075137d29e` and Sites source commit `b15ea1836e339edfefdd100d51202cb7158725fc`; their `site/` trees match (`d4388999bff65ffe8348515b28f8c1fa60550a20`). The clean-release `npm run verify` passed type checking, lint, build, 203 unit tests, 65 integration tests, and 59 browser tests. The review fix keeps a completed geographic Audible field cached while the camera moves, uses one image reprojection for a flat map and a bounded mesh for pitched views, and rebuilds the full mask after motion without briefly clearing it. Focused browser checks cover first entry at 0–550 ms, 20 Tt full-world coverage, 16 retained strikes during drag, pitched mesh seams, and cancellation. An operated exploratory pass in background headless Google Chrome checked first entry, pan/zoom, dense fields, and a 60° pitched pan. The authenticated hosted Chrome pass on version 29 returned HTTP 200 with real imagery, four markers and a visible green field before, during, and after pan, then a two-strike Audible field, with no page errors. The hosted capture was inspected for visual continuity; the persistent reviewed [single](site/tests/e2e/audible.spec.ts-snapshots/plan-13-audible-single-darwin.png) and [multi](site/tests/e2e/audible.spec.ts-snapshots/plan-13-audible-multi-darwin.png) fixed-tile captures remain the regression references. Fixed tiles, live imagery, camera composition, and impact count differ from the pitched ten-strike `Additive Blasts.png` prototype reference; decibel bands remain illustrative estimates.
 
 **Blocking decisioning.** None. Decibel descriptions remain illustrative rather than precise predictions.
 
@@ -235,7 +235,7 @@ The roadmap is current as of **2026-11-05**. Plans 01–12 are published to the 
 
 **Completion evidence.** Domain and browser tests pass; compare with `Vsible.png` (the prototype's filename spelling).
 
-**Current status.** Not started; depends on Plan 13.
+**Current status.** Ready; Plan 13 is complete.
 
 **Blocking decisioning.** None. Model direct fireball visibility, not the later cloud or scattered glow.
 
@@ -299,7 +299,7 @@ Fill this table as plans finish. Record the deployed version and stable Site URL
 | 10 | 2026-11-05 | [Version 20](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 155 unit, 37 integration, 33 browser tests; GitHub source `fb19e8ad65a950ed5caf4f69a834d0302781e39e`, Sites source `03539e4cbdbe3f17fff2ff027945836b802568d6` | Live imagery, camera, and dome size differ from the prototype reference. |
 | 11 | 2026-11-05 | [Version 23](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 181 unit, 41 integration, 43 browser tests, type checking, lint, build; [narrow overlay gate](site/tests/e2e/mirv.spec.ts-snapshots/plan-11-narrow-overlay-darwin.png); GitHub source `6cb6474c2fb9580c88565617b77319e138d01d0a`, Sites source `078d4ea31767a8617a7c7af4c8ed75d1e580f95b` | Native background-return events were unavailable for direct testing; no dedicated MIRV prototype screenshot exists. |
 | 12 | 2026-11-05 | [Version 25](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 195 unit, 49 integration, 49 browser tests, type checking, lint, build; [hosted multi capture](docs/plan-12-hosted-multi-v25.png); GitHub source `8d86b72290810733eb024138408dbb7b54de515f`, Sites source `7a50ac58bc30c36830cbd94f28f3ae7002f111dd`; PR findings and performance corrections verified | Pitched plume remains slimmer; extreme zoom exposes coarse cached contours; live imagery and exact reference DPR differ. |
-| 13 | — | — | — | — |
+| 13 | 2026-11-06 | [Version 29](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 203 unit, 65 integration, 59 browser tests, type checking, lint, build; operated background Chrome first-entry, pan/zoom, dense, and pitched rechecks; authenticated hosted Chrome single, pan, and two-strike path with no page errors; GitHub source `3643ce90bbac52865adaa7ef20144d075137d29e`, Sites source `b15ea1836e339edfefdd100d51202cb7158725fc` | Fixed tiles, live imagery, and camera composition differ from the pitched ten-strike prototype reference; decibel bands are illustrative estimates. |
 | 14 | — | — | — | — |
 | 15 | — | — | — | — |
 | 16 | — | — | — | — |
