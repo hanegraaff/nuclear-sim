@@ -557,16 +557,42 @@ body { overflow: hidden; }
 .map-message button:focus-visible { outline: 2px solid white; outline-offset: 3px; }
 
 @media (max-width: 600px) {
-  /* Keep effect tabs outside the full-width instrument stack and zoom controls. */
-  .effect-view-selector { top: auto; right: auto; bottom: 42px; left: 14px; }
+  /* Reserve the right edge for map navigation and leave an open map between panels. */
+  .left-instrument-stack { top: 10px; left: 10px; width: calc(100vw - 20px); }
+  .minimal-header { padding: 10px 12px 11px; }
+  .minimal-brand h1 { font-size: 20px; }
+  .minimal-brand p { margin-top: 3px; }
+  .brand-row { flex-wrap: nowrap; align-items: center; }
+  .map-mode button { min-width: 42px; height: 36px; }
+  .panel-visibility { min-width: 48px; height: 40px; }
+  .panel-controls { gap: 6px; margin-top: 8px; }
+  .selection-tabs button { min-height: 32px; }
+  .select-wrap, .custom-input { min-height: 40px; }
+  .reset-map, .multi-launch-toggle { min-height: 40px; }
+  .effect-view-selector { top: auto; right: 55px; bottom: 96px; left: 10px; gap: 0; padding: 3px; }
+  .effect-view { flex: 1; min-width: 0; min-height: 40px; padding: 0 3px; font-size: 9px; letter-spacing: .3px; }
+  .map-surface .maplibregl-ctrl-bottom-right { z-index: 9; right: 10px; bottom: 10px; }
+  .map-surface .maplibregl-ctrl-bottom-left { z-index: 9; }
   .map-message { top: auto; right: 14px; bottom: 72px; left: 14px; }
-  .cloud-monitor { height: 132px; }
-  .cloud-monitor-footer small { display: none; }
-  .multi-scale-legends { bottom: 94px; left: 10px; width: min(272px, calc(100vw - 20px)); }
+  .cloud-monitor { display: none; }
+  .multi-scale-legends { bottom: 152px; left: 10px; width: min(272px, calc(100vw - 75px)); }
+  .model-qualification { right: 55px; bottom: 70px; max-width: calc(100vw - 65px); color: #f2f4ed; background: rgba(5,8,7,.9); font-size: 8px; line-height: 1.1; }
+  .effect-gradient-legend { width: 100%; }
+  .blast-zone-marker, .multi-legend-marker { width: 32px; height: 32px; }
   .launch-actions { grid-template-columns: 72px minmax(0, 1fr); gap: 5px; }
   .multi-launch-toggle { font-size: 8px; }
-  .brand-row { flex-wrap: wrap; }
   .panel-restore { top: 10px; left: 10px; }
+}
+
+@media (max-width: 600px) and (max-height: 690px) {
+  .panel-controls { gap: 4px; }
+  .selection-tabs button { min-height: 28px; }
+  .multi-scale-legends { gap: 3px; }
+  .distance-scale-legend, .effect-gradient-legend { padding: 4px 8px; }
+  .distance-scale-legend { row-gap: 2px; }
+  .distance-scale-bar { height: 4px; }
+  .effect-gradient-legend { gap: 3px; }
+  .effect-gradient-scale { height: 15px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

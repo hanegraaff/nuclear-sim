@@ -1,6 +1,6 @@
 # Publishing the GitHub source to Sites
 
-The root GitHub repository is the development source of truth. `site/` is an ordinary directory, not a separate checkout. Sites maintains a service-side source record for its deployment workflow; the temporary checkout below is a release artifact and is not used for development. Preserve the project ID in `site/.openai/hosting.json` and the current private audience.
+The root GitHub repository is the development source of truth. `site/` is an ordinary directory, not a separate checkout. Sites maintains a service-side source record for its deployment workflow; the temporary checkout below is a release artifact and is not used for development. Preserve the project ID in `site/.openai/hosting.json` and the current audience, checking access before publication.
 
 ## Prepare the source
 
@@ -25,4 +25,4 @@ In that temporary checkout, run `npm ci`, install the Playwright Chromium browse
 
 ## Deploy and record
 
-Use the existing Site project and its current audience. For the confirmed owner-private Site, save and deploy the packaged version with the Sites private publication operation. Check the terminal deployment result and exercise the plan's hosted path. Record the Site version, URL, GitHub commit, Sites source commit, test results, and any relevant visual evidence in the roadmap. Commit and push the roadmap update to GitHub. Discard the temporary release checkout after the release is complete.
+Use the existing Site project and its current audience. For an owner-private Site, use the Sites private publication operation; for other audiences, save the version and deploy it using the standard operations. Check the terminal deployment result and exercise the plan's hosted path. Record the Site version, URL, GitHub commit, Sites source commit, test results, and any relevant visual evidence in the roadmap. Commit and push the roadmap update to GitHub. Discard the temporary release checkout after the release is complete.
