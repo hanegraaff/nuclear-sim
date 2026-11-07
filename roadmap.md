@@ -31,7 +31,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the 
 | 14 | Visible view | Complete | 13 |
 | 15 | Night map and hide/show controls | Complete | 14 |
 | 16 | Narrow-screen layout | Complete | 15 |
-| 17 | Reduced motion and final review | Ready | 16 |
+| 17 | Reduced motion, conventional devices, and final review | Ready | 16 |
 
 ## Plan 01 — Published satellite map
 
@@ -269,15 +269,20 @@ The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the 
 
 **Blocking decisioning.** None. Follow the prototype's compact layout behavior while keeping touch targets and tooltips operable.
 
-## Plan 17 — Reduced motion and final visual review
+## Plan 17 — Reduced motion, conventional devices, and final visual review
 
-**Capability description.** Finish the accessible motion option and review the complete application against the prototype. Covers the remaining part of R-13 and final fidelity for all V requirements.
+**Capability description.** Finish the accessible motion option, add five conventional weapons smaller than the MOAB, and review the complete application against the prototype. Covers R-03, the remaining part of R-13, and final fidelity for all V requirements. The five additional devices are a user-approved extension to the prototype catalog.
 
-**Implementation details.** Honor `prefers-reduced-motion` with a shorter, less intense launch sequence that reaches the same final effect. Complete keyboard focus and ARIA status behavior. Review all named screenshot states at fixed time and camera; tune spacing, color, opacity, glow, and rendering budgets where the implementation still differs. Ensure the README links to the Site and explains controls, model limits, imagery attribution, engineering test commands, and the roadmap. Update `docs/model.md` and `docs/visual-reference.md` with final assumptions and any approved differences.
+**Implementation details.**
 
-**What the user will experience.** Users who request less motion get a shorter, calmer sequence with the same final map. Keyboard users can complete the main workflow. Desktop and pitched views more closely match the supplied prototype.
+1. Honor `prefers-reduced-motion` with a shorter, less intense launch sequence that reaches the same final effect. Complete keyboard focus and ARIA status behavior.
+2. Add exactly five distinct conventional weapons to the existing conventional catalog group, each with a positive TNT-equivalent yield strictly below the MOAB's 11 tons. Select actual weapons and document reliable sources, yield assumptions, units, and any uncertainty; do not present explosive fill weight as TNT-equivalent yield without a justified conversion. Preserve existing device IDs, labels, order, and behavior. Update the catalog-parity requirements to record this approved extension. Add catalog and model tests for all five, plus a browser path demonstrating selection and conventional-only behavior, including the absence of Fallout.
+3. Review all named screenshot states at fixed time and camera; tune spacing, color, opacity, glow, and rendering budgets where the implementation still differs. Update `docs/model.md` and `docs/visual-reference.md` with final assumptions and approved differences.
+4. Make the root README a showcase of the finished simulator. Add a curated, clearly labeled gallery of actual application screenshots highlighting the missile, impact and fireball, settled blast, pitched view, and contrasting Fallout, Audible, Visible, or multi-strike graphics. Capture and review the images at representative sizes, keep text and map attribution legible, use repository-owned assets outside the read-only prototype directories, and provide descriptive alt text. Keep the Site link and a cohesive explanation of controls, model limits, imagery attribution, engineering test commands, and the roadmap.
 
-**Completion evidence.** Full `npm run verify` passes from a clean install, the final Site version deploys successfully, and its URL opens the completed simulator. Desktop 2208 × 1276 and a narrow viewport complete the launch, inspection, view-switch, multi-launch, hide/show, and Reset paths. Inspect incoming, impact, expansion, settled, Fallout, Audible, Visible, and multi-strike captures against the appropriate prototype screenshots; record remaining differences.
+**What the user will experience.** Users who request less motion get a shorter, calmer sequence with the same final map. Keyboard users can complete the main workflow. Five additional smaller conventional weapons are selectable. Desktop and pitched views more closely match the supplied prototype, and the README shows the simulator's visual effects.
+
+**Completion evidence.** Full `npm run verify` passes from a clean install, the final Site version deploys successfully, and its URL opens the completed simulator. Desktop 2208 × 1276 and a narrow viewport complete the launch, inspection, view-switch, multi-launch, hide/show, and Reset paths. Tests establish the five new devices' catalog values, yields below 11 tons TNT equivalent, and conventional-only behavior. Inspect incoming, impact, expansion, settled, Fallout, Audible, Visible, and multi-strike captures against the appropriate prototype screenshots; record remaining differences. Review the README gallery in its rendered context and confirm its images and alt text are usable.
 
 **Current status.** Ready; Plan 16 is complete.
 
