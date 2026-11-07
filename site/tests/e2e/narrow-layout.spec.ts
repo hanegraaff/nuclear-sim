@@ -27,6 +27,7 @@ async function fits(page: Page, locator: Locator) {
 test("selects, launches, inspects each effect and retains multi strikes with panels shown", async ({ page }, info) => {
   const sim = page.locator("main.simulator");
   const panel = page.locator(".left-instrument-stack");
+  await expect(page.locator(".cloud-monitor")).toBeHidden();
   const select = page.getByRole("combobox", { name: "Weapon or delivery system" });
   await select.selectOption("b61");
   await page.screenshot({ path: info.outputPath("phone-controls.png") });
@@ -76,16 +77,23 @@ test("keeps the smallest phone controls and launchable map in view", async ({ pa
   await page.setViewportSize({ width: 320, height: 568 });
   await page.clock.runFor(300); // Let MapLibre process the viewport resize before its next click.
   const panel = page.locator(".left-instrument-stack");
+  await expect(page.locator(".cloud-monitor")).toBeHidden();
   await fits(page, panel);
   for (const name of ["Night mode", "Hide control and cloud panels", "Multi-Launch Mode OFF"]) await fits(page, page.getByRole("button", { name }));
   await fits(page, page.getByRole("combobox", { name: "Weapon or delivery system" }));
   const bottom = (await panel.boundingBox())!.y + (await panel.boundingBox())!.height;
   expect(bottom).toBeLessThan(450);
-  await page.mouse.click(150, 450);
+  await page.mouse.click(280, 300);
   await expect(page.locator("main.simulator")).toHaveAttribute("data-launch-count", "1");
   await page.clock.runFor(11_300);
+  const tooltip = page.getByRole("tooltip");
+  await expect(tooltip).toContainText("FIREBALL DESTRUCTION");
+  const popup = (await tooltip.boundingBox())!;
+  const controls = (await panel.boundingBox())!;
+  expect(popup.y).toBeGreaterThanOrEqual(controls.y + controls.height);
   const selector = page.getByRole("tablist", { name: "Effect view" });
   await fits(page, selector);
+  expect(popup.y + popup.height).toBeLessThanOrEqual((await selector.boundingBox())!.y);
   await page.getByRole("tab", { name: "VISIBLE", exact: true }).click();
   await page.clock.runFor(1_800);
   const attribution = page.locator(".maplibregl-ctrl-attrib");
@@ -102,4 +110,6 @@ test("keeps the smallest phone controls and launchable map in view", async ({ pa
   const distance = (await page.locator(".distance-scale-legend").boundingBox())!;
   const panelBottom = (await panel.boundingBox())!;
   expect(distance.y).toBeGreaterThanOrEqual(panelBottom.y + panelBottom.height);
+  await page.setViewportSize({ width: 1104, height: 728 });
+  await expect(page.locator(".cloud-monitor")).toBeVisible();
 });
