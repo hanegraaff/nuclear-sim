@@ -29,7 +29,13 @@ async function fireballFootprint(page: Page): Promise<{ count: number; centerX: 
 async function pitchMap(page: Page): Promise<void> {
   await page.mouse.move(1400, 780);
   await page.mouse.down({ button: "right" });
-  await page.mouse.move(1400, 350, { steps: 10 });
+  // MapLibre consumes drag deltas in animation frames. Advance the fake clock
+  // while the button is held so a loaded worker cannot coalesce every move
+  // with mouseup before the camera receives the gesture.
+  for (let step = 1; step <= 10; step += 1) {
+    await page.mouse.move(1400, 780 - 43 * step);
+    await page.clock.runFor(20);
+  }
   await page.mouse.up({ button: "right" });
   await page.clock.runFor(100);
   await expect.poll(async () => Number(await page.locator("main.simulator").getAttribute("data-pitch"))).toBeGreaterThan(20);
