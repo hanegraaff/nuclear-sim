@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-07**. Plans 01–17 have been published to the same Site, whose current audience is public. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -31,7 +31,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the 
 | 14 | Visible view | Complete | 13 |
 | 15 | Night map and hide/show controls | Complete | 14 |
 | 16 | Narrow-screen layout | Complete | 15 |
-| 17 | Reduced motion, conventional devices, and final review | In progress | 16 |
+| 17 | Reduced motion, conventional devices, and final review | Complete | 16 |
 
 ## Plan 01 — Published satellite map
 
@@ -284,7 +284,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the 
 
 **Completion evidence.** Full `npm run verify` passes from a clean install, the final Site version deploys successfully, and its URL opens the completed simulator. Desktop 2208 × 1276 and a narrow viewport complete the launch, inspection, view-switch, multi-launch, hide/show, and Reset paths. Tests establish the five new devices' catalog values, yields below 11 tons TNT equivalent, and conventional-only behavior. Inspect incoming, impact, expansion, settled, Fallout, Audible, Visible, and multi-strike captures against the appropriate prototype screenshots; record remaining differences. Review the README gallery in its rendered context and confirm its images and alt text are usable.
 
-**Current status.** In progress on branch `plan-17`.
+**Current status.** Complete on 2026-11-07 from branch `plan-17`. Public [Site version 34](https://nuke.maquaman.chatgpt.site) is deployed from GitHub application commit `0116bedf71d4093c75d373853cb770db094b4df2` and Sites source commit `f036f77ede5eb4ce646c3253dfd64b451785f2c7`; the matching `site/` tree is `81b34ee6743ef0497d735260828d303aee973f1f`. Clean-release `npm run verify` passed type checking, lint, build, 224 unit, 74 integration, and 70 browser tests. The first gate exposed an obsolete catalog count and an older multi-strike baseline; the count was corrected and the baseline inspected against `Multi-Launch.png` before refresh. Independent operated headless Chrome covered desktop and phone, launch phases, all views, multi, controls, map movement, keyboard launch and announcements, and each of the five conventional devices under reduced motion. The hosted Chrome check returned HTTP 200, selected Mk 82, completed a reduced-motion keyboard launch, announced completion, omitted Fallout, retained attribution, and had no page errors; see the [hosted capture](docs/plan-17-hosted-v34.png). The [README gallery](README.md) showcases seven reviewed live-imagery captures. Prototype comparisons retain differences in imagery, framing, softer cloud, and faint Visible contours; details are in [visual notes](site/docs/visual-reference.md). Independent review found no actionable defects.
 
 **Blocking decisioning.** None known. If a visual mismatch requires changing a model assumption or map imagery source, document the options and expected effect before making that change.
 
@@ -310,4 +310,4 @@ Fill this table as plans finish. Record the deployed version and stable Site URL
 | 14 | 2026-11-06 | [Version 30](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 210 unit, 72 integration, 64 browser tests, type checking, lint, build; operated background Chrome first-entry, pitched-pan, multi, and narrow checks; authenticated hosted Chrome single, pan, and two-strike Visible check with no page errors; GitHub source `cd740281852fe58cfbfcba4a480b319006c356fc`, Sites source `8a6c2ff592a38fca9c153657a7d628e583d65160` | Prototype faint contour rings are absent; live imagery and initial pitch differ from the fixed-tile comparison. |
 | 15 | 2026-11-06 | [Version 31](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 212 unit, 74 integration, 67 browser tests, type checking, lint, build; [hosted night capture](docs/plan-15-hosted-v31.png); operated background Chrome and authenticated hosted Chrome with no page errors; GitHub source `897bf9b584db746fe566adbbb652f0fc1553ab1a`, Sites source `727279a2ea04e7b1f9e16a8bdbfa3c1cab0939a2` | No dedicated prototype Night/hidden still; live imagery and camera differ from fixed-tile captures. Narrow restored controls remain crowded at 390 px, assigned to Plan 16. |
 | 16 | 2026-11-07 | [Version 33](https://nuke.maquaman.chatgpt.site) (public) | Clean-release `npm run verify`: 212 unit, 74 integration, 69 browser tests, type checking, lint, build; operated phone Chrome and [hosted capture](docs/plan-16-hosted-v33.png); GitHub source `592a7bf5545c511e1e665d944b1aad41dcc2aaff`, Sites source `d7033671d6b391545256add53e1154f44d24dc31` | No phone prototype still; live imagery and narrow framing differ from desktop references. |
-| 17 | — | — | — | — |
+| 17 | 2026-11-07 | [Version 34](https://nuke.maquaman.chatgpt.site) (public) | Clean-release `npm run verify`: 224 unit, 74 integration, 70 browser tests, type checking, lint, build; operated Chrome and [hosted capture](docs/plan-17-hosted-v34.png); GitHub source `0116bedf71d4093c75d373853cb770db094b4df2`, Sites source `f036f77ede5eb4ce646c3253dfd64b451785f2c7` | Live imagery and camera framing differ from references; cloud is softer and Visible omits faint prototype contours. |
