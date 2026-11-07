@@ -190,6 +190,7 @@ export function MapViewport({
       data-target-latitude={launch.launch?.route.target.latitude.toFixed(6) ?? ""}
     >
       <div className="map-surface" ref={containerRef} aria-label="Interactive satellite map" />
+      <button className="keyboard-launch" type="button" onClick={() => controllerRef.current?.launchAtCenter()}>Launch at map center</button>
       <div className="map-tone" aria-hidden="true" />
       <canvas className="blast-canvas" ref={blastCanvasRef} aria-hidden="true" />
       <canvas className="fireball-canvas" ref={fireballCanvasRef} aria-hidden="true" />

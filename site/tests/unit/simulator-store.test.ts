@@ -33,6 +33,19 @@ function fakeClock() {
 }
 
 describe("application launch scheduling", () => {
+  it("uses a changed motion preference for the next launch without retiming an active one", () => {
+    const time = fakeClock();
+    const store = new SimulatorStore(time.clock);
+    const unsubscribe = store.subscribe(() => {});
+    store.setReducedMotion(true);
+    store.launchAt(route);
+    expect(store.getSnapshot().launch).toMatchObject({ flightMs: 1200, blastMs: 900, reducedMotion: true });
+    store.setReducedMotion(false);
+    expect(store.getSnapshot().launch?.flightMs).toBe(1200);
+    store.launchAt(route);
+    expect(store.getSnapshot().launch).toMatchObject({ flightMs: 6500, blastMs: 4600 });
+    unsubscribe();
+  });
   it("advances one pending frame at a time and cancels the old flight on replacement", () => {
     const time = fakeClock();
     const store = new SimulatorStore(time.clock);

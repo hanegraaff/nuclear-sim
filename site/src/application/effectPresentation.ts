@@ -1,3 +1,4 @@
+import { isConventionalDevice } from "../catalog/devices";
 import { destinationPoint, type GeoPoint } from "../domain/geodesy";
 import type { Launch, LaunchFrame } from "./launch";
 import { falloutZones, type FalloutZone } from "../domain/fallout";
@@ -66,6 +67,7 @@ export function audibleRadiusForLaunch(launch: Pick<Launch, "deviceId" | "yieldM
 /** Prototype burst-height policy in km shared by sound and direct-fireball sightlines. */
 function burstHeightForLaunch(launch: Pick<Launch, "deviceId" | "yieldMt">): number {
   const { deviceId, yieldMt } = launch;
+  if (isConventionalDevice(deviceId)) return 0.003;
   const knownHeightKm: Record<string, number> = {
     moab: 0.003, foab: 0.003, "rs-24-yars": 1.05, "rsm-56-bulava": 0.92,
     "rs-28-sarmat": 1.45, w54: 0.012192, "little-boy": 0.58, "fat-man": 0.503,

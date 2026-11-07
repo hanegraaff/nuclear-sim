@@ -1,9 +1,9 @@
-/** Exact Plan 02 catalog parity with the read-only prototype's 47 device rows. */
+/** Exact Plan 02 catalog parity with the read-only prototype's 47 prototype rows plus five sourced conventional estimates. */
 import { describe, expect, it } from "vitest";
 import { DEVICE_GROUPS, DEVICES, getDeviceById, perWarheadYieldMt } from "../../src/catalog/devices";
 
 const expectedGroups = [
-  ["conventional", "Conventional weapons", 2],
+  ["conventional", "Conventional weapons", 7],
   ["nuclear", "Nuclear devices", 34],
   ["mirv", "MIRV delivery systems", 3],
   ["hypothetical", "Hypothetical scale studies", 8],
@@ -13,6 +13,11 @@ const expectedGroups = [
 const expectedDevices: ReadonlyArray<readonly [string, string, string, number, string, number?, number?]> = [
   ["conventional", "moab", "GBU-43/B MOAB", 0.000011, "11 t TNT"],
   ["conventional", "foab", "FOAB (reported)", 0.000044, "44 t TNT · reported"],
+  ["conventional", "mk-82", "Mk 82 (Tritonal)", 0.000000093, "93 kg TNT · estimated"],
+  ["conventional", "agm-158-jassm", "AGM-158 JASSM", 0.000000116, "116 kg TNT · estimated"],
+  ["conventional", "gbu-49", "GBU-49", 0.000000146, "146 kg TNT · estimated"],
+  ["conventional", "mk-83", "Mk 83 (Tritonal)", 0.000000216, "216 kg TNT · estimated"],
+  ["conventional", "mk-84", "Mk 84 (Tritonal)", 0.000000459, "459 kg TNT · estimated"],
   ["nuclear", "w54", "W54 / Davy Crockett", 0.00002, "0.02 kt"],
   ["nuclear", "w48", "W48 artillery shell", 0.000072, "0.072 kt"],
   ["nuclear", "sadm", "W54 SADM", 0.001, "1 kt"],
@@ -61,10 +66,10 @@ const expectedDevices: ReadonlyArray<readonly [string, string, string, number, s
 ];
 
 describe("device catalog parity", () => {
-  it("keeps four prototype groups and 47 unique devices in selector order", () => {
+  it("keeps four prototype groups and 52 unique devices in selector order", () => {
     expect(DEVICE_GROUPS.map((group) => [group.id, group.label, group.devices.length])).toEqual(expectedGroups);
     expect(DEVICES.map((device) => device.id)).toEqual(expectedDevices.map(([, id]) => id));
-    expect(new Set(DEVICES.map((device) => device.id)).size).toBe(47);
+    expect(new Set(DEVICES.map((device) => device.id)).size).toBe(52);
   });
 
   for (const [groupId, id, name, yieldMt, displayYield, warheadCount, warheadYieldMt] of expectedDevices) {

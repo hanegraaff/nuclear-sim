@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { SimulatorStore, type AnimationClock } from "../application/SimulatorStore";
 import { resolveDeviceSelection } from "../application/deviceSelection";
 import { cloudPresentationForState } from "../application/cloudPresentation";
 import { audibleLegendForFrames, falloutLegendForFrames, visibleLegendForFrames } from "../application/effectPresentation";
-import { falloutAvailable, launchFramesForState } from "../application/launch";
+import { falloutAvailable, launchFramesForState, launchStatusLabel } from "../application/launch";
 import type { FalloutBandId } from "../domain/fallout";
 import type { AudibleBandId } from "../domain/audible";
 import type { VisibleBandId } from "../domain/visible";
@@ -20,6 +20,14 @@ const browserClock: AnimationClock = {
 /** Root application view: controls dispatch semantic actions to a pure simulator reducer. */
 export function App({ clock = browserClock }: { readonly clock?: AnimationClock }) {
   const [store] = useState(() => new SimulatorStore(clock));
+  useEffect(() => {
+    if (typeof window.matchMedia !== "function") return;
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => store.setReducedMotion(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, [store]);
   const [cancelPendingVersion, setCancelPendingVersion] = useState(0);
   const state = useSyncExternalStore(store.subscribe, store.getSnapshot);
   const panelState = useMemo(() => ({
@@ -35,6 +43,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   const audibleLegend = useMemo(() => audibleLegendForFrames(frames), [frames]);
   const visibleLegend = useMemo(() => visibleLegendForFrames(frames), [frames]);
   const impactCount = frames.filter((frame) => frame.elapsedMs >= frame.launch.flightMs).length;
+  const launchStatus = launchStatusLabel(state.phase, state.multiLaunch, impactCount, frames.length);
   const cancelPending = useCallback(() => setCancelPendingVersion((version) => version + 1), []);
   const selectTab = useCallback((tab: "scenario" | "device") => store.dispatch({ type: "selectTab", tab }), [store]);
   const selectScenario = useCallback((id: string) => store.dispatch({ type: "selectScenario", id }), [store]);
@@ -73,15 +82,15 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
       visibleLegendBands={visibleLegend} onHoverVisible={hoverVisible} onFocusVisible={focusVisible} onPinVisible={pinVisible} onClearVisible={clearVisible}
       onHoverFallout={hoverFallout} onFocusFallout={focusFallout} onPinFallout={pinFallout} onClearFallout={clearFallout}
     >
+      <span className="screen-reader-status" role="status" aria-live="polite" aria-atomic="true">{launchStatus}</span>
       <DevicePanel
         state={panelState}
         selection={selection}
-        launchPhase={state.phase}
+        statusText={launchStatus}
         mapTone={state.mapTone}
         panelsVisible={state.panelsVisible}
         cloud={cloud}
         multiLaunch={state.multiLaunch}
-        impactCount={impactCount}
         totalCount={frames.length}
         pendingLaunch={state.pendingLaunch}
         onReset={reset}

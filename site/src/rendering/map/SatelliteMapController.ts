@@ -465,7 +465,19 @@ export class SatelliteMapController {
     if (typeof Element !== "undefined" && targetElement instanceof Element && targetElement.closest(".maplibregl-ctrl, .maplibregl-control-container")) return;
     const container = this.map.getContainer();
     if (container.clientWidth <= 0 || container.clientHeight <= 0) return;
-    const aim = { x: event.point.x, y: event.point.y };
+    this.launchAtScreenPoint({ x: event.point.x, y: event.point.y });
+  };
+
+  /** Launch at the map's visual center for keyboard users, using the same routing as a map click. */
+  launchAtCenter(): void {
+    const container = this.map.getContainer();
+    if (container.clientWidth <= 0 || container.clientHeight <= 0) return;
+    const center = this.camera.snapshot();
+    this.launchAtScreenPoint(this.camera.toScreen(center.center));
+  }
+
+  /** Prepare one geographic aim point and route or queue its delivery. */
+  private launchAtScreenPoint(aim: { x: number; y: number }): void {
     const angle = this.callbacks.launchAngle?.() ?? -Math.PI / 4;
     if (!Number.isFinite(angle)) return;
     const target = this.camera.toGeo(aim);
@@ -507,7 +519,7 @@ export class SatelliteMapController {
       this.repaintFlight();
       this.framePendingMirv();
     }
-  };
+  }
 
   /** Convert the current camera's visible entry into a stored geographic route. */
   private geographicFlightRoute(aim: { x: number; y: number }, target: GeoPoint, angle: number, mirv: boolean): FlightRoute {

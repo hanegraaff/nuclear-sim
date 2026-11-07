@@ -34,6 +34,12 @@ export interface DeviceGroup {
 const CONVENTIONAL_DEVICES = [
   { id: "moab", name: "GBU-43/B MOAB", yieldMt: 0.000011, displayYield: "11 t TNT" },
   { id: "foab", name: "FOAB (reported)", yieldMt: 0.000044, displayYield: "44 t TNT · reported" },
+  // Rounded peak-pressure TNT-equivalent estimates for specified Tritonal fills; see docs/model.md.
+  { id: "mk-82", name: "Mk 82 (Tritonal)", yieldMt: 0.000000093, displayYield: "93 kg TNT · estimated" },
+  { id: "agm-158-jassm", name: "AGM-158 JASSM", yieldMt: 0.000000116, displayYield: "116 kg TNT · estimated" },
+  { id: "gbu-49", name: "GBU-49", yieldMt: 0.000000146, displayYield: "146 kg TNT · estimated" },
+  { id: "mk-83", name: "Mk 83 (Tritonal)", yieldMt: 0.000000216, displayYield: "216 kg TNT · estimated" },
+  { id: "mk-84", name: "Mk 84 (Tritonal)", yieldMt: 0.000000459, displayYield: "459 kg TNT · estimated" },
 ] as const satisfies readonly SingleDeviceDefinition[];
 
 const NUCLEAR_DEVICES = [
@@ -98,7 +104,7 @@ export const DEVICE_GROUPS: readonly DeviceGroup[] = [
   { id: "hypothetical", label: "Hypothetical scale studies", devices: HYPOTHETICAL_DEVICES },
 ];
 
-/** All 47 prototype devices in selector order, excluding the custom-yield choice. */
+/** The 47 prototype devices plus five conventional estimates, excluding custom yield. */
 export const DEVICES: readonly DeviceDefinition[] = DEVICE_GROUPS.flatMap((group) => group.devices);
 
 const deviceById = new Map(DEVICES.map((device) => [device.id, device]));
@@ -111,4 +117,9 @@ export function getDeviceById(id: string): DeviceDefinition | undefined {
 /** Per-impact yield in megatons; MIRV aggregate yield is never used for one blast. */
 export function perWarheadYieldMt(device: DeviceDefinition): number {
   return device.warheadYieldMt ?? device.yieldMt;
+}
+
+/** Whether a catalog ID describes a conventional delivery; custom yields remain nuclear. */
+export function isConventionalDevice(id: string): boolean {
+  return CONVENTIONAL_DEVICES.some((device) => device.id === id);
 }

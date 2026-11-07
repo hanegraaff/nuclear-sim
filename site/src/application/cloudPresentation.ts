@@ -1,4 +1,4 @@
-import { getDeviceById, perWarheadYieldMt } from "../catalog/devices";
+import { getDeviceById, isConventionalDevice, perWarheadYieldMt } from "../catalog/devices";
 import { cloudGrowthAt, cloudPeakForProfile, type CloudProfileInput } from "../domain/cloud";
 import { resolveDeviceSelection } from "./deviceSelection";
 import { elapsedForLaunch, type SimulatorState } from "./launch";
@@ -8,6 +8,8 @@ export interface CloudPresentation {
   readonly peakHeightKm: number;
   readonly currentHeightKm: number;
   readonly progress: number;
+  /** Whether to suppress transient cloud flashes for this launch. */
+  readonly reducedMotion?: boolean;
   readonly growth: number;
   readonly nuclear: boolean;
   readonly warheadCount: number;
@@ -33,7 +35,7 @@ function profileForDevice(deviceId: string, aggregateYieldMt: number): CloudProf
   const device = getDeviceById(deviceId);
   const warheadCount = device?.warheadCount ?? 1;
   const warheadYieldMt = device ? perWarheadYieldMt(device) : aggregateYieldMt;
-  if (deviceId === "moab" || deviceId === "foab") {
+  if (isConventionalDevice(deviceId)) {
     return { nuclear: false, warheadCount, warheadYieldMt, burstHeightKm: 0.003 };
   }
   const mirvHeightKm: Record<string, number> = { "rs-24-yars": 1.05, "rsm-56-bulava": 0.92, "rs-28-sarmat": 1.45 };
@@ -74,6 +76,7 @@ export function cloudPresentationForState(state: SimulatorState): CloudPresentat
     peakHeightKm: peak.heightKm,
     currentHeightKm: peak.heightKm * growth,
     progress,
+    reducedMotion: currentLaunch?.reducedMotion ?? false,
     growth,
     nuclear: profile.nuclear,
     warheadCount: profile.warheadCount,
