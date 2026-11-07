@@ -34,8 +34,8 @@ export class MissileCanvasRenderer {
         continue;
       }
       const route = projectFlightRoute(launch.route, this.projector);
-      if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
-      this.drawSmoke(context, launch, route, elapsedMs, smokeStep);
+      if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, launch.reducedMotion ? 0 : elapsedMs);
+      if (!launch.reducedMotion) this.drawSmoke(context, launch, route, elapsedMs, smokeStep);
       if (elapsedMs < launch.flightMs) this.drawCore(context, screenFlightPoint(route, elapsedMs / launch.flightMs));
     }
   }
@@ -58,16 +58,16 @@ export class MissileCanvasRenderer {
       flightMs: launch.flightMs,
     };
     if (mirv.lead) {
-      if (elapsedMs < mirv.splitMs) this.drawTarget(context, carrier.target, elapsedMs);
-      this.drawSmoke(context, launch, carrier, elapsedMs, smokeStep, 0, mirv.splitMs,
+      if (elapsedMs < mirv.splitMs) this.drawTarget(context, carrier.target, launch.reducedMotion ? 0 : elapsedMs);
+      if (!launch.reducedMotion) this.drawSmoke(context, launch, carrier, elapsedMs, smokeStep, 0, mirv.splitMs,
         (timeMs) => screenFlightPoint(carrier, timeMs / mirv.carrierFlightMs));
     }
     if (elapsedMs < mirv.splitMs) {
       if (mirv.lead) this.drawCore(context, screenFlightPoint(carrier, elapsedMs / mirv.carrierFlightMs));
       return;
     }
-    if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, elapsedMs);
-    this.drawSmoke(context, launch, carrier, elapsedMs, smokeStep, mirv.splitMs, launch.flightMs,
+    if (elapsedMs < launch.flightMs) this.drawTarget(context, route.target, launch.reducedMotion ? 0 : elapsedMs);
+    if (!launch.reducedMotion) this.drawSmoke(context, launch, carrier, elapsedMs, smokeStep, mirv.splitMs, launch.flightMs,
       (timeMs) => screenMirvPoint(route, timeMs), 0.7);
     if (elapsedMs < launch.flightMs) this.drawCore(context, screenMirvPoint(route, elapsedMs), 8, 1);
   }

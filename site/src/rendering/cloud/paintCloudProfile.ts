@@ -209,7 +209,7 @@ function paintSilhouette(context: CanvasRenderingContext2D, state: CloudPresenta
       context.restore();
     }
   }
-  if (progress < 0.32 && state.nuclear) {
+  if (progress < 0.32 && state.nuclear && !state.reducedMotion) {
     const life = progress / 0.32;
     const radius = 5 + Math.sin(life * Math.PI * 0.72) * 20;
     const y = baseY - 9 - stem * 17;

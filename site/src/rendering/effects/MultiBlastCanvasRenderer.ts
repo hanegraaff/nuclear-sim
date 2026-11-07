@@ -293,7 +293,7 @@ export class MultiBlastCanvasRenderer {
       glow.addColorStop(1, "rgba(255,102,28,0)");
       context.fillStyle = glow;
       context.beginPath(); context.arc(center.x, center.y, radius, 0, Math.PI * 2); context.fill();
-      if (age < FLASH_MS) this.paintFlash(context, center, age);
+      if (!launch.reducedMotion && age < FLASH_MS) this.paintFlash(context, center, age);
     }
     context.restore();
   }
@@ -316,7 +316,7 @@ export class MultiBlastCanvasRenderer {
   private paintActiveShockwaves(context: CanvasRenderingContext2D, frames: readonly LaunchFrame[]): void {
     for (const { launch, elapsedMs } of frames) {
       const progress = (elapsedMs - launch.flightMs) / launch.blastMs;
-      if (progress <= 0 || progress >= 1) continue;
+      if (launch.reducedMotion || progress <= 0 || progress >= 1) continue;
       const radiusKm = launch.radii.light * blastExpansion(progress);
       context.save();
       context.beginPath();

@@ -112,8 +112,8 @@ export class BlastCanvasRenderer {
       if (field) this.drawField(context, field, travelledKm, launch.radii);
       if (progress < 1) this.drawOpticalSun(context, center, launch.route.target, launch.radii, Math.min(1, blastAge / 650), field);
     }
-    if (progress > 0 && progress < 1) this.drawShockwave(context, launch.route.target, travelledKm);
-    if (blastAge < FLASH_MS) this.drawFlash(context, center, blastAge, Math.min(width, height));
+    if (!launch.reducedMotion && progress > 0 && progress < 1) this.drawShockwave(context, launch.route.target, travelledKm);
+    if (!launch.reducedMotion && blastAge < FLASH_MS) this.drawFlash(context, center, blastAge, Math.min(width, height));
     if (progress < 1) return null;
     this.drawOpticalSun(context, center, launch.route.target, launch.radii, 1, field);
     return this.paintSettledInspection(launch, width, height, highlightedZoneId, inspectionContext);

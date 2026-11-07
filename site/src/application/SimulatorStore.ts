@@ -18,6 +18,7 @@ export class SimulatorStore {
   private state: SimulatorState = INITIAL_SIMULATOR_STATE;
   private readonly listeners = new Set<() => void>();
   private frameId: number | null = null;
+  private reducedMotion = false;
 
   constructor(private readonly clock: AnimationClock) {}
 
@@ -48,6 +49,9 @@ export class SimulatorStore {
     this.scheduleFrame();
   };
 
+  /** Set preference for future launches; active launches retain their timing. */
+  readonly setReducedMotion = (enabled: boolean): void => { this.reducedMotion = enabled; };
+
   /** Launch the selected valid device at a geographic route. Invalid drafts are ignored. */
   readonly launchAt = (route: FlightRoute): void => {
     const selection = resolveDeviceSelection(this.state);
@@ -57,7 +61,7 @@ export class SimulatorStore {
 
   /** Dispatch a route using the device frozen when its map click was made. */
   readonly launchAtWithIntent = (route: FlightRoute, intent: LaunchIntent): void => {
-    this.dispatch({ type: "launchAt", route, deviceId: intent.deviceId, yieldMt: intent.yieldMt, nowMs: this.clock.now() });
+    this.dispatch({ type: "launchAt", route, deviceId: intent.deviceId, yieldMt: intent.yieldMt, nowMs: this.clock.now(), reducedMotion: this.reducedMotion });
   };
 
   /** Freeze the selected device and modeled geographic targets for a map click. */

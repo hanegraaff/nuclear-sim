@@ -222,7 +222,7 @@ export class FireballRenderer {
       gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buffer);
       gl.vertexAttribPointer(resources.position, 3, gl.FLOAT, false, 0, 0);
       gl.uniformMatrix4fv(resources.matrix, false, transform);
-      gl.uniform1f(resources.time, elapsedMs / 1000);
+      gl.uniform1f(resources.time, launch.reducedMotion ? 0 : elapsedMs / 1000);
       gl.uniform1f(resources.cooling, envelope.cooling);
       gl.uniform1f(resources.opacity, envelope.opacity);
       gl.drawArrays(gl.TRIANGLES, 0, mesh.vertexCount);

@@ -31,7 +31,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the 
 | 14 | Visible view | Complete | 13 |
 | 15 | Night map and hide/show controls | Complete | 14 |
 | 16 | Narrow-screen layout | Complete | 15 |
-| 17 | Reduced motion, conventional devices, and final review | Ready | 16 |
+| 17 | Reduced motion, conventional devices, and final review | In progress | 16 |
 
 ## Plan 01 — Published satellite map
 
@@ -284,7 +284,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the 
 
 **Completion evidence.** Full `npm run verify` passes from a clean install, the final Site version deploys successfully, and its URL opens the completed simulator. Desktop 2208 × 1276 and a narrow viewport complete the launch, inspection, view-switch, multi-launch, hide/show, and Reset paths. Tests establish the five new devices' catalog values, yields below 11 tons TNT equivalent, and conventional-only behavior. Inspect incoming, impact, expansion, settled, Fallout, Audible, Visible, and multi-strike captures against the appropriate prototype screenshots; record remaining differences. Review the README gallery in its rendered context and confirm its images and alt text are usable.
 
-**Current status.** Ready; Plan 16 is complete.
+**Current status.** In progress on branch `plan-17`.
 
 **Blocking decisioning.** None known. If a visual mismatch requires changing a model assumption or map imagery source, document the options and expected effect before making that change.
 

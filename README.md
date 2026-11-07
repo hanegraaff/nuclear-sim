@@ -2,13 +2,35 @@
 
 Nuke Simulator is a full-screen satellite-map effects visualizer based on the read-only application in `prototype-code/` and the images in `prototype-screenshots/`. The goal is to preserve its interaction, motion, and appearance while keeping the model, application state, and drawing code separate. Its effects are illustrative screening estimates, not forecasts or emergency guidance.
 
-**Open the Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Visitors do not need to install or run this repository.
+**Open the Site:** [Nuke Simulator](https://nuke.maquaman.chatgpt.site). Visitors do not need to install or run this repository.
+
+## See it in action
+
+Each image is captured from the simulator with Esri World Imagery and its attribution visible. The colored fields are illustrative estimates; see [model assumptions](site/docs/model.md) for their limits. Open an image to see its full resolution.
+
+[![Pitched satellite map with two glowing fireballs, overlapping pink and purple blast fields, and the combined-damage legend](docs/showcase/multi-pitched.png)](docs/showcase/multi-pitched.png)
+
+*Multi-launch: a pitched view shows two fireballs within overlapping fields.*
+
+| Incoming missile | Impact flash |
+| --- | --- |
+| [![An amber-white incoming missile approaches a red target over Manhattan](docs/showcase/flight.png)](docs/showcase/flight.png) | [![A bright impact blooms over the target as the cloud monitor begins to rise](docs/showcase/impact.png)](docs/showcase/impact.png) |
+
+| Settled Blast | Fallout screening envelope |
+| --- | --- |
+| [![A settled orange, magenta, and purple blast field with a dashed ruler and four markers](docs/showcase/blast.png)](docs/showcase/blast.png) | [![A curved warm-colored fallout screening plume with an H plus 24 hour ruler and markers](docs/showcase/fallout.png)](docs/showcase/fallout.png) |
+
+| Audible range | Visible range |
+| --- | --- |
+| [![A soft green hearing-range field and its geographic ruler](docs/showcase/audible.png)](docs/showcase/audible.png) | [![A soft blue direct-fireball sightline field and its geographic ruler](docs/showcase/visible.png)](docs/showcase/visible.png) |
 
 ## Use the simulator
 
-Choose one of the prototype's 47 fixed devices, enter a custom yield, or select one of 20 scenarios. A scenario prepares the device and moves the camera; click the map to launch. The default device is Fat Man at 21 kt. Pan and zoom normally, and right-drag upward to pitch the map. The imagery keeps its Esri attribution visible.
+Choose one of 52 fixed devices, enter a custom yield, or select one of 20 scenarios. The catalog includes five additional conventional weapons with estimated yields below the MOAB. Their TNT-equivalent values are approximate pressure-based comparisons for specified explosive fills, not measured forecasts. A scenario prepares the device and moves the camera; click the map to launch. The default device is Fat Man at 21 kt. Pan and zoom normally, and right-drag upward to pitch the map. The imagery keeps its Esri attribution visible.
 
-A click places a red target and sends an amber-white missile along a curved, smoky path for about 6.5 seconds. Impact produces a flash, expanding color field, and textured ground-anchored fireball. On wider screens, the separate cloud instrument rises with the blast and shows a modeled peak height. The default single-launch mode replaces the previous click. When the blast settles, a dashed ruler, four zone outlines, and keyboard-accessible markers explain the modeled spans; hover or focus a marker, click to pin its popup, and press Escape to clear it.
+A click places a red target and sends an amber-white missile along a curved, smoky path for about 6.5 seconds. Keyboard users can tab to **Launch at map center** and press Enter or Space to launch at the current map center. Impact produces a flash, expanding color field, and textured ground-anchored fireball. On wider screens, the separate cloud instrument rises with the blast and shows a modeled peak height. The default single-launch mode replaces the previous click. When the blast settles, a dashed ruler, four zone outlines, and keyboard-accessible markers explain the modeled spans; hover or focus a marker, click to pin its popup, and press Escape to clear it. Launch phases are announced even when the panels are hidden.
+
+When the device requests reduced motion, flight and expansion take about 2.1 seconds in total. Smoke, impact flash, shock ring and cloud ignition flash are suppressed, the target stops pulsing, and the fireball texture remains still. The same modeled effect and settled map remain available.
 
 Multi-Launch Mode keeps every click and permits a new inbound missile while earlier effects expand. Missiles enter from one general direction. Overlapping Blast fields advance toward warmer colors; overlapping range fields brighten within their green or blue palettes. No overlap changes a device's yield or geographic radius. Its lower-left map scale and legend replace the single-strike ruler. Turning multi mode off keeps the latest whole click group. A MIRV choice launches one carrier that separates into three or ten reentry vehicles, each with its own target, per-warhead effect size, and impact; the group stays intact when modes change. The carrier normally splits near 60% of flight and can separate earlier when its targets would otherwise lie behind it. Reset clears all effects and returns the cloud instrument to standby while preserving the selected device, launch mode, and camera.
 

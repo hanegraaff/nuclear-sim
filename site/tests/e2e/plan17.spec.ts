@@ -1,0 +1,43 @@
+/** R-03/R-13: fixed tiles and fake time exercise conventional selection, keyboard launch and reduced motion. */
+import { expect, test } from "@playwright/test";
+import path from "node:path";
+test.use({ viewport: { width: 1280, height: 800 }, reducedMotion: "reduce" });
+test.beforeEach(async ({ page }) => {
+  await page.route("**/ArcGIS/rest/services/World_Imagery/MapServer/tile/**", (route) => route.fulfill({ path: path.resolve("tests/fixtures/satellite-tile.png"), contentType: "image/png" }));
+  await page.goto("/");
+  await expect(page.locator("main.simulator")).toHaveAttribute("data-map-state", "ready");
+  await page.clock.install();
+  await page.clock.pauseAt((await page.evaluate(() => Date.now())) + 10_000);
+});
+test("keyboard launch announces phases and conventional effects settle without Fallout", async ({ page }) => {
+  const sim = page.locator("main.simulator");
+  const select = page.getByRole("combobox", { name: "Weapon or delivery system" });
+  await select.selectOption("mk-82");
+  const launch = page.getByRole("button", { name: "Launch at map center" });
+  await launch.focus();
+  await expect(launch).toBeFocused();
+  await expect(launch).toBeInViewport();
+  await launch.press("Enter");
+  await expect(sim).toHaveAttribute("data-launch-phase", "inbound");
+  await expect(page.locator(".launch-status")).toContainText("MISSILE INBOUND");
+  await page.clock.runFor(1250);
+  await expect(sim).toHaveAttribute("data-launch-phase", "detonating");
+  await expect(page.locator(".launch-status")).toContainText("BLAST EXPANDING");
+  await page.clock.runFor(1000);
+  await expect(sim).toHaveAttribute("data-launch-phase", "complete");
+  await expect(page.locator(".launch-status")).toContainText("BLAST COMPLETE");
+  await expect(page.getByRole("tab", { name: "FALLOUT", exact: true })).toHaveCount(0);
+  await page.getByRole("tab", { name: "AUDIBLE", exact: true }).focus();
+  await page.keyboard.press("Enter");
+  await expect(sim).toHaveAttribute("data-effect-view", "audible");
+  await page.getByRole("button", { name: "Reset map" }).focus();
+  await page.keyboard.press("Enter");
+  await expect(sim).toHaveAttribute("data-launch-count", "0");
+  await page.getByRole("button", { name: "Hide control and cloud panels" }).click();
+  await launch.focus();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".screen-reader-status")).toHaveText("MISSILE INBOUND");
+  await expect(page.locator(".screen-reader-status")).toHaveAttribute("role", "status");
+  await page.clock.runFor(2300);
+  await expect(page.locator(".screen-reader-status")).toHaveText("BLAST COMPLETE");
+});

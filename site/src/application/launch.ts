@@ -3,7 +3,7 @@ import type { ScenarioSelectionAction, ScenarioSelectionState } from "./scenario
 import { INITIAL_SCENARIO_SELECTION, reduceScenarioSelection } from "./scenarioSelection";
 import { blastRadiiForYield, type BlastRadii } from "../domain/blast";
 import type { BlastZoneId } from "../domain/blastZones";
-import { getDeviceById } from "../catalog/devices";
+import { getDeviceById, isConventionalDevice } from "../catalog/devices";
 import { mirvImpactTargets } from "../domain/mirv";
 import { planMirvCarrier } from "./mirvCarrierPlan";
 import { modelFallout, type FalloutBandId, type FalloutFootprint } from "../domain/fallout";
@@ -14,6 +14,10 @@ import type { VisibleBandId } from "../domain/visible";
 export const FLIGHT_MS = 6500;
 /** Prototype's blast expansion duration in milliseconds. */
 export const BLAST_MS = 4600;
+/** Reduced-motion flight and expansion durations in milliseconds. */
+export const REDUCED_FLIGHT_MS = 1200;
+/** Reduced-motion expansion duration in milliseconds. */
+export const REDUCED_BLAST_MS = 900;
 
 /** One geographically anchored carrier route, with a quadratic control point. */
 export interface FlightRoute {
@@ -45,6 +49,8 @@ export interface Launch {
   readonly launchedAtMs: number;
   readonly flightMs: number;
   readonly blastMs: number;
+  /** Suppress intense transient animation while retaining the settled field. */
+  readonly reducedMotion?: boolean;
   readonly radii: BlastRadii;
   /** H+24 screening geometry exists only for nuclear devices. */
   readonly fallout?: FalloutFootprint;
@@ -99,7 +105,7 @@ export interface SimulatorState extends ScenarioSelectionState {
 export type SimulatorAction = ScenarioSelectionAction
   | { readonly type: "setMapTone"; readonly tone: "day" | "night" }
   | { readonly type: "setPanelsVisible"; readonly visible: boolean }
-  | { readonly type: "launchAt"; readonly route: FlightRoute; readonly deviceId: string; readonly yieldMt: number; readonly nowMs: number; readonly flightMs?: number }
+  | { readonly type: "launchAt"; readonly route: FlightRoute; readonly deviceId: string; readonly yieldMt: number; readonly nowMs: number; readonly flightMs?: number; readonly reducedMotion?: boolean }
   | { readonly type: "tick"; readonly nowMs: number; readonly launchId: number }
   | { readonly type: "setMultiLaunch"; readonly enabled: boolean }
   | { readonly type: "setPendingLaunch"; readonly pending: boolean }
@@ -160,14 +166,14 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
   if (action.type === "setPanelsVisible") return state.panelsVisible === action.visible ? state : { ...state, panelsVisible: action.visible };
   if (action.type === "launchAt") {
     if (!Number.isFinite(action.nowMs) || !Number.isFinite(action.yieldMt) || action.yieldMt <= 0) return state;
-    const flightMs = action.flightMs ?? FLIGHT_MS;
+    const flightMs = action.flightMs ?? (action.reducedMotion ? REDUCED_FLIGHT_MS : FLIGHT_MS);
     if (!Number.isFinite(flightMs) || flightMs <= 0) return state;
     const device = getDeviceById(action.deviceId);
     const count = device?.warheadCount ?? 1;
     const yieldMt = device?.warheadYieldMt ?? action.yieldMt;
     const radii = blastRadiiForYield(yieldMt);
     const targets = count > 1 ? mirvImpactTargets(action.route.target, count, radii.light) : [action.route.target];
-    const staggerMs = flightMs < 1000 ? 8 : 45;
+    const staggerMs = action.reducedMotion || flightMs < 1000 ? 8 : 45;
     const carrier = count > 1 ? planMirvCarrier(action.route, targets, flightMs, flightMs + (count - 1) * staggerMs) : null;
     const launches: readonly Launch[] = targets.map((target, index) => ({
       id: state.nextLaunchId + index,
@@ -176,9 +182,10 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
       route: carrier ? { ...carrier.route, target } : action.route,
       launchedAtMs: action.nowMs,
       flightMs: flightMs + (carrier ? index * staggerMs : 0),
-      blastMs: BLAST_MS,
+      blastMs: action.reducedMotion ? REDUCED_BLAST_MS : BLAST_MS,
+      ...(action.reducedMotion ? { reducedMotion: true } : {}),
       radii,
-      ...(action.deviceId !== "moab" && action.deviceId !== "foab" ? { fallout: modelFallout(target, yieldMt, state.nextLaunchId + index) } : {}),
+      ...(!isConventionalDevice(action.deviceId) ? { fallout: modelFallout(target, yieldMt, state.nextLaunchId + index) } : {}),
       ...(carrier ? { mirv: { route: carrier.route, splitMs: carrier.splitMs, carrierFlightMs: flightMs, lead: index === 0 } } : {}),
     }));
     const group: LaunchGroup = { id: state.nextLaunchId, launches };
@@ -299,6 +306,16 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
   }
   if (action.type === "reset") return { ...state, phase: "armed", launchGroups: [], launch: null, pendingLaunch: false, elapsedMs: 0, effectView: "blast", activeAudibleId: null, hoveredAudibleId: null, focusedAudibleId: null, pinnedAudibleId: null, activeVisibleId: null, hoveredVisibleId: null, focusedVisibleId: null, pinnedVisibleId: null, activeFalloutId: null, hoveredFalloutId: null, focusedFalloutId: null, pinnedFalloutId: null, activeZoneId: null, hoveredZoneId: null, focusedZoneId: null, pinnedZoneId: null };
   return { ...state, ...reduceScenarioSelection(state, action) };
+}
+
+/** Describe launch phase and multi-impact count for both visible and assistive status. */
+export function launchStatusLabel(phase: SimulatorState["phase"], multi: boolean, impactCount: number, totalCount: number): string {
+  if (multi) {
+    const word = phase === "complete" ? "complete" : phase === "detonating" ? "blast expanding" : phase === "inbound" ? "missile inbound" : "armed";
+    return `Multi-launch ${word} · strikes accumulate${totalCount > 0 ? ` · ${impactCount}/${totalCount} impacts` : ""}`;
+  }
+  if (totalCount > 1) return `MIRV ${phase === "complete" ? "COMPLETE" : phase === "detonating" ? "IMPACTS" : "INBOUND"} · ${impactCount}/${totalCount} impacts`;
+  return phase === "inbound" ? "MISSILE INBOUND" : phase === "detonating" ? "BLAST EXPANDING" : phase === "complete" ? "BLAST COMPLETE" : "READY TO LAUNCH";
 }
 
 /** Nuclear fallout eligibility follows retained launches, never the current device selection. */

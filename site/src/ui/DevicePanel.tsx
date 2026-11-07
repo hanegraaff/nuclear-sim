@@ -10,12 +10,11 @@ import { EyeOffIcon, MoonIcon } from "./ControlIcons";
 interface DevicePanelProps {
   readonly state: Pick<ScenarioSelectionState, "tab" | "scenarioId" | "selectedId" | "customYieldInput">;
   readonly selection: ResolvedDeviceSelection;
-  readonly launchPhase: "armed" | "inbound" | "detonating" | "complete";
+  readonly statusText: string;
   readonly mapTone: "day" | "night";
   readonly panelsVisible: boolean;
   readonly cloud: CloudPresentation;
   readonly multiLaunch: boolean;
-  readonly impactCount: number;
   readonly totalCount: number;
   readonly pendingLaunch?: boolean;
   readonly onReset: () => void;
@@ -29,7 +28,7 @@ interface DevicePanelProps {
 }
 
 /** Prototype-style selector; tab and input actions update application state. */
-export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, mapTone, panelsVisible, cloud, multiLaunch, impactCount, totalCount, pendingLaunch = false, onReset, onSetMapTone, onSetPanelsVisible, onSetMultiLaunch, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+export const DevicePanel = memo(function DevicePanel({ state, selection, statusText, mapTone, panelsVisible, cloud, multiLaunch, totalCount, pendingLaunch = false, onReset, onSetMapTone, onSetPanelsVisible, onSetMultiLaunch, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -133,13 +132,7 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, launchP
               <span aria-hidden="true">☢</span> Multi-Launch Mode {multiLaunch ? "ON" : "OFF"} <span aria-hidden="true">☢</span>
             </button>
           </div>
-          <p className="launch-status" aria-live="polite">
-            {multiLaunch
-              ? `Multi-launch armed · strikes accumulate${totalCount > 0 ? ` · ${impactCount}/${totalCount} impacts` : ""}`
-              : totalCount > 1
-                ? `MIRV ${launchPhase === "complete" ? "COMPLETE" : launchPhase === "detonating" ? "IMPACTS" : "INBOUND"} · ${impactCount}/${totalCount} impacts`
-              : launchPhase === "inbound" ? "MISSILE INBOUND" : launchPhase === "detonating" ? "BLAST EXPANDING" : launchPhase === "complete" ? "BLAST COMPLETE" : "READY TO LAUNCH"}
-          </p>
+          <p className="launch-status" aria-hidden="true">{statusText}</p>
         </div>
       </section>
       <CloudProfileMonitor state={cloud} />
