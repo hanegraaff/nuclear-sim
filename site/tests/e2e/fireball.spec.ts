@@ -27,18 +27,28 @@ async function fireballFootprint(page: Page): Promise<{ count: number; centerX: 
 
 /** Tilt with MapLibre's real interaction so the camera matrix includes perspective. */
 async function pitchMap(page: Page): Promise<void> {
-  await page.mouse.move(1400, 780);
-  await page.mouse.down({ button: "right" });
-  // MapLibre consumes drag deltas in animation frames. Advance the fake clock
-  // while the button is held so a loaded worker cannot coalesce every move
-  // with mouseup before the camera receives the gesture.
-  for (let step = 1; step <= 10; step += 1) {
-    await page.mouse.move(1400, 780 - 43 * step);
-    await page.clock.runFor(20);
+  const pitch = async () => Number(await page.locator("main.simulator").getAttribute("data-pitch"));
+  // Allow the prior zoom ease to finish, then retry the real gesture if a
+  // heavily loaded browser drops it. Every attempt advances animation frames
+  // while the button is held; the test still requires an observed pitched map.
+  await page.clock.runFor(500);
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    await page.mouse.move(1400, 780);
+    await page.mouse.down({ button: "right" });
+    for (let step = 1; step <= 10; step += 1) {
+      await page.mouse.move(1400, 780 - 43 * step);
+      await page.clock.runFor(20);
+    }
+    await page.mouse.up({ button: "right" });
+    await page.clock.runFor(250);
+    try {
+      await expect.poll(pitch, { timeout: 2_000 }).toBeGreaterThan(20);
+      return;
+    } catch {
+      // A fresh gesture is the recovery; the final assertion reports failure.
+    }
   }
-  await page.mouse.up({ button: "right" });
-  await page.clock.runFor(100);
-  await expect.poll(async () => Number(await page.locator("main.simulator").getAttribute("data-pitch"))).toBeGreaterThan(20);
+  await expect.poll(pitch).toBeGreaterThan(20);
 }
 
 test.beforeEach(async ({ page }) => {
