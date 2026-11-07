@@ -30,7 +30,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the 
 | 13 | Audible view | Complete | 12 |
 | 14 | Visible view | Complete | 13 |
 | 15 | Night map and hide/show controls | Complete | 14 |
-| 16 | Narrow-screen layout | Ready | 15 |
+| 16 | Narrow-screen layout | In progress | 15 |
 | 17 | Reduced motion and final review | Not started | 16 |
 
 ## Plan 01 — Published satellite map
@@ -263,7 +263,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the 
 
 **Completion evidence.** Narrow-viewport browser tests and `npm run verify` pass. Capture the controls, launch, tooltips, and each effect view at a fixed phone-sized viewport.
 
-**Current status.** Not started; depends on Plan 15.
+**Current status.** In progress on branch `plan-16`.
 
 **Blocking decisioning.** None. Follow the prototype's compact layout behavior while keeping touch targets and tooltips operable.
 

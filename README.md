@@ -2,7 +2,7 @@
 
 Nuke Simulator is a full-screen satellite-map effects visualizer based on the read-only application in `prototype-code/` and the images in `prototype-screenshots/`. The goal is to preserve its interaction, motion, and appearance while keeping the model, application state, and drawing code separate. Its effects are illustrative screening estimates, not forecasts or emergency guidance.
 
-**Open the private Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Access is limited to the Site owner; visitors do not need to install or run this repository.
+**Open the Site:** [Nuke Simulator](https://nuke-simulator-rebuild.maquaman.chatgpt.site). Visitors do not need to install or run this repository.
 
 ## Use the simulator
 
@@ -16,7 +16,7 @@ After all retained launches settle, switch among Blast, eligible Fallout, Audibl
 
 Audible shows a soft green outdoor hearing range, separate from Blast damage. Visible shows a white-to-navy field for a direct line of sight to the luminous fireball from a 1.7 m observer in clear air. In either range view, a single delivery has a dashed geographic ruler, a kilometer radius label, and four focusable markers; multi mode replaces these with a map-distance scale and four-band legend. Audible describes Faint, Loud, Painful, and Deafening hearing experiences; Visible describes Faint, Clear, Brilliant, and Blinding viewing experiences. Popups give the modeled span, while overlapping ranges intensify the display without adding yields. Weather and terrain affect actual audibility; clouds, buildings, terrain, and atmospheric clarity affect what can be seen.
 
-Use **Night** in the control header to darken the satellite imagery; press it again to restore the day view. The effects, map camera, and provider attribution stay in place. **Hide** slides the controls and cloud monitor away so more map is available for targeting. **Show Controls** restores both panels. The effect tabs remain available while the panels are hidden, and a map click still launches with the selected device and mode. Both controls are keyboard operable; hiding moves focus to Show Controls, and restoring returns it to Hide. Night and panel visibility persist through Reset. The broader narrow-screen layout is still being refined on the [roadmap](roadmap.md).
+Use **Night** in the control header to darken the satellite imagery; press it again to restore the day view. The effects, map camera, and provider attribution stay in place. **Hide** slides the controls and cloud monitor away so more map is available for targeting. **Show Controls** restores both panels. The effect tabs remain available while the panels are hidden, and a map click still launches with the selected device and mode. Both controls are keyboard operable; hiding moves focus to Show Controls, and restoring returns it to Hide. Night and panel visibility persist through Reset. On a phone, the controls and cloud monitor compact to leave a launchable map area, with effect tabs and legends placed above the attribution and beside map navigation.
 
 If a high-zoom or narrow MIRV click cannot produce a visible forward flight, its target appears immediately while the camera briefly reframes before launch. Clicks made during that ease retain their selected device and are handled in order in multi mode; Reset cancels pending launches. If framing still fails after bounded attempts, the map remains usable and asks you to zoom out and try again.
 
@@ -30,6 +30,6 @@ The map uses Esri World Imagery with visible provider attribution. Night adjusts
 
 Node.js 22.13 or newer is required. From the repository root, run `npm ci --prefix site`, `npx --prefix site playwright install chromium`, then `npm run verify`. This checks types, lint, unit and integration tests, the production build, and browser paths. Local preview is for engineering; the published Site is the user-facing application.
 
-[GitHub](https://github.com/hanegraaff/nuclear-sim) is the source of truth. The `site/` directory belongs to this repository. [Sites publishing](docs/sites-publishing.md) describes the exact-source temporary checkout, clean verification, and private deployment. The [roadmap](roadmap.md) records each increment, status, and Site version. [Requirements](requirements.md) and [project instructions](AGENTS.md) define behavior, tests, and read-only prototype handling.
+[GitHub](https://github.com/hanegraaff/nuclear-sim) is the source of truth. The `site/` directory belongs to this repository. [Sites publishing](docs/sites-publishing.md) describes the exact-source temporary checkout and clean verification. The [roadmap](roadmap.md) records each increment, status, and Site version. [Requirements](requirements.md) and [project instructions](AGENTS.md) define behavior, tests, and read-only prototype handling.
 
 To run the full next-plan workflow, invoke [`$implement-next-plan`](.agents/skills/implement-next-plan/SKILL.md). Its developer, browser tester, and technical writer prepare the PR for your review; an independent code reviewer is used for higher-risk changes.

@@ -20,6 +20,8 @@ The cloud monitor follows the latest group's first ignited warhead through growt
 
 The header's Night button changes the satellite raster's saturation, contrast, and brightness and adds a dark vignette. It leaves the modeled effect fields, marker locations, camera, and Esri attribution intact. Hide slides the left controls and cloud monitor offscreen and exposes a keyboard-focusable Show Controls button. The effect selector stays on the map. Hiding removes the desktop left or narrow-screen top camera padding, then the controller repaints fields and markers through the updated projection; restoring the panels reverses that padding. Launch and inspection state, device choice, effect view, and map tone persist across the toggle. Reset clears strikes but retains the map tone and panel visibility.
 
+On narrow screens the control stack and cloud plot become compact, leaving an open region of the map for launches. Effect tabs, model qualifications, multi-strike scales, navigation controls, and expanded attribution have separate space near the bottom. Marker popups move above the tabs when needed. Short screens further compact the cloud plot and multi-strike scales.
+
 ## Source boundaries
 
 | Area | Responsibility |
@@ -37,4 +39,4 @@ Model output never contains screen pixels or drawing objects. Application state 
 
 Use Node.js 22.13 or newer. In this directory, run `npm ci` and, when needed, `npx playwright install chromium`. `npm run verify` runs type checking, lint, unit and integration tests, a build, and Playwright browser checks. `npm run dev` and `npm run preview` support engineering inspection. Browser tests replace live Esri raster tiles with a deterministic fixture; production uses Esri World Imagery with visible attribution and a retry notice if imagery fails.
 
-The tracked `.openai/hosting.json` points the existing Site to the static `dist/` build. The root GitHub repository is authoritative; [publishing instructions](../docs/sites-publishing.md) copy an exact pushed source tree into a clean temporary release checkout, verify it, and publish to the same owner-private Site. Prototype code and screenshots are read-only references outside this directory.
+The tracked `.openai/hosting.json` points the existing Site to the static `dist/` build. The root GitHub repository is authoritative; [publishing instructions](../docs/sites-publishing.md) copy an exact pushed source tree into a clean temporary release checkout, verify it, and publish to the same Site. Prototype code and screenshots are read-only references outside this directory.

@@ -21,7 +21,9 @@ export interface BlastInspectionOverlayProps {
 function tooltipPosition(x: number, y: number, width: number, height: number): CSSProperties {
   const tooltipWidth = Math.min(270, width - 24);
   const left = Math.min(width - tooltipWidth - 12, Math.max(12, x - tooltipWidth + 20));
-  const top = y + 24 + 135 <= height ? y + 24 : Math.max(12, y - 150);
+  // Phone effect tabs occupy the lower edge; flip before the popup obscures them.
+  const bottomLimit = height - (width <= 600 ? 150 : 0);
+  const top = y + 24 + 135 <= bottomLimit ? y + 24 : Math.max(12, y - 150);
   return { left, top, width: tooltipWidth };
 }
 

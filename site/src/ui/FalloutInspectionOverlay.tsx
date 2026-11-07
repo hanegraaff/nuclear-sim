@@ -30,7 +30,7 @@ export function FalloutInspectionOverlay({
     ? Math.max(12, Math.min(geometry.width - tooltipWidth - 12, marker.x - tooltipWidth + 20))
     : 0;
   const top = marker && geometry
-    ? marker.y + 244 < geometry.height ? marker.y + 24 : Math.max(12, marker.y - 225)
+    ? marker.y + 244 < geometry.height - (geometry.width <= 600 ? 150 : 0) ? marker.y + 24 : Math.max(12, marker.y - 225)
     : undefined;
   const buttonProps = (id: FalloutBandId) => ({
     "aria-expanded": active === id,
