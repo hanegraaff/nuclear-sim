@@ -29,7 +29,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–14 are published to the 
 | 12 | Fallout view | Complete | 11 |
 | 13 | Audible view | Complete | 12 |
 | 14 | Visible view | Complete | 13 |
-| 15 | Night map and hide/show controls | Ready | 14 |
+| 15 | Night map and hide/show controls | In progress | 14 |
 | 16 | Narrow-screen layout | Not started | 15 |
 | 17 | Reduced motion and final review | Not started | 16 |
 
@@ -249,7 +249,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–14 are published to the 
 
 **Completion evidence.** State/browser tests pass; capture day/night and shown/hidden states at the same camera and strike.
 
-**Current status.** Ready; Plan 14 is complete.
+**Current status.** In progress on branch `plan-15` from 2026-11-06; Plan 14 is complete.
 
 **Blocking decisioning.** None. Keep the prototype's night treatment and ensure text contrast remains usable.
 

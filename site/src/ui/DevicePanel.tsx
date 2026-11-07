@@ -5,17 +5,22 @@ import type { ScenarioSelectionState } from "../application/scenarioSelection";
 import { memo, type KeyboardEvent } from "react";
 import type { CloudPresentation } from "../application/cloudPresentation";
 import { CloudProfileMonitor } from "./CloudProfileMonitor";
+import { EyeOffIcon, MoonIcon } from "./ControlIcons";
 
 interface DevicePanelProps {
   readonly state: Pick<ScenarioSelectionState, "tab" | "scenarioId" | "selectedId" | "customYieldInput">;
   readonly selection: ResolvedDeviceSelection;
   readonly launchPhase: "armed" | "inbound" | "detonating" | "complete";
+  readonly mapTone: "day" | "night";
+  readonly panelsVisible: boolean;
   readonly cloud: CloudPresentation;
   readonly multiLaunch: boolean;
   readonly impactCount: number;
   readonly totalCount: number;
   readonly pendingLaunch?: boolean;
   readonly onReset: () => void;
+  readonly onSetMapTone: (tone: "day" | "night") => void;
+  readonly onSetPanelsVisible: (visible: boolean) => void;
   readonly onSetMultiLaunch: (enabled: boolean) => void;
   readonly onSelectTab: (tab: "scenario" | "device") => void;
   readonly onSelectScenario: (id: string) => void;
@@ -24,7 +29,7 @@ interface DevicePanelProps {
 }
 
 /** Prototype-style selector; tab and input actions update application state. */
-export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, cloud, multiLaunch, impactCount, totalCount, pendingLaunch = false, onReset, onSetMultiLaunch, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+export const DevicePanel = memo(function DevicePanel({ state, selection, launchPhase, mapTone, panelsVisible, cloud, multiLaunch, impactCount, totalCount, pendingLaunch = false, onReset, onSetMapTone, onSetPanelsVisible, onSetMultiLaunch, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -33,11 +38,19 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, launchP
     document.getElementById(`${next}-tab`)?.focus();
   };
   return (
-    <aside className="left-instrument-stack" aria-label="Device controls">
+    <aside className="left-instrument-stack" aria-label="Device controls" aria-hidden={!panelsVisible} inert={!panelsVisible}>
       <section className="minimal-header">
-        <div className="minimal-brand">
-          <h1>Nuke Simulator</h1>
-          <p>Click Map to Launch</p>
+        <div className="brand-row">
+          <div className="minimal-brand">
+            <h1>Nuke Simulator</h1>
+            <p>Click Map to Launch</p>
+          </div>
+          <div className="header-actions">
+            <div className="map-mode" role="group" aria-label="Map lighting">
+              <button className={`night-toggle${mapTone === "night" ? " active" : ""}`} type="button" onClick={() => onSetMapTone(mapTone === "night" ? "day" : "night")} aria-label="Night mode" aria-pressed={mapTone === "night"}><MoonIcon /> NIGHT</button>
+            </div>
+            <button className="panel-visibility" type="button" onClick={() => onSetPanelsVisible(false)} aria-label="Hide control and cloud panels"><EyeOffIcon /> HIDE</button>
+          </div>
         </div>
 
         <div className="panel-controls">

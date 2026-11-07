@@ -84,6 +84,7 @@ export class SatelliteMapController {
   private state: MapLoadState = "loading";
   private mapLoaded = false;
   private panelsVisible = true;
+  private mapTone: "day" | "night" = "day";
   private launch: Launch | null = null;
   private elapsedMs = 0;
   private sceneFrames: readonly LaunchFrame[] = [];
@@ -123,8 +124,17 @@ export class SatelliteMapController {
 
   /** Keep the map's visual center clear of the left control panel. */
   setPanelsVisible(visible: boolean): void {
+    if (this.panelsVisible === visible) return;
     this.panelsVisible = visible;
     this.updateCameraPadding();
+    this.repaintCamera();
+  }
+
+  /** Change only satellite raster paint; modeled fields and attribution remain untouched. */
+  setMapTone(tone: "day" | "night"): void {
+    if (this.mapTone === tone) return;
+    this.mapTone = tone;
+    if (this.mapLoaded) this.applyMapTone();
   }
 
   /** Draw a single launch at its injected age in milliseconds. */
@@ -266,9 +276,21 @@ export class SatelliteMapController {
 
   private readonly handleLoad = (): void => {
     this.mapLoaded = true;
+    this.applyMapTone();
     this.addFireballLayer();
     this.emitCamera();
   };
+
+  /** Reapply the prototype's day/night raster values after delayed map load. */
+  private applyMapTone(): void {
+    const paint = this.mapTone === "day"
+      ? { saturation: -0.22, contrast: 0.08, min: 0.08, max: 0.92 }
+      : { saturation: -1, contrast: 0.34, min: 0.02, max: 0.48 };
+    this.map.setPaintProperty("satellite", "raster-saturation", paint.saturation);
+    this.map.setPaintProperty("satellite", "raster-contrast", paint.contrast);
+    this.map.setPaintProperty("satellite", "raster-brightness-min", paint.min);
+    this.map.setPaintProperty("satellite", "raster-brightness-max", paint.max);
+  }
 
   /** Use MapLibre's exact camera matrix to repaint an independent WebGL canvas. */
   private addFireballLayer(): void {

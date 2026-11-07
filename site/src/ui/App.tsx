@@ -42,6 +42,8 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
   const setCustomYieldInput = useCallback((value: string) => store.dispatch({ type: "setCustomYieldInput", value }), [store]);
   const reset = useCallback(() => { cancelPending(); store.dispatch({ type: "reset" }); }, [cancelPending, store]);
   const setMultiLaunch = useCallback((enabled: boolean) => store.dispatch({ type: "setMultiLaunch", enabled }), [store]);
+  const setMapTone = useCallback((tone: "day" | "night") => store.dispatch({ type: "setMapTone", tone }), [store]);
+  const setPanelsVisible = useCallback((visible: boolean) => store.dispatch({ type: "setPanelsVisible", visible }), [store]);
   const hoverZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "hoverZone", zoneId }), [store]);
   const focusZone = useCallback((zoneId: BlastZoneId | null) => store.dispatch({ type: "focusZone", zoneId }), [store]);
   const pinZone = useCallback((zoneId: BlastZoneId) => store.dispatch({ type: "pinZone", zoneId }), [store]);
@@ -62,7 +64,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
 
   return (
     <MapViewport
-      cameraRequest={state.cameraRequest} launch={state} frames={frames}
+      cameraRequest={state.cameraRequest} launch={state} frames={frames} mapTone={state.mapTone} panelsVisible={state.panelsVisible} onSetPanelsVisible={setPanelsVisible}
       onLaunch={store.launchAtWithIntent} prepareLaunch={store.prepareLaunchAt} launchAngle={store.nextLaunchAngle}
       cancelPendingVersion={cancelPendingVersion} onPendingChange={store.setPendingLaunch}
       onHoverZone={hoverZone} onFocusZone={focusZone} onPinZone={pinZone} onClearZoneInspection={clearZoneInspection}
@@ -75,12 +77,16 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
         state={panelState}
         selection={selection}
         launchPhase={state.phase}
+        mapTone={state.mapTone}
+        panelsVisible={state.panelsVisible}
         cloud={cloud}
         multiLaunch={state.multiLaunch}
         impactCount={impactCount}
         totalCount={frames.length}
         pendingLaunch={state.pendingLaunch}
         onReset={reset}
+        onSetMapTone={setMapTone}
+        onSetPanelsVisible={setPanelsVisible}
         onSetMultiLaunch={setMultiLaunch}
         onSelectTab={selectTab}
         onSelectScenario={selectScenario}
