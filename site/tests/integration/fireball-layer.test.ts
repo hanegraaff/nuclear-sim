@@ -41,6 +41,7 @@ function fakeMap(addLayerFailure = false) {
     getBearing: () => 0,
     getContainer: () => ({ clientWidth: 1508, clientHeight: 1080 }),
     setPadding: vi.fn(),
+    setPaintProperty: vi.fn(),
     addLayer,
     triggerRepaint,
     resize,
