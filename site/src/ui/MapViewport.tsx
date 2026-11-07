@@ -24,10 +24,14 @@ import { AudibleInspectionOverlay } from "./AudibleInspectionOverlay";
 import type { VisibleBand, VisibleBandId } from "../domain/visible";
 import type { VisibleInspectionGeometry } from "../rendering/overlays/visibleInspection";
 import { VisibleInspectionOverlay } from "./VisibleInspectionOverlay";
+import { EyeIcon } from "./ControlIcons";
 
 /** UI inputs and semantic callbacks; no MapLibre object crosses this boundary. */
 interface MapViewportProps {
   readonly children?: ReactNode;
+  readonly mapTone: "day" | "night";
+  readonly panelsVisible: boolean;
+  readonly onSetPanelsVisible: (visible: boolean) => void;
   readonly cameraRequest: ScenarioCameraRequest | null;
   readonly launch: Pick<SimulatorState, "phase" | "launch" | "elapsedMs" | "multiLaunch" | "activeZoneId" | "pinnedZoneId" | "effectView" | "activeFalloutId" | "pinnedFalloutId" | "activeAudibleId" | "pinnedAudibleId" | "activeVisibleId" | "pinnedVisibleId">;
   readonly frames: readonly LaunchFrame[];
@@ -62,7 +66,7 @@ interface MapViewportProps {
 
 /** Full-viewport map mount that places controls above imagery and map feedback. */
 export function MapViewport({
-  children, cameraRequest, launch, frames, onLaunch, prepareLaunch, launchAngle,
+  children, mapTone, panelsVisible, onSetPanelsVisible, cameraRequest, launch, frames, onLaunch, prepareLaunch, launchAngle,
   cancelPendingVersion, onPendingChange, onHoverZone, onFocusZone, onPinZone,
   onClearZoneInspection, falloutEligible, falloutLegendZones, onSelectEffectView,
   onHoverFallout, onFocusFallout, onPinFallout, onClearFallout,
@@ -75,6 +79,8 @@ export function MapViewport({
   const fireballCanvasRef = useRef<HTMLCanvasElement>(null);
   const inspectionCanvasRef = useRef<HTMLCanvasElement>(null);
   const controllerRef = useRef<SatelliteMapController | null>(null);
+  const restoreButtonRef = useRef<HTMLButtonElement>(null);
+  const previousPanelsVisible = useRef(panelsVisible);
   const onLaunchRef = useRef(onLaunch);
   onLaunchRef.current = onLaunch;
   const prepareLaunchRef = useRef(prepareLaunch);
@@ -135,6 +141,16 @@ export function MapViewport({
     if (cameraRequest) controllerRef.current?.focusScenario(cameraRequest);
   }, [cameraRequest]);
 
+  useEffect(() => { controllerRef.current?.setMapTone(mapTone); }, [mapTone]);
+
+  useEffect(() => {
+    controllerRef.current?.setPanelsVisible(panelsVisible);
+    if (previousPanelsVisible.current === panelsVisible) return;
+    previousPanelsVisible.current = panelsVisible;
+    if (panelsVisible) containerRef.current?.parentElement?.querySelector<HTMLButtonElement>(".panel-visibility")?.focus();
+    else restoreButtonRef.current?.focus();
+  }, [panelsVisible]);
+
   useEffect(() => {
     controllerRef.current?.cancelPendingLaunch();
   }, [cancelPendingVersion]);
@@ -154,9 +170,11 @@ export function MapViewport({
 
   return (
     <main
-      className="simulator"
+      className={`simulator mode-${mapTone}${panelsVisible ? "" : " panels-hidden"}`}
       aria-label="Satellite map for Nuke Simulator"
       data-map-state={loadState}
+      data-map-tone={mapTone}
+      data-panels-visible={panelsVisible}
       data-center-longitude={camera.longitude.toFixed(6)}
       data-center-latitude={camera.latitude.toFixed(6)}
       data-zoom={camera.zoom.toFixed(3)}
@@ -216,6 +234,7 @@ export function MapViewport({
           : "IDEALIZED RADIAL SCALING · HYPOTHETICAL EXTREMES ARE ILLUSTRATIVE"}
       </p>
       {children}
+      {!panelsVisible && <button ref={restoreButtonRef} className="panel-restore" type="button" onClick={() => onSetPanelsVisible(true)} aria-label="Show control and cloud panels"><EyeIcon /> SHOW CONTROLS</button>}
       {loadState === "loading" && (
         <div className="map-message" role="status">Loading satellite map…</div>
       )}

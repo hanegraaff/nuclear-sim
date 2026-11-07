@@ -16,6 +16,7 @@ function fakeMap() {
   const refreshTiles = vi.fn();
   const setStyle = vi.fn();
   const setPadding = vi.fn();
+  const setPaintProperty = vi.fn();
   const remove = vi.fn();
   const stop = vi.fn();
   const easeTo = vi.fn();
@@ -39,6 +40,7 @@ function fakeMap() {
       unproject: ([x, y]: [number, number]) => ({ lng: (x - 1200) / 10, lat: (800 - y) / 10 }),
       getContainer: () => ({ clientWidth: viewportWidth, clientHeight: 740 }),
       setPadding,
+      setPaintProperty,
       isSourceLoaded: () => sourceLoaded,
       refreshTiles,
       setStyle,
@@ -54,6 +56,7 @@ function fakeMap() {
     refreshTiles,
     setStyle,
     setPadding,
+    setPaintProperty,
     remove,
     stop,
     easeTo,
@@ -62,6 +65,39 @@ function fakeMap() {
 }
 
 describe("satellite map controller", () => {
+  it("changes only satellite raster paint for Night and restores exact day values after a delayed load", () => {
+    const runtime = fakeMap();
+    const cameraChanges = vi.fn();
+    const controller = new SatelliteMapController(runtime.map, { onStateChange: () => {}, onCameraChange: cameraChanges });
+    controller.setMapTone("night");
+    expect(runtime.setPaintProperty).not.toHaveBeenCalled(); // MapLibre style is not ready yet.
+    runtime.emit("load");
+    expect(runtime.setPaintProperty.mock.calls).toEqual([
+      ["satellite", "raster-saturation", -1], ["satellite", "raster-contrast", 0.34],
+      ["satellite", "raster-brightness-min", 0.02], ["satellite", "raster-brightness-max", 0.48],
+    ]);
+    controller.setMapTone("day");
+    expect(runtime.setPaintProperty.mock.calls.slice(-4)).toEqual([
+      ["satellite", "raster-saturation", -0.22], ["satellite", "raster-contrast", 0.08],
+      ["satellite", "raster-brightness-min", 0.08], ["satellite", "raster-brightness-max", 0.92],
+    ]);
+    expect(runtime.easeTo).not.toHaveBeenCalled();
+    expect(runtime.setStyle).not.toHaveBeenCalled();
+    expect(cameraChanges).toHaveBeenCalled();
+    controller.dispose();
+  });
+
+  it("removes and restores panel camera padding without reframing the strike", () => {
+    const runtime = fakeMap();
+    const controller = new SatelliteMapController(runtime.map, { onStateChange: () => {}, onCameraChange: () => {} });
+    controller.setPanelsVisible(false);
+    expect(runtime.setPadding).toHaveBeenLastCalledWith({ top: 0, right: 0, bottom: 0, left: 0 });
+    controller.setPanelsVisible(true);
+    expect(runtime.setPadding).toHaveBeenLastCalledWith({ top: 0, right: 0, bottom: 0, left: 380 });
+    expect(runtime.easeTo).not.toHaveBeenCalled();
+    controller.dispose();
+  });
+
   it("paints an Audible preview before starting its first camera ease", () => {
     const runtime = fakeMap();
     const render = vi.fn().mockReturnValue(null);

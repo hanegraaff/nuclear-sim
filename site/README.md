@@ -18,6 +18,8 @@ Audible uses a separate bounded radius for each impact and a continuous dark-gre
 
 The cloud monitor follows the latest group's first ignited warhead through growth and modeled peak. Nuclear and conventional silhouettes differ; MIRV wording identifies the per-warhead scale. All displayed distances and heights are illustrative estimates. See [model notes](docs/model.md) and [visual reference](docs/visual-reference.md).
 
+The header's Night button changes the satellite raster's saturation, contrast, and brightness and adds a dark vignette. It leaves the modeled effect fields, marker locations, camera, and Esri attribution intact. Hide slides the left controls and cloud monitor offscreen and exposes a keyboard-focusable Show Controls button. The effect selector stays on the map. Hiding removes the desktop left or narrow-screen top camera padding, then the controller repaints fields and markers through the updated projection; restoring the panels reverses that padding. Launch and inspection state, device choice, effect view, and map tone persist across the toggle. Reset clears strikes but retains the map tone and panel visibility.
+
 ## Source boundaries
 
 | Area | Responsibility |

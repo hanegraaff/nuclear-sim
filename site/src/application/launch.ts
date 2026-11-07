@@ -67,6 +67,8 @@ export interface LaunchFrame {
 /** Current phase, immutable launch groups, and latest-delivery compatibility view. */
 export interface SimulatorState extends ScenarioSelectionState {
   readonly phase: "armed" | "inbound" | "detonating" | "complete";
+  readonly mapTone: "day" | "night";
+  readonly panelsVisible: boolean;
   readonly multiLaunch: boolean;
   readonly pendingLaunch: boolean;
   readonly effectView: "blast" | "fallout" | "audible" | "visible";
@@ -95,6 +97,8 @@ export interface SimulatorState extends ScenarioSelectionState {
 
 /** Semantic state changes. A tick uses injected monotonic milliseconds. */
 export type SimulatorAction = ScenarioSelectionAction
+  | { readonly type: "setMapTone"; readonly tone: "day" | "night" }
+  | { readonly type: "setPanelsVisible"; readonly visible: boolean }
   | { readonly type: "launchAt"; readonly route: FlightRoute; readonly deviceId: string; readonly yieldMt: number; readonly nowMs: number; readonly flightMs?: number }
   | { readonly type: "tick"; readonly nowMs: number; readonly launchId: number }
   | { readonly type: "setMultiLaunch"; readonly enabled: boolean }
@@ -122,6 +126,8 @@ export type SimulatorAction = ScenarioSelectionAction
 export const INITIAL_SIMULATOR_STATE: SimulatorState = {
   ...INITIAL_SCENARIO_SELECTION,
   phase: "armed",
+  mapTone: "day",
+  panelsVisible: true,
   multiLaunch: false,
   pendingLaunch: false,
   effectView: "blast",
@@ -150,6 +156,8 @@ export const INITIAL_SIMULATOR_STATE: SimulatorState = {
 
 /** Pure launch and selection transitions; stale ticks cannot advance a replacement flight. */
 export function reduceSimulator(state: SimulatorState, action: SimulatorAction): SimulatorState {
+  if (action.type === "setMapTone") return state.mapTone === action.tone ? state : { ...state, mapTone: action.tone };
+  if (action.type === "setPanelsVisible") return state.panelsVisible === action.visible ? state : { ...state, panelsVisible: action.visible };
   if (action.type === "launchAt") {
     if (!Number.isFinite(action.nowMs) || !Number.isFinite(action.yieldMt) || action.yieldMt <= 0) return state;
     const flightMs = action.flightMs ?? FLIGHT_MS;
