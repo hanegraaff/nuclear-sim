@@ -11,7 +11,7 @@ This is the working plan for rebuilding the read-only prototype as a maintainabl
 - **Delivery:** Plan 01 creates and publishes a private Site. Later plans update that same Site and preserve its audience. GitHub is the source of truth; [Sites publishing](docs/sites-publishing.md) uses a temporary release checkout from a pushed GitHub commit. The Site URL is the user-facing way to review progress. Local execution remains available for development and automated tests only.
 - **Decisioning:** a dependency on an earlier plan is not a design blocker. If a real decision emerges, write the options, the recommended choice, the owner, and the effect on later plans under the plan's “Blocking decisioning” field. Continue work that does not depend on that decision.
 
-The roadmap is current as of **2026-11-06**. Plans 01–14 are published to the same private Site. The prototype directories remain read only.
+The roadmap is current as of **2026-11-06**. Plans 01–15 are published to the same private Site. The prototype directories remain read only.
 
 | Plan | Visible increment | Status | Depends on |
 | --- | --- | --- | --- |
@@ -29,8 +29,8 @@ The roadmap is current as of **2026-11-06**. Plans 01–14 are published to the 
 | 12 | Fallout view | Complete | 11 |
 | 13 | Audible view | Complete | 12 |
 | 14 | Visible view | Complete | 13 |
-| 15 | Night map and hide/show controls | In progress | 14 |
-| 16 | Narrow-screen layout | Not started | 15 |
+| 15 | Night map and hide/show controls | Complete | 14 |
+| 16 | Narrow-screen layout | Ready | 15 |
 | 17 | Reduced motion and final review | Not started | 16 |
 
 ## Plan 01 — Published satellite map
@@ -249,7 +249,7 @@ The roadmap is current as of **2026-11-06**. Plans 01–14 are published to the 
 
 **Completion evidence.** State/browser tests pass; capture day/night and shown/hidden states at the same camera and strike.
 
-**Current status.** In progress on branch `plan-15` from 2026-11-06; Plan 14 is complete.
+**Current status.** Complete on 2026-11-06 from branch `plan-15`. Owner-private [Site version 31](https://nuke-simulator-rebuild.maquaman.chatgpt.site) is deployed from GitHub application commit `897bf9b584db746fe566adbbb652f0fc1553ab1a` and Sites source commit `727279a2ea04e7b1f9e16a8bdbfa3c1cab0939a2`; the exact `site/` tree is `5c436ff17dbb98cea0ff24cb101b44ed01171dfa`. Clean-release `npm run verify` passed type checking, lint, build, 212 unit tests, 74 integration tests, and 67 browser tests. Operated background Chrome confirmed day/night tone, Hide/Show, keyboard focus, unchanged strikes and tabs, live map interaction, pan/zoom/bearing, 60° pitch, Reset, and narrow hidden launch. Authenticated hosted Chrome returned HTTP 200 with live Esri imagery and attribution, completed a Night strike with panels hidden, restored both panels, and reported no page errors; the [hosted night capture](docs/plan-15-hosted-v31.png) and [fixed-tile comparisons](site/docs/visual-reference.md) record the visual state. The first release gate exposed an older fake-map method omission, and two older screenshots required inspected baseline updates for the new header; the final gate passed.
 
 **Blocking decisioning.** None. Keep the prototype's night treatment and ensure text contrast remains usable.
 
@@ -301,6 +301,6 @@ Fill this table as plans finish. Record the deployed version and stable Site URL
 | 12 | 2026-11-05 | [Version 25](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 195 unit, 49 integration, 49 browser tests, type checking, lint, build; [hosted multi capture](docs/plan-12-hosted-multi-v25.png); GitHub source `8d86b72290810733eb024138408dbb7b54de515f`, Sites source `7a50ac58bc30c36830cbd94f28f3ae7002f111dd`; PR findings and performance corrections verified | Pitched plume remains slimmer; extreme zoom exposes coarse cached contours; live imagery and exact reference DPR differ. |
 | 13 | 2026-11-06 | [Version 29](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 203 unit, 65 integration, 59 browser tests, type checking, lint, build; operated background Chrome first-entry, pan/zoom, dense, and pitched rechecks; authenticated hosted Chrome single, pan, and two-strike path with no page errors; GitHub source `3643ce90bbac52865adaa7ef20144d075137d29e`, Sites source `b15ea1836e339edfefdd100d51202cb7158725fc` | Fixed tiles, live imagery, and camera composition differ from the pitched ten-strike prototype reference; decibel bands are illustrative estimates. |
 | 14 | 2026-11-06 | [Version 30](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 210 unit, 72 integration, 64 browser tests, type checking, lint, build; operated background Chrome first-entry, pitched-pan, multi, and narrow checks; authenticated hosted Chrome single, pan, and two-strike Visible check with no page errors; GitHub source `cd740281852fe58cfbfcba4a480b319006c356fc`, Sites source `8a6c2ff592a38fca9c153657a7d628e583d65160` | Prototype faint contour rings are absent; live imagery and initial pitch differ from the fixed-tile comparison. |
-| 15 | — | — | — | — |
+| 15 | 2026-11-06 | [Version 31](https://nuke-simulator-rebuild.maquaman.chatgpt.site) (private) | Clean-release `npm run verify`: 212 unit, 74 integration, 67 browser tests, type checking, lint, build; [hosted night capture](docs/plan-15-hosted-v31.png); operated background Chrome and authenticated hosted Chrome with no page errors; GitHub source `897bf9b584db746fe566adbbb652f0fc1553ab1a`, Sites source `727279a2ea04e7b1f9e16a8bdbfa3c1cab0939a2` | No dedicated prototype Night/hidden still; live imagery and camera differ from fixed-tile captures. Narrow restored controls remain crowded at 390 px, assigned to Plan 16. |
 | 16 | — | — | — | — |
 | 17 | — | — | — | — |
