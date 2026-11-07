@@ -48,3 +48,5 @@ The phone layout has no dedicated prototype screenshot. At widths of 600 CSS pix
 The existing pitched Fallout and narrow MIRV overlay baselines were refreshed after inspecting their diffs against the prototype references. The header changed intentionally for Night and Hide; the Fallout capture also shows thin contour raster differences, while its footprint, markers, ruler, and camera remain the same. Both focused browser tests passed after the refresh.
 
 `Audible.png` shows a **Blast** tab selected, despite its filename. The green Audible state is in `Additive Blasts.png`.
+
+The Plan 10 five-strike fixed-tile baseline was reinspected against `Multi-Launch.png` during Plan 17. Its field and five fireballs remain unchanged; the refreshed image includes the later Night/Hide controls and all four effect tabs, plus the accessible multi-launch completion wording. The prototype uses live imagery and a pitched camera, while this regression frame uses fixed tiles and an overhead camera.

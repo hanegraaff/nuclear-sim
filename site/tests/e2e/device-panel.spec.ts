@@ -23,7 +23,7 @@ test("the complete grouped catalog selects a device and survives map interaction
   await expect(selector).toHaveValue("fat-man");
   await expect(panel.getByRole("status")).toContainText("Fat Man · 21 kt");
   await expect(selector.locator("optgroup")).toHaveCount(4);
-  await expect(selector.locator("option")).toHaveCount(48);
+  await expect(selector.locator("option")).toHaveCount(53);
   expect(await selector.locator("optgroup").evaluateAll((groups) => groups.map((group) => (group as HTMLOptGroupElement).label))).toEqual([
     "Conventional weapons", "Nuclear devices", "MIRV delivery systems", "Hypothetical scale studies",
   ]);
