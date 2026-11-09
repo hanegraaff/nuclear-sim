@@ -33,7 +33,7 @@ The nine supplied image references are in `prototype-screenshots/` (there is no 
 
 ## Catalog parity
 
-Preserve the prototype's labels and ordering except for the approved ascending conventional order below. Store IDs, display yields, numeric yields, and scenario coordinates in typed catalog data, with tests for every entry. The data in `prototype-code/app/page.tsx` is the reference for exact numeric values and coordinates. The conventional reorder and R-15–R-18 are approved additions scheduled for Plan 18; they are not yet shipped in Site version 34.
+Preserve the prototype's labels and ordering except for the approved ascending conventional order below. Store IDs, display yields, numeric yields, and scenario coordinates in typed catalog data, with tests for every entry. The data in `prototype-code/app/page.tsx` is the reference for exact numeric values and coordinates. The conventional reorder and R-15–R-18 are approved additions delivered by Plan 18 in Site version 35.
 
 | Group | Items, in required selector order |
 | --- | --- |
