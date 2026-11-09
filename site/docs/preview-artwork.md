@@ -1,0 +1,23 @@
+# Preview artwork and event descriptions
+
+The desktop scenario preview pairs an AI-generated illustration with a short, researched event description. The twenty images are newly generated artistic scenes, not historical photographs or calibrated predictions. The panel labels them **AI-generated illustration**. Historical prose describes the actual event; hypothetical prose uses conditional language. The [catalog research ledger](catalog-research.md) records the sources and qualifications for each description and the exterior device outlines.
+
+## Generation and provenance
+
+All twenty images were generated on 2026-11-08 with the built-in `image_gen` tool, one call per scenario. No CLI fallback, external stock imagery, or runtime generation is used. The Hiroshima illustration established the style reference; the other nineteen calls used that generated image solely for tone, grain, contrast, and photographic treatment while replacing the setting. All inputs were newly authored prompts and that generated style reference. The exact prompt set, output mapping, generation method, and original output filenames are retained in [scenario-artwork-prompts.json](scenario-artwork-prompts.json).
+
+The common brief is red-and-black photographic duotone with ominous documentary lighting, deep charcoal shadows, crimson midtones, hot pale-red highlights, film grain, atmospheric haze, a readable landscape or planetary horizon, and an immense blast integrated into the setting. Typography, borders, logos, and collage were excluded. Device outlines are authored SVG line drawings from cited public exterior references, rather than generated weapon schematics or copied source photographs.
+
+## Scene direction and review
+
+The historical scenes use period surroundings: river-delta Hiroshima, the Urakami valley and harbor setting of Nagasaki, New Mexico desert at Trinity, an earth-and-dust eruption at Sedan, coral atolls for the Pacific tests, snowy Arctic terrain for Tsar Bomba, Kazakh steppe for RDS-1, and Sahara desert for Gerboise Bleue. The hypothetical Manhattan and Tokyo scenes use modern skylines. Continent and global studies use increasingly distant views so the visible setting remains meaningful. Point Nemo remains open ocean.
+
+Every full-size output and the [complete contact sheet](scenario-artwork-contact.webp) were visually inspected for consistent color treatment, legible subject, distinct location character, and absence of in-image labels. The contact sheet is documentation only and is not loaded by the application. The illustrations intentionally exaggerate the blast for the requested dramatic presentation. Cloud size, stage, lighting, exact landmark layout, geography, and historical built details are artistic approximations; they must not be read as an archival reconstruction or as the simulator's physical output. Regional and planet-scale scenes are especially conceptual.
+
+The event descriptions retain a dark, ominous, sober voice while separating fact from speculation. They are static reviewed prose, not generated on selection. The text remains readable if an image is pending or fails, and both image and prose disappear immediately when the dropdown loses focus or closes.
+
+## Shipped assets and performance
+
+The application uses `public/media/scenarios/{scenario-id}.webp`, with a distinct asset for each of the twenty catalog scenario IDs. Generated originals were resized to **1200 × 800 pixels** with Lanczos resampling and encoded as WebP, quality 78, method 6. Original generated files remain outside the application; the complete consuming asset set is committed in this repository. The shipped twenty-image set totals **1,929,824 bytes**, with a largest file of **136,034 bytes**, below the 300 KiB per-image and 8 MiB total artwork budgets when combined with the compact SVG outlines.
+
+Only the actively browsed candidate requests its artwork. Dossier/text modules are loaded on demand; the closed initial picker and ineligible mobile layouts load no preview content or images. The application-owned decoded-image cache is bounded, and late image completion cannot restore a panel dismissed by dropdown blur. Browser checks and the performance evidence document request timing, responsiveness, and the size of the initial application bundle separately from this static asset inventory.

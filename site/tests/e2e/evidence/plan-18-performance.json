@@ -1,0 +1,398 @@
+{
+  "browser": "pinned Playwright Chromium",
+  "viewport": {
+    "width": 2208,
+    "height": 1276
+  },
+  "baselineInitialGzipBytes": 399142,
+  "initialGzipBytes": 401449,
+  "initialGzipDeltaBytes": 2307,
+  "artworkTotalBytes": 1973033,
+  "artwork": [
+    {
+      "folder": "devices",
+      "bytes": 810
+    },
+    {
+      "folder": "devices",
+      "bytes": 948
+    },
+    {
+      "folder": "devices",
+      "bytes": 1018
+    },
+    {
+      "folder": "devices",
+      "bytes": 1087
+    },
+    {
+      "folder": "devices",
+      "bytes": 959
+    },
+    {
+      "folder": "devices",
+      "bytes": 750
+    },
+    {
+      "folder": "devices",
+      "bytes": 921
+    },
+    {
+      "folder": "devices",
+      "bytes": 957
+    },
+    {
+      "folder": "devices",
+      "bytes": 752
+    },
+    {
+      "folder": "devices",
+      "bytes": 772
+    },
+    {
+      "folder": "devices",
+      "bytes": 770
+    },
+    {
+      "folder": "devices",
+      "bytes": 946
+    },
+    {
+      "folder": "devices",
+      "bytes": 788
+    },
+    {
+      "folder": "devices",
+      "bytes": 1031
+    },
+    {
+      "folder": "devices",
+      "bytes": 736
+    },
+    {
+      "folder": "devices",
+      "bytes": 748
+    },
+    {
+      "folder": "devices",
+      "bytes": 792
+    },
+    {
+      "folder": "devices",
+      "bytes": 772
+    },
+    {
+      "folder": "devices",
+      "bytes": 581
+    },
+    {
+      "folder": "devices",
+      "bytes": 658
+    },
+    {
+      "folder": "devices",
+      "bytes": 762
+    },
+    {
+      "folder": "devices",
+      "bytes": 762
+    },
+    {
+      "folder": "devices",
+      "bytes": 948
+    },
+    {
+      "folder": "devices",
+      "bytes": 934
+    },
+    {
+      "folder": "devices",
+      "bytes": 770
+    },
+    {
+      "folder": "devices",
+      "bytes": 954
+    },
+    {
+      "folder": "devices",
+      "bytes": 924
+    },
+    {
+      "folder": "devices",
+      "bytes": 924
+    },
+    {
+      "folder": "devices",
+      "bytes": 922
+    },
+    {
+      "folder": "devices",
+      "bytes": 972
+    },
+    {
+      "folder": "devices",
+      "bytes": 1375
+    },
+    {
+      "folder": "devices",
+      "bytes": 721
+    },
+    {
+      "folder": "devices",
+      "bytes": 934
+    },
+    {
+      "folder": "devices",
+      "bytes": 798
+    },
+    {
+      "folder": "devices",
+      "bytes": 878
+    },
+    {
+      "folder": "devices",
+      "bytes": 760
+    },
+    {
+      "folder": "devices",
+      "bytes": 863
+    },
+    {
+      "folder": "devices",
+      "bytes": 867
+    },
+    {
+      "folder": "devices",
+      "bytes": 864
+    },
+    {
+      "folder": "devices",
+      "bytes": 724
+    },
+    {
+      "folder": "devices",
+      "bytes": 633
+    },
+    {
+      "folder": "devices",
+      "bytes": 654
+    },
+    {
+      "folder": "devices",
+      "bytes": 1032
+    },
+    {
+      "folder": "devices",
+      "bytes": 934
+    },
+    {
+      "folder": "devices",
+      "bytes": 636
+    },
+    {
+      "folder": "devices",
+      "bytes": 763
+    },
+    {
+      "folder": "devices",
+      "bytes": 663
+    },
+    {
+      "folder": "devices",
+      "bytes": 636
+    },
+    {
+      "folder": "devices",
+      "bytes": 641
+    },
+    {
+      "folder": "devices",
+      "bytes": 717
+    },
+    {
+      "folder": "devices",
+      "bytes": 725
+    },
+    {
+      "folder": "devices",
+      "bytes": 723
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 136034
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 115216
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 96534
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 69846
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 77222
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 115454
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 120104
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 105070
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 86106
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 81710
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 89642
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 112522
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 80292
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 84206
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 86138
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 80388
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 117064
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 79420
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 93788
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 103068
+    }
+  ],
+  "candidateSamplesMs": [
+    4.299999997019768,
+    12,
+    12.099999994039536,
+    12.099999994039536,
+    13.100000008940697,
+    14.799999997019768,
+    15,
+    15.200000002980232,
+    15.299999997019768,
+    15.5,
+    15.799999997019768,
+    15.900000005960464,
+    15.900000005960464,
+    15.900000005960464,
+    16,
+    16,
+    16.299999997019768,
+    16.399999991059303,
+    18.900000005960464,
+    23.900000005960464
+  ],
+  "candidateP95Ms": 18.900000005960464,
+  "previewLongTasksMs": [],
+  "launchWithPickerClosedFrameIntervalsMs": [
+    33.19999999999982,
+    16.800000000000182,
+    33.19999999999982,
+    16.800000000000182,
+    33.30000000000018,
+    16.59999999999991,
+    33.29999999999973,
+    33.40000000000009,
+    16.700000000000273,
+    33.19999999999982,
+    16.699999999999818,
+    33.40000000000009,
+    16.700000000000273,
+    33.19999999999982,
+    16.699999999999818,
+    33.40000000000009,
+    33.30000000000018,
+    16.699999999999818,
+    33.30000000000018,
+    16.699999999999818,
+    33.30000000000018,
+    16.59999999999991,
+    33.40000000000009,
+    16.59999999999991,
+    33.399999999999636,
+    16.600000000000364,
+    33.399999999999636,
+    33.30000000000018,
+    16.699999999999818,
+    33.30000000000018,
+    16.699999999999818,
+    33.30000000000018,
+    33.30000000000018,
+    16.699999999999818,
+    33.400000000000546,
+    16.599999999999454,
+    33.400000000000546,
+    33.19999999999982,
+    16.699999999999818,
+    33.30000000000018,
+    16.800000000000182,
+    33.19999999999982,
+    16.699999999999818,
+    33.399999999999636,
+    16.700000000000728,
+    33.19999999999982,
+    33.399999999999636,
+    16.600000000000364,
+    33.399999999999636,
+    16.699999999999818,
+    33.30000000000018,
+    16.600000000000364,
+    33.399999999999636,
+    16.600000000000364,
+    33.399999999999636,
+    33.30000000000018,
+    16.699999999999818,
+    33.30000000000018,
+    16.699999999999818,
+    33.400000000000546
+  ],
+  "cacheBounds": {
+    "images": 2,
+    "decodedBytes": 16777216,
+    "verification": "tests/integration/preview-image-cache.test.ts"
+  },
+  "host": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "pythonHostInspector": "stdlib platform"
+  },
+  "measurementNotes": "Pinned Playwright Chromium, deterministic local satellite tile fixture, 2208\u00d71276 CSS pixels, DPR1. Candidate timing covers 20 warm DOM keydown transitions. Long-task observation is scoped to those preview changes. Closed-picker launch frame intervals are descriptive rather than a measured improvement over Plan17. Cache bounds are independently exercised by focused integration tests. Frame intervals use consecutive requestAnimationFrame timestamps exclusively, with60 finite nonnegative deltas asserted."
+}

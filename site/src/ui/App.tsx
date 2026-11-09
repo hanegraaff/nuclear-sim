@@ -93,6 +93,7 @@ export function App({ clock = browserClock }: { readonly clock?: AnimationClock 
         multiLaunch={state.multiLaunch}
         totalCount={frames.length}
         pendingLaunch={state.pendingLaunch}
+        resetVersion={cancelPendingVersion}
         onReset={reset}
         onSetMapTone={setMapTone}
         onSetPanelsVisible={setPanelsVisible}
