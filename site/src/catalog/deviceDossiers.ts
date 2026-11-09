@@ -24,7 +24,8 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://www.govinfo.gov/content/pkg/FR-2018-02-08/pdf/2018-02511.pdf"
-      ]
+      ],
+      "label": "EXPLOSIVE FILL"
     },
     "created": {
       "value": "1950s — design family",
@@ -85,7 +86,8 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "sources": [
         "https://missilethreat.csis.org/missile/jassm/",
         "https://www.govinfo.gov/content/pkg/FR-2018-02-08/pdf/2018-02511.pdf"
-      ]
+      ],
+      "label": "WARHEAD / FILL MASS"
     },
     "created": {
       "value": "2003 — initial service",
@@ -95,10 +97,10 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "retired": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "JASSM family in service; no date announced",
+      "confidence": "sourced",
       "sources": [
-        "https://www.lockheedmartin.com/content/dam/lockheed-martin/mfc/pc/jassm/22-14207-ADSW_JASSM_Product%20Card%20Updates.pdf"
+        "https://www.lockheedmartin.com/en-us/products/jassm/jassm-media-kit.html"
       ]
     },
     "country": {
@@ -143,7 +145,8 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://www.govinfo.gov/content/pkg/FR-2018-02-08/pdf/2018-02511.pdf"
-      ]
+      ],
+      "label": "LISTED EXPLOSIVE LOAD"
     },
     "created": {
       "value": "2000s — Enhanced Paveway II introduction",
@@ -153,10 +156,10 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "retired": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "In service; no retirement announced",
+      "confidence": "sourced",
       "sources": [
-        "https://www.airandspaceforces.com/weapons/gbu-10-12-49-paveway-ii/"
+        "https://www.regeringen.se/contentassets/3416d1df56ae4fcaacf03ecd8ed81ab1/budgetpropositonen-for-2026-prop.-2025261-hela-dokumentet.pdf"
       ]
     },
     "country": {
@@ -201,7 +204,8 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://studylib.net/doc/25992101/weapons-file-2003-2004"
-      ]
+      ],
+      "label": "EXPLOSIVE FILL"
     },
     "created": {
       "value": "1950s — design family",
@@ -259,7 +263,8 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://www.govinfo.gov/content/pkg/FR-2018-02-08/pdf/2018-02511.pdf"
-      ]
+      ],
+      "label": "EXPLOSIVE FILL"
     },
     "created": {
       "value": "1950s — design family",
@@ -317,7 +322,8 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://afarmamentmuseum.com/artifact/gbu43/"
-      ]
+      ],
+      "label": "EXPLOSIVE FILL"
     },
     "created": {
       "value": "2003-03-11 — first live test",
@@ -327,10 +333,10 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "retired": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Listed in 2026 inventory; no date announced",
+      "confidence": "sourced",
       "sources": [
-        "https://afarmamentmuseum.com/artifact/gbu43/"
+        "https://www.airandspaceforces.com/app/uploads/2026/06/Almanac2026_Weapons-Platforms-1.pdf"
       ]
     },
     "country": {
@@ -362,18 +368,21 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "totalMass": {
-      "value": "Unknown — not established in public sources",
+      "value": "Not established — gross/fill reports conflict",
       "confidence": "unknown",
       "sources": [
-        "https://www.guinnessworldrecords.com/world-records/77533-largest-non-nuclear-conventional-weapon-in-existence"
-      ]
+        "https://euro-sd.com/2024/06/articles/39038/thermobaric-weapons-on-the-battlefield/",
+        "https://vpk.name/en/612321_missiles-alone-are-not-enough-now-the-time-of-superbombs-and-superbombs-is-coming-back.html"
+      ],
+      "label": "COMPLETE MUNITION MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "7,100 kg claimed explosive load",
+      "confidence": "reported",
       "sources": [
-        "https://www.guinnessworldrecords.com/world-records/77533-largest-non-nuclear-conventional-weapon-in-existence"
-      ]
+        "https://vpk.name/en/612321_missiles-alone-are-not-enough-now-the-time-of-superbombs-and-superbombs-is-coming-back.html"
+      ],
+      "label": "REPORTED EXPLOSIVE LOAD"
     },
     "created": {
       "value": "2007-09-11 — reported test",
@@ -383,10 +392,10 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "retired": {
-      "value": "Operational / retirement status unconfirmed",
-      "confidence": "unknown",
+      "value": "Test demonstrator; service unconfirmed",
+      "confidence": "reported",
       "sources": [
-        "https://www.guinnessworldrecords.com/world-records/77533-largest-non-nuclear-conventional-weapon-in-existence"
+        "https://euro-sd.com/2024/06/articles/39038/thermobaric-weapons-on-the-battlefield/"
       ]
     },
     "country": {
@@ -405,44 +414,49 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
         "https://www.guinnessworldrecords.com/world-records/77533-largest-non-nuclear-conventional-weapon-in-existence"
       ]
     },
-    "notes": "The reported 44 t yield is a Russian claim, not independently verified here. No defensible public dimensions or all-up mass were found. Outline is a documentary-style external envelope only; it has no calibrated physical scale."
+    "notes": "The 7,100 kg figure is explicitly explosive mass in some public reports and is called bomb weight in others. It is therefore shown only as a reported explosive-load claim; complete munition mass remains unestablished. Yield and operational status are also reported claims. No defensible public overall length was established. The documentary exterior envelope has no calibrated scale."
   },
   "w54": {
     "id": "w54",
-    "entityLabel": "W54 / Mk 54 Davy Crockett warhead body",
+    "entityLabel": "M388 Davy Crockett projectile / W54 warhead",
     "length": {
-      "value": "0.447 m",
+      "value": "0.787 m",
       "confidence": "sourced",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+        "https://armyhistory.org/the-m28m29-davy-crockett-nuclear-weapon-system/"
+      ],
+      "label": "PROJECTILE LENGTH"
     },
     "totalMass": {
-      "value": "23–25 kg",
+      "value": "34.5 kg",
       "confidence": "sourced",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+        "https://armyhistory.org/the-m28m29-davy-crockett-nuclear-weapon-system/"
+      ],
+      "label": "PROJECTILE MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
-      "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
-    },
-    "created": {
-      "value": "1961 — production",
+      "value": "23.1 kg W54 warhead",
       "confidence": "sourced",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
+        "https://armyhistory.org/the-m28m29-davy-crockett-nuclear-weapon-system/"
+      ],
+      "label": "WARHEAD MASS"
+    },
+    "created": {
+      "value": "1961-05 — entered service",
+      "confidence": "sourced",
+      "sources": [
+        "https://armyhistory.org/the-m28m29-davy-crockett-nuclear-weapon-system/",
+        "https://home.army.mil/hawaii/4615/5961/0076/Info_Booklet.pdf"
       ]
     },
     "retired": {
-      "value": "1971 — last Davy Crockett variants",
+      "value": "1971 — retired",
       "confidence": "sourced",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
+        "https://www.thenmusa.org/curators-corner/",
+        "https://home.army.mil/hawaii/4615/5961/0076/Info_Booklet.pdf"
       ]
     },
     "country": {
@@ -458,10 +472,11 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "height": 320,
       "confidence": "estimated",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
+        "https://armyhistory.org/the-m28m29-davy-crockett-nuclear-weapon-system/",
+        "https://www.thenmusa.org/curators-corner/"
       ]
     },
-    "notes": "Bare warhead dimensions: 17.6 × 10.75 in and 50–55 lb. The M388 projectile, recoilless launcher and SADM package are different objects and are not included in this outline."
+    "notes": "The recognizable bulbous head, narrow spigot tail and four stabilizing fins depict the complete M388 round, not the bare W54 body or M28/M29 launcher. Army historical specifications give 31 in × 11 in and 76 lb complete; the 51 lb warhead is listed separately. A museum photograph caption incorrectly says 1956; the Army and museum history establish 1961–1971 service. The simulator retains its existing 20 t yield."
   },
   "w48": {
     "id": "w48",
@@ -478,14 +493,16 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "PROJECTILE MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1963 — production",
@@ -534,14 +551,16 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "COMPLETE PACKAGE MASS"
     },
     "payloadMass": {
       "value": "27 kg warhead body",
       "confidence": "sourced",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "WARHEAD MASS"
     },
     "created": {
       "value": "1964 — production",
@@ -593,12 +612,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://prologue.blogs.archives.gov/2020/08/06/little-boy-the-first-atomic-bomb/",
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+        "https://prologue.blogs.archives.gov/2020/08/06/little-boy-the-first-atomic-bomb/"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1945-08-06 — combat use",
@@ -653,12 +672,13 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://home.nps.gov/articles/000/the-gadget.htm",
         "https://www.energy.gov/lm/trinity-site-worlds-first-nuclear-explosion"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1945-07-16 — test",
@@ -712,13 +732,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://afarmamentmuseum.com/artifact/fatman/",
-        "https://wsmrmuseum.com/2024/01/31/special-mission-16-fat-man-and-the-atomic-bombing-of-nagasaki/amp/",
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+        "https://wsmrmuseum.com/2024/01/31/special-mission-16-fat-man-and-the-atomic-bombing-of-nagasaki/amp/"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1945-08-09 — combat use",
@@ -774,13 +793,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://www.vniief.ru/vniief/nuclear-center/museum/museum-of-nuclear-weapons/",
-        "https://elib.biblioatom.ru/text/muzey-yadernogo-oruzhiya-rfyats-vniief_2018/0000/02/",
-        "https://www.nuclearweaponarchive.org/~nuclearw/Russia/Sovwpnprog.html"
-      ]
+        "https://www.vniief.ru/vniief/nuclear-center/museum/museum-of-nuclear-weapons/"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1949-08-29 — first test",
@@ -836,13 +854,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://www.afnwc.af.mil/Weapon-Systems/B61-Gravity-Bomb/",
-        "https://www.airandspaceforces.com/weapons/b61/",
-        "https://www.energy.gov/nnsa/articles/nnsa-completes-b61-12-life-extension-program"
-      ]
+        "https://www.airandspaceforces.com/weapons/b61/"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "2021 — first production unit",
@@ -900,12 +917,13 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://www.assemblee-nationale.fr/rap-oecst/essais_nucleaires/i3571.asp",
         "https://www.cea.fr/multimedia/Documents/publications/ouvrages/LIVRE-Les-essais-nucleaires-en-Polynesie-francaise.pdf"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1960-02-13 — test",
@@ -945,29 +963,28 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
     "id": "w76",
     "entityLabel": "W76-1 / Mk 4A exterior assembly",
     "length": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
-      "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/W76.html",
-        "https://www.pantex.doe.gov/news/press-releases/nnsa-achieves-50-percent-production-w76-1-units",
-        "https://www.energy.gov/documents/doe-fy-2027-volume-1-nnsa-overview"
-      ]
-    },
-    "totalMass": {
-      "value": "164 kg — W76 family public estimate",
+      "value": "1.30 m Mk 4-family envelope",
       "confidence": "estimated",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/W76.html"
-      ]
+        "https://scienceandglobalsecurity.org/archive/sgs03gronlund.pdf"
+      ],
+      "label": "REENTRY BODY LENGTH"
+    },
+    "totalMass": {
+      "value": "90 kg Mk 4-family assembly",
+      "confidence": "estimated",
+      "sources": [
+        "https://scienceandglobalsecurity.org/archive/sgs03gronlund.pdf"
+      ],
+      "label": "REENTRY ASSEMBLY MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/W76.html",
-        "https://www.pantex.doe.gov/news/press-releases/nnsa-achieves-50-percent-production-w76-1-units",
-        "https://www.energy.gov/documents/doe-fy-2027-volume-1-nnsa-overview"
-      ]
+        "https://nuclearweaponarchive.org/Usa/Weapons/W76.html"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "2008-09 — first W76-1 unit",
@@ -998,12 +1015,11 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "height": 320,
       "confidence": "estimated",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/W76.html",
-        "https://www.pantex.doe.gov/news/press-releases/nnsa-achieves-50-percent-production-w76-1-units",
-        "https://www.energy.gov/documents/doe-fy-2027-volume-1-nnsa-overview"
+        "https://scienceandglobalsecurity.org/archive/sgs03gronlund.pdf",
+        "https://nuclearweaponarchive.org/Usa/Weapons/W76.html"
       ]
     },
-    "notes": "Public W76 sources do not establish length or diameter; the drawn Mk 4A reentry envelope is approximate and unscaled. Family mass is not a certified W76-1 complete reentry-vehicle mass. No hidden component dimensions are implied."
+    "notes": "The same public scholarly Mk 4 exterior model supplies both 1.3 m length, 0.40 m base diameter and 90 kg complete-RV mass. Using this family envelope for Mk 4A is an educated estimate, not a certified W76-1 bare-warhead specification. An older historical archive lists 164 kg with different scope; that figure is not substituted for the modeled assembly mass."
   },
   "sedan": {
     "id": "sedan",
@@ -1023,12 +1039,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Tests/Storax.html",
-        "https://nnss.gov/wp-content/uploads/2023/04/NNSS-SEDN-U-0047-Rev01-1.pdf"
-      ]
+        "https://nuclearweaponarchive.org/Usa/Tests/Storax.html"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1962-07-06 — test",
@@ -1083,16 +1099,18 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
         "https://nuclearweaponarchive.org/Usa/Weapons/W80.html",
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html",
         "https://www.energy.gov/documents/doe-fy-2027-volume-1-nnsa-overview"
-      ]
+      ],
+      "label": "WARHEAD MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/W80.html",
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html",
         "https://www.energy.gov/documents/doe-fy-2027-volume-1-nnsa-overview"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1981 — first production",
@@ -1130,7 +1148,7 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
         "https://www.energy.gov/documents/doe-fy-2027-volume-1-nnsa-overview"
       ]
     },
-    "notes": "Public bare-warhead envelope: 31.4 × 11.8 in, 290 lb. It is not the complete AGM-86 or Tomahawk missile. The catalog generic W80 choice is documented here using the W80-1 variant."
+    "notes": "Public bare-warhead envelope: 31.4 × 11.8 in, 290 lb. The approximate W80-family profile includes the public aft collar; Mod 0/1 installation fittings differ. This is not a complete AGM-86 or Tomahawk missile. The generic catalog choice uses W80-1 history."
   },
   "greenhouse-george": {
     "id": "greenhouse-george",
@@ -1150,11 +1168,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://www.deepspace.ucsb.edu/wp-content/uploads/2025/08/SA2VOLII.pdf"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1951-05-08 — test",
@@ -1196,21 +1215,24 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "estimated",
       "sources": [
         "https://www.nuclearweaponarchive.org/Usa/Weapons/W87.html"
-      ]
+      ],
+      "label": "REENTRY BODY LENGTH"
     },
     "totalMass": {
       "value": "Over 363 kg complete assembly",
       "confidence": "estimated",
       "sources": [
         "https://www.nuclearweaponarchive.org/Usa/Weapons/W87.html"
-      ]
+      ],
+      "label": "REENTRY ASSEMBLY MASS"
     },
     "payloadMass": {
       "value": "200–272 kg warhead body",
       "confidence": "estimated",
       "sources": [
         "https://www.nuclearweaponarchive.org/Usa/Weapons/W87.html"
-      ]
+      ],
+      "label": "WARHEAD MASS"
     },
     "created": {
       "value": "1986 — stockpile entry",
@@ -1266,13 +1288,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html",
-        "https://www.gao.gov/assets/gao-06-261.pdf",
-        "https://www.energy.gov/nnsa/articles/nnsa-completes-b61-12-life-extension-program"
-      ]
+        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1985 — stockpile entry",
@@ -1282,10 +1303,11 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "retired": {
-      "value": "Replacement / retirement completion unconfirmed",
-      "confidence": "unknown",
+      "value": "Being replaced by B61-12 / B61-13",
+      "confidence": "sourced",
       "sources": [
-        "https://www.energy.gov/nnsa/articles/nnsa-completes-b61-12-life-extension-program"
+        "https://www.energy.gov/nnsa/articles/nnsa-completes-b61-12-life-extension-program",
+        "https://www.energy.gov/documents/doe-fy-2027-volume-1-nnsa-overview"
       ]
     },
     "country": {
@@ -1328,12 +1350,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://elib.biblioatom.ru/text/muzey-yadernogo-oruzhiya-rfyats-vniief_2018/0000/02/",
-        "https://www.nuclearweaponarchive.org/~nuclearw/Russia/Sovwpnprog.html"
-      ]
+        "https://elib.biblioatom.ru/text/muzey-yadernogo-oruzhiya-rfyats-vniief_2018/0000/02/"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1953-08-12 — test",
@@ -1377,23 +1399,24 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "estimated",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/W88.html"
-      ]
+      ],
+      "label": "REENTRY BODY LENGTH"
     },
     "totalMass": {
       "value": "Below 363 kg complete assembly",
       "confidence": "estimated",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/W88.html"
-      ]
+      ],
+      "label": "REENTRY ASSEMBLY MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://nuclearweaponarchive.org/Usa/Weapons/W88.html",
-        "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html",
-        "https://www.energy.gov/documents/doe-fy-2027-volume-1-nnsa-overview"
-      ]
+        "https://nuclearweaponarchive.org/Usa/Weapons/W88.html"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1988 — production",
@@ -1453,12 +1476,13 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html",
         "https://www.nuclearweaponarchive.org/Usa/Tests/Ivy.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1952-11-16 — test",
@@ -1505,22 +1529,22 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "totalMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "1,000 kg test assembly",
+      "confidence": "estimated",
       "sources": [
-        "https://www.nuclearweaponarchive.org/~nuclearw/Uk/UKTesting.html",
-        "https://www.nuclearinfo.org/wp-content/uploads/2023/05/The_real_meaning_of_the_words_a_pedantic_glossary_of_British_nuclear_weapons_John_Ainslie_Notes_March_2004..pdf",
-        "https://assets.publishing.service.gov.uk/media/5a755567e5274a59fa717577/ntvfactsheet5.pdf"
-      ]
+        "https://www.nuclearinfo.org/wp-content/uploads/2023/05/The_real_meaning_of_the_words_a_pedantic_glossary_of_British_nuclear_weapons_John_Ainslie_Notes_March_2004..pdf"
+      ],
+      "label": "TEST ASSEMBLY MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://www.nuclearweaponarchive.org/~nuclearw/Uk/UKTesting.html",
         "https://www.nuclearinfo.org/wp-content/uploads/2023/05/The_real_meaning_of_the_words_a_pedantic_glossary_of_British_nuclear_weapons_John_Ainslie_Notes_March_2004..pdf",
         "https://assets.publishing.service.gov.uk/media/5a755567e5274a59fa717577/ntvfactsheet5.pdf"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1957-05-31 — test",
@@ -1556,7 +1580,7 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
         "https://assets.publishing.service.gov.uk/media/5a755567e5274a59fa717577/ntvfactsheet5.pdf"
       ]
     },
-    "notes": "Outline depicts the spherical Orange Herald Small assembly seen in a supporting frame, not a complete Blue Danube casing. The 30 in diameter is a secondary historical estimate; gross complete test-bomb mass remains unknown."
+    "notes": "Historical glossary describes a one-ton Orange Herald assembly and distinguishes the 30 in Small sphere from the larger variant. The rounded 1,000 kg estimate applies to the test assembly, not a complete Blue Danube aerodynamic casing. Outline shows the sphere in its support frame; the carrier aircraft is excluded."
   },
   "w59": {
     "id": "w59",
@@ -1573,14 +1597,16 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "WARHEAD MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1962 — production",
@@ -1634,12 +1660,13 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://www.nuclearweaponarchive.org/~nuclearw/Usa/Weapons/B83.html",
         "https://www.energy.gov/sites/default/files/2025-06/doe-fy-2026-vol-1-wa.pdf"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1983 — first production",
@@ -1650,8 +1677,8 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "retired": {
-      "value": "Retirement planned; completion not established",
-      "confidence": "unknown",
+      "value": "Retirement planned; completion not announced",
+      "confidence": "sourced",
       "sources": [
         "https://www.energy.gov/sites/default/files/2025-06/doe-fy-2026-vol-1-wa.pdf"
       ]
@@ -1691,14 +1718,16 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "WARHEAD MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1958 — W49 production",
@@ -1752,12 +1781,13 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://www.ufn.ru/en/articles/2005/11/g/",
         "https://www.nuclearweaponarchive.org/~nuclearw/Russia/Sovwpnprog.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1955-11-22 — test",
@@ -1815,13 +1845,14 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://assets.publishing.service.gov.uk/media/5a755567e5274a59fa717577/ntvfactsheet5.pdf",
         "https://film.iwmcollections.org.uk/record/9911",
         "https://www.nuclearweaponarchive.org/~nuclearw/Uk/UKTesting.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1957-11-08 — test",
@@ -1871,20 +1902,21 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "totalMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "3,000 kg experimental device",
+      "confidence": "estimated",
       "sources": [
-        "https://archives.ecpad.fr/archives/acceder-a-la-liste-des-series-photographiques?detail=129652",
-        "https://www.cea.fr/multimedia/Documents/publications/ouvrages/LIVRE-Les-essais-nucleaires-en-Polynesie-francaise.pdf"
-      ]
+        "https://www.lepoint.fr/dossiers/culture/histoire-ina-archives-evenements/il-y-a-53-ans-la-premiere-bombe-h-francaise-explosait-sur-fangataufa-24-08-2021-2440017_4300.php"
+      ],
+      "label": "EXPERIMENTAL DEVICE MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://archives.ecpad.fr/archives/acceder-a-la-liste-des-series-photographiques?detail=129652",
         "https://www.cea.fr/multimedia/Documents/publications/ouvrages/LIVRE-Les-essais-nucleaires-en-Polynesie-francaise.pdf"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1968-08-24 — test",
@@ -1918,7 +1950,7 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
         "https://www.cea.fr/multimedia/Documents/publications/ouvrages/LIVRE-Les-essais-nucleaires-en-Polynesie-francaise.pdf"
       ]
     },
-    "notes": "CEA describes a test gondola suspended beneath a balloon. The visible outline represents this test assembly envelope (est), not a service bomb. Complete package dimensions/mass are not established; the suspension balloon is excluded."
+    "notes": "INA historical footage coverage describes an approximately three-ton device suspended at 520 m. This is device mass, not the combined balloon, suspension rig and gondola. CEA confirms the suspended test configuration, but does not establish complete external dimensions. The outline depicts that qualified exterior package."
   },
   "grapple-y": {
     "id": "grapple-y",
@@ -1940,12 +1972,13 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://assets.publishing.service.gov.uk/media/5a755567e5274a59fa717577/ntvfactsheet5.pdf",
         "https://www.nuclearweaponarchive.org/~nuclearw/Uk/UKTesting.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1958-04-28 — test",
@@ -1996,14 +2029,16 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "sourced",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "WARHEAD MASS"
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1958 — production",
@@ -2055,12 +2090,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://www.nationalmuseum.af.mil/Visit/Museum-Exhibits/Fact-Sheets/Display/Article/195680/b53-thermonuclear-bomb/",
         "https://nuclearweaponarchive.org/Usa/Weapons/Allbombs.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1962 — production",
@@ -2116,11 +2151,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/B41.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1958-07-12 — test",
@@ -2172,12 +2208,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://www.nuclearweaponarchive.org/Usa/Tests/Ivy.html",
         "https://nuclearweaponarchive.org/Nwfaq/Nfaq8.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1952-11-01 — local test date",
@@ -2231,11 +2267,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://www.nuclearweaponarchive.org/Usa/Tests/Castle.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1954-05-05 — local test date",
@@ -2287,12 +2324,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://www.nuclearweaponarchive.org/Usa/Tests/Castle.html",
-        "https://www.dtra.mil/Portals/125/Documents/NTPR/newDocs/ANTHReport/1954_DNA_6035F.pdf"
-      ]
+        "https://www.nuclearweaponarchive.org/Usa/Tests/Castle.html"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1954-03-01 — local test date",
@@ -2346,11 +2383,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
         "https://nuclearweaponarchive.org/Usa/Weapons/B41.html"
-      ]
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1960 — production",
@@ -2402,12 +2440,12 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "payloadMass": {
-      "value": "Unknown — not established in public sources",
-      "confidence": "unknown",
+      "value": "Not applicable — self-contained nuclear device",
+      "confidence": "inapplicable",
       "sources": [
-        "https://www.nuclearweaponarchive.org/~nuclearw/Russia/TsarBomba.html",
-        "https://www.vniief.ru/vniief/nuclear-center/museum/museum-of-nuclear-weapons/"
-      ]
+        "https://www.nuclearweaponarchive.org/~nuclearw/Russia/TsarBomba.html"
+      ],
+      "label": "SEPARATE PAYLOAD"
     },
     "created": {
       "value": "1961-10-30 — test",
@@ -2458,14 +2496,16 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "estimated",
       "sources": [
         "https://missilethreat.csis.org/missile/rs-24/"
-      ]
+      ],
+      "label": "LAUNCH MASS"
     },
     "payloadMass": {
       "value": "1,200 kg payload",
       "confidence": "estimated",
       "sources": [
         "https://missilethreat.csis.org/missile/rs-24/"
-      ]
+      ],
+      "label": "DELIVERY PAYLOAD"
     },
     "created": {
       "value": "2007-05 — first flight test",
@@ -2514,14 +2554,16 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "estimated",
       "sources": [
         "https://missilethreat.csis.org/missile/ss-n-32-bulava/"
-      ]
+      ],
+      "label": "LAUNCH MASS"
     },
     "payloadMass": {
       "value": "1,150 kg payload",
       "confidence": "estimated",
       "sources": [
         "https://missilethreat.csis.org/missile/ss-n-32-bulava/"
-      ]
+      ],
+      "label": "DELIVERY PAYLOAD"
     },
     "created": {
       "value": "2005-09 — first powered flight",
@@ -2570,14 +2612,16 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       "confidence": "reported",
       "sources": [
         "https://missilethreat.csis.org/missile/rs-28-sarmat/"
-      ]
+      ],
+      "label": "LAUNCH MASS"
     },
     "payloadMass": {
       "value": "10,000 kg payload capacity",
       "confidence": "reported",
       "sources": [
         "https://missilethreat.csis.org/missile/rs-28-sarmat/"
-      ]
+      ],
+      "label": "DELIVERY PAYLOAD"
     },
     "created": {
       "value": "2022-04 — first full-flight test",
@@ -2587,8 +2631,8 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
       ]
     },
     "retired": {
-      "value": "Service entry disputed; no retirement date",
-      "confidence": "unknown",
+      "value": "Service-entry claims disputed; no retirement",
+      "confidence": "reported",
       "sources": [
         "https://missilethreat.csis.org/missile/rs-28-sarmat/",
         "https://apnews.com/article/2dcf48ff661b968f578a559d42d40445"

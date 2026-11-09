@@ -2,7 +2,7 @@
 import { existsSync, statSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { DEVICES } from "../../src/catalog/devices";
+import { DEVICES, DEVICE_GROUPS } from "../../src/catalog/devices";
 import { DEVICE_DOSSIERS } from "../../src/catalog/deviceDossiers";
 import { SCENARIOS } from "../../src/catalog/scenarios";
 import { SCENARIO_PREVIEWS } from "../../src/catalog/scenarioPreviews";
@@ -14,6 +14,19 @@ const confidences = ["sourced", "reported", "estimated", "unknown", "inapplicabl
 describe("complete public device dossiers", () => {
   it("covers all 52 fixed IDs without substituting unmodeled weapons", () => {
     expect(Object.keys(DEVICE_DOSSIERS).sort()).toEqual(DEVICES.map((device) => device.id).sort());
+  });
+
+  it("distinguishes the complete Davy Crockett projectile from its smaller warhead and omits nuclear fill", () => {
+    const projectile = DEVICE_DOSSIERS.w54!;
+    expect(projectile.entityLabel).toContain("M388");
+    expect(projectile.length).toMatchObject({ value: "0.787 m", label: "PROJECTILE LENGTH" });
+    expect(projectile.totalMass).toMatchObject({ value: "34.5 kg", label: "PROJECTILE MASS" });
+    expect(projectile.payloadMass).toMatchObject({ value: "23.1 kg W54 warhead", label: "WARHEAD MASS" });
+    for (const device of DEVICE_GROUPS.find((group) => group.id === "nuclear")!.devices) {
+      const payload = DEVICE_DOSSIERS[device.id]!.payloadMass;
+      if (payload.confidence !== "inapplicable") expect(payload.label).toBe("WARHEAD MASS");
+      expect(payload.value).not.toMatch(/fissile|plutonium|uranium/i);
+    }
   });
 
   for (const device of DEVICES) it(`${device.id} identifies all required facts, confidence, sources, and bounded exterior artwork`, () => {
@@ -45,8 +58,8 @@ describe("scenario event previews", () => {
     const preview = SCENARIO_PREVIEWS[scenario.id]!;
     expect(preview?.id).toBe(scenario.id);
     const words = preview.description.trim().split(/\s+/).length;
-    // Plan 18 targets approximately 60–100 words; 50–130 permits editorial variation without unreadable density.
-    expect(words).toBeGreaterThanOrEqual(50); expect(words).toBeLessThanOrEqual(130);
+    // The review revision targets 30–45 words so the dark description remains compact beside the full image.
+    expect(words).toBeGreaterThanOrEqual(30); expect(words).toBeLessThanOrEqual(45);
     if (scenario.kind === "historical") expect(preview.sources.length).toBeGreaterThan(0);
     expect(preview.imageWidth).toBe(1200); expect(preview.imageHeight).toBe(800);
     expect(preview.imageSrc).toBe(`/media/scenarios/${scenario.id}.webp`);

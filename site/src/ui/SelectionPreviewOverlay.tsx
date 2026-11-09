@@ -1,12 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { DEVICE_DOSSIERS } from "../catalog/deviceDossiers";
 import { SCENARIO_PREVIEWS } from "../catalog/scenarioPreviews";
-import { getDeviceById, perWarheadYieldMt } from "../catalog/devices";
+import { getDeviceById } from "../catalog/devices";
 import { getScenarioById } from "../catalog/scenarios";
 import type { DeviceDossier, DossierFact } from "../catalog/previewTypes";
-import { parseCustomYieldMt } from "../application/deviceSelection";
-import { compareWithHiroshima } from "../application/hiroshimaComparison";
 import type { PreviewNavigation, PreviewOption, SelectionPreviewState } from "../application/selectionPreview";
 import { PreviewImageCache } from "./previewImageCache";
 import "./selectionPreview.css";
@@ -17,7 +15,6 @@ interface OverlayProps {
   readonly options: readonly PreviewOption[];
   readonly state: SelectionPreviewState;
   readonly listId: string;
-  readonly customYieldInput: string;
   readonly onBrowse: (id: string, navigation?: PreviewNavigation) => void;
   readonly onCommit: (id: string) => void;
 }
@@ -31,8 +28,9 @@ function qualified(fact: DossierFact): string {
   return `${fact.value}${fact.confidence === "estimated" && !fact.value.includes("(est)") ? " (est)" : fact.confidence === "reported" && !fact.value.toLowerCase().includes("reported") ? " · reported" : ""}`;
 }
 
-function PreviewImage({ url, alt, cache, className }: { readonly url: string; readonly alt: string; readonly cache: PreviewImageCache; readonly className: string }) {
+function PreviewImage({ url, alt, cache, className, width, height }: { readonly url: string; readonly alt: string; readonly cache: PreviewImageCache; readonly className: string; readonly width: number; readonly height: number }) {
   const [result, setResult] = useState<{ url: string; src: string | null; failed: boolean }>({ url, src: null, failed: false });
+  const [painted, setPainted] = useState<{ url: string; src: string } | null>(null);
   useEffect(() => {
     const controller = new AbortController();
     cache.load(url, controller.signal).then((image) => {
@@ -41,43 +39,28 @@ function PreviewImage({ url, alt, cache, className }: { readonly url: string; re
     return () => controller.abort();
   }, [url, cache]);
   const current = result.url === url ? result : null;
-  return <div className={className} data-image-state={current?.failed ? "error" : current?.src ? "loaded" : "loading"}>
-    {current?.src ? <img src={current.src} alt={alt} decoding="async" /> : <span>{current?.failed ? "Image unavailable · details remain available" : "Loading image…"}</span>}
+  const loaded = current?.src && painted?.url === url && painted.src === current.src;
+  return <div className={className} data-image-state={current?.failed ? "error" : loaded ? "loaded" : "loading"}>
+    {current?.src && <img key={current.src} src={current.src} alt={alt} width={width} height={height} decoding="async"
+      onLoad={(event) => { if (event.currentTarget.naturalWidth > 0) setPainted({ url, src: event.currentTarget.src }); }}
+      onError={() => setResult({ url, src: null, failed: true })} />}
+    {!loaded && <span className="preview-image-placeholder">{current?.failed ? "Image unavailable · details remain available" : "Loading image…"}</span>}
   </div>;
-}
-
-function PowerGauge({ yieldMt, qualification = "", perWarheadMt }: { readonly yieldMt: number; readonly qualification?: string; readonly perWarheadMt?: number }) {
-  const comparison = compareWithHiroshima(yieldMt);
-  const reference = compareWithHiroshima(0.015).positionPercent;
-  return <section className="preview-power" aria-label="TNT-equivalent energy comparison">
-    <div className="preview-power-label"><span>ENERGY COMPARISON</span><strong>{comparison.label} × Hiroshima{qualification}</strong></div>
-    <div className="preview-gauge" role="meter" aria-label="Logarithmic TNT-equivalent yield" aria-valuemin={0} aria-valuemax={100} aria-valuenow={comparison.positionPercent} aria-valuetext={`${comparison.label} times Hiroshima${qualification}`}>
-      <i style={{ width: `${comparison.positionPercent}%` }} /><b style={{ left: `${reference}%` }} />
-    </div>
-    <div className="preview-gauge-scale"><span>LOG SCALE</span><span>1× = 15 kt TNT</span><span>ENERGY, NOT DAMAGE</span></div>
-    {perWarheadMt !== undefined && <p>Total modeled loadout above · {compareWithHiroshima(perWarheadMt).label} × Hiroshima per warhead</p>}
-  </section>;
 }
 
 function DeviceFacts({ dossier, cache }: { readonly dossier: DeviceDossier; readonly cache: PreviewImageCache }) {
   const facts: readonly [string, DossierFact][] = [["LENGTH", dossier.length], ["TOTAL MASS", dossier.totalMass], ["PAYLOAD / FILL", dossier.payloadMass], ["CREATED / INTRODUCED", dossier.created], ["RETIRED / STATUS", dossier.retired], ["COUNTRY OF ORIGIN", dossier.country]];
-  const sources = [...new Set(facts.flatMap(([, fact]) => fact.sources).concat(dossier.silhouette.sources))];
   return <>
     <div className="preview-outline-wrap">
-      <PreviewImage url={dossier.silhouette.src} alt={`${dossier.entityLabel} exterior outline${dossier.silhouette.confidence === "estimated" ? " (est)" : ""}`} cache={cache} className="preview-outline" />
+      <PreviewImage key={dossier.silhouette.src} url={dossier.silhouette.src} alt={`${dossier.entityLabel} exterior outline${dossier.silhouette.confidence === "estimated" ? " (est)" : ""}`} cache={cache} className="preview-outline" width={dossier.silhouette.width} height={dossier.silhouette.height} />
       <div className="preview-size-annotation"><span>↔ {qualified(dossier.length)}</span><span>EXTERIOR PROFILE{dossier.silhouette.confidence === "estimated" ? " (est)" : ""}</span></div>
     </div>
-    <dl className="preview-facts">{facts.map(([label, fact]) => <div key={label}><dt>{label}</dt><dd>{qualified(fact)}{fact.sources.length > 0 && <sup title={fact.sources.join("\n")}> [{fact.sources.map((source) => sources.indexOf(source) + 1).join(", ")}]</sup>}</dd></div>)}</dl>
+    <dl className="preview-facts">{facts.filter(([label, fact]) => label !== "PAYLOAD / FILL" || fact.confidence !== "inapplicable").map(([label, fact]) => <div key={label}><dt>{fact.label ?? label}</dt><dd>{qualified(fact)}</dd></div>)}</dl>
   </>;
 }
 
-function DeviceNotes({ dossier }: { readonly dossier: DeviceDossier }) {
-  const sources = [...new Set([dossier.length, dossier.totalMass, dossier.payloadMass, dossier.created, dossier.retired, dossier.country].flatMap((fact) => fact.sources).concat(dossier.silhouette.sources))];
-  return <>{dossier.notes && <p className="preview-note">{dossier.notes}</p>}<p className="preview-sources">{sources.map((source, index) => <span key={source} title={source}>[{index + 1}] {sourceLabel(source)} </span>)}</p></>;
-}
-
 /** On-demand desktop list and informational preview; the native combobox remains the focus owner. */
-export default function SelectionPreviewOverlay({ kind, options, state, listId, customYieldInput, anchor, onBrowse, onCommit }: OverlayProps) {
+export default function SelectionPreviewOverlay({ kind, options, state, listId, anchor, onBrowse, onCommit }: OverlayProps) {
   const active = useRef<HTMLDivElement>(null);
   const wheelPoint = useRef<{ x: number; y: number } | null>(null);
   const pointerPoint = useRef<{ x: number; y: number } | null>(null);
@@ -88,16 +71,14 @@ export default function SelectionPreviewOverlay({ kind, options, state, listId, 
     wheelPoint.current = null;
     active.current?.scrollIntoView({ block: "nearest" });
   }, [state.activeId, state.navigation]);
-  useEffect(() => { document.getElementById("selection-preview-description")?.scrollTo({ top: 0 }); }, [state.activeId]);
+  useEffect(() => { document.querySelector<HTMLElement>(".selection-preview-viewport")?.scrollTo({ top: 0 }); }, [state.activeId]);
   const groups = [...new Set(options.map((option) => option.group))];
   const device = kind === "device" ? getDeviceById(state.activeId) : undefined;
   const dossier = kind === "device" ? DEVICE_DOSSIERS[state.activeId] : undefined;
   const scenario = kind === "scenario" ? getScenarioById(state.activeId) : undefined;
   const scene = kind === "scenario" ? SCENARIO_PREVIEWS[state.activeId] : undefined;
   const custom = kind === "device" && state.activeId === "custom";
-  const customYield = custom ? parseCustomYieldMt(customYieldInput) : null;
   const hasPreview = state.browsed && (device || dossier || custom || scene);
-  const qualification = device?.displayYield.includes("estimated") ? " (est)" : device?.displayYield.includes("reported") ? " · reported" : "";
   return createPortal(<>
     <div style={{ left: anchor?.left, top: anchor?.bottom === undefined ? undefined : anchor.bottom + 4, width: anchor?.width }} className="preview-option-list" id={listId} role="listbox" aria-label={kind === "device" ? "Weapon options" : "Scenario options"}
       onMouseDown={(event) => event.preventDefault()}
@@ -134,17 +115,20 @@ export default function SelectionPreviewOverlay({ kind, options, state, listId, 
           className={state.activeId === option.id ? "active" : ""}>{option.label}</div>)}
       </div>)}
     </div>
-    {hasPreview && <aside style={{ "--preview-anchor-bottom": `${anchor?.bottom ?? 156}px` } as React.CSSProperties} className={`selection-preview selection-preview-${kind}`} aria-label={kind === "device" ? "Weapon preview" : "Scenario preview"} data-candidate-id={state.activeId}>
-      <div className="preview-heading"><span>{kind === "device" ? "DEVICE DOSSIER" : scenario?.kind === "historical" ? "HISTORICAL EVENT" : "HYPOTHETICAL EVENT"}</span><span>ILLUSTRATIVE</span></div>
-      <div id="selection-preview-description">
-        <h2>{device?.name ?? scenario?.name ?? "Custom yield"}</h2>
-        {dossier && <DeviceFacts dossier={dossier} cache={cache} />}
-        {device && <PowerGauge yieldMt={device.yieldMt} qualification={qualification} perWarheadMt={device.warheadCount ? perWarheadYieldMt(device) : undefined} />}
-        {dossier && <DeviceNotes dossier={dossier} />}
-        {custom && <><div className="preview-concept">CUSTOM YIELD<br /><small>No physical weapon specified</small></div><p className="preview-note">Length, mass, creation, retirement, and country: Not applicable — simulation input.</p>{customYield?.valid ? <PowerGauge yieldMt={customYield.yieldMt} /> : <p className="preview-note">{customYield && !customYield.valid ? customYield.error : ""}</p>}</>}
-        {scene && scenario && <><PreviewImage url={scene.imageSrc} alt={`Red monochrome illustration of a huge blast at ${scenario.locationName}`} cache={cache} className="preview-scenario-image" /><p className="preview-image-caption">AI-GENERATED ILLUSTRATION · {scenario.locationName}</p><p className="preview-event-copy">{scene.description}</p><p className="preview-sources">{scene.sources.map((source) => <span key={source} title={source}>{sourceLabel(source)} </span>)}</p></>}
+    {hasPreview && <div style={{ "--preview-anchor-bottom": `${anchor?.bottom ?? 156}px` } as CSSProperties} className="selection-preview-viewport" data-preview-kind={kind} onMouseDown={(event) => event.preventDefault()}>
+      <div className="preview-scroll-content">
+        <aside className={`selection-preview selection-preview-${kind}`} aria-label={kind === "device" ? "Weapon preview" : "Scenario preview"} data-candidate-id={state.activeId}>
+          <div className="preview-heading"><span>{kind === "device" ? "DEVICE DOSSIER" : scenario?.kind === "historical" ? "HISTORICAL EVENT" : "HYPOTHETICAL EVENT"}</span><span>ILLUSTRATIVE</span></div>
+          <div id="selection-preview-description">
+            <h2>{device?.name ?? scenario?.name ?? "Custom yield"}</h2>
+            {dossier && <><p className="preview-entity">{dossier.entityLabel}</p><DeviceFacts dossier={dossier} cache={cache} /></>}
+            {custom && <><div className="preview-concept">CUSTOM YIELD<br /><small>No physical weapon specified</small></div><dl className="preview-facts">{["LENGTH", "TOTAL MASS", "CREATED / INTRODUCED", "RETIRED / STATUS", "COUNTRY OF ORIGIN"].map((label) => <div key={label}><dt>{label}</dt><dd>Not applicable — simulation input</dd></div>)}</dl></>}
+            {scene && scenario && <><PreviewImage key={scene.imageSrc} url={scene.imageSrc} alt={`Red monochrome illustration of a huge blast at ${scenario.locationName}`} cache={cache} className="preview-scenario-image" width={scene.imageWidth} height={scene.imageHeight} /><p className="preview-image-caption">AI-GENERATED ILLUSTRATION · {scenario.locationName}</p><p className="preview-event-copy">{scene.description}</p><p className="preview-sources">{scene.sources.map((source) => <span key={source} title={source}>{sourceLabel(source)} </span>)}</p></>}
+          </div>
+          {kind === "scenario" && <footer>SHIFT + PAGE UP/DOWN: SCROLL PREVIEW · LEAVE DROPDOWN TO DISMISS</footer>}
+        </aside>
       </div>
-      <footer>SHIFT + PAGE UP/DOWN: SCROLL DETAILS · LEAVE DROPDOWN TO DISMISS</footer>
-    </aside>}
+    </div>}
+
   </>, document.body);
 }

@@ -10,13 +10,12 @@ interface PreviewSelectProps {
   readonly value: string;
   readonly options: readonly PreviewOption[];
   readonly children: ReactNode;
-  readonly customYieldInput: string;
   readonly resetVersion: number;
   readonly onChange: (id: string) => void;
 }
 
 /** Progressive desktop chooser; native select semantics and mobile interaction remain available. */
-export function PreviewSelect({ kind, label, value, options, children, customYieldInput, resetVersion, onChange }: PreviewSelectProps) {
+export function PreviewSelect({ kind, label, value, options, children, resetVersion, onChange }: PreviewSelectProps) {
   const [eligible, setEligible] = useState(() => typeof window.matchMedia === "function" && window.matchMedia(DESKTOP_QUERY).matches);
   const [state, dispatch] = useReducer(reduceSelectionPreview, CLOSED_SELECTION_PREVIEW);
   const control = useRef<HTMLSelectElement>(null);
@@ -41,8 +40,15 @@ export function PreviewSelect({ kind, label, value, options, children, customYie
     const outside = (event: PointerEvent) => {
       const target = event.target as Element;
       if (target === control.current || target.closest(`#${listId}`)) return;
+      const viewport = target.closest<HTMLElement>(".selection-preview-viewport");
+      if (viewport) {
+        const bounds = viewport.getBoundingClientRect();
+        const verticalBar = viewport.offsetWidth - viewport.clientWidth;
+        const horizontalBar = viewport.offsetHeight - viewport.clientHeight;
+        if ((verticalBar > 0 && viewport.scrollHeight > viewport.clientHeight && event.clientX >= bounds.right - verticalBar) || (horizontalBar > 0 && viewport.scrollWidth > viewport.clientWidth && event.clientY >= bounds.bottom - horizontalBar)) return;
+      }
       dispatch({ type: "dismiss" });
-      if (!target.closest("button, input, select, [role=tab], a")) {
+      if (!target.closest("button, input, select, [role=tab], a, .maplibregl-ctrl-attrib")) {
         event.preventDefault(); event.stopPropagation();
         const gesture = new AbortController();
         const consumeClick = (click: MouseEvent) => { click.preventDefault(); click.stopPropagation(); gesture.abort(); };
@@ -64,7 +70,7 @@ export function PreviewSelect({ kind, label, value, options, children, customYie
     if (!eligible) return;
     if (state.open && state.browsed && event.shiftKey && ["PageUp", "PageDown"].includes(event.key)) {
       event.preventDefault();
-      const details = document.getElementById("selection-preview-description");
+      const details = document.querySelector<HTMLElement>(".selection-preview-viewport");
       details?.scrollBy({ top: details.clientHeight * .8 * (event.key === "PageUp" ? -1 : 1) });
       return;
     }
@@ -102,7 +108,7 @@ export function PreviewSelect({ kind, label, value, options, children, customYie
       {children}
     </select>
     {eligible && state.open && <Suspense fallback={<div className="preview-picker-loading">Loading catalog…</div>}>
-      <PickerOverlay kind={kind} options={options} state={state} listId={listId} customYieldInput={customYieldInput}
+      <PickerOverlay kind={kind} options={options} state={state} listId={listId}
         anchor={control.current?.getBoundingClientRect()} onBrowse={browse} onCommit={commit} />
     </Suspense>}
   </>;

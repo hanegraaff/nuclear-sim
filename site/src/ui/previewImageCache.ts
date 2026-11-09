@@ -9,26 +9,31 @@ export class PreviewImageCache {
   private readonly entries = new Map<string, CachedPreviewImage>();
   private readonly decoded = new Map<string, HTMLImageElement>();
   private readonly failed = new Set<string>();
+  private generation = 0;
 
   /** Load one same-origin asset; aborted candidate work never populates or reopens the preview. */
   async load(url: string, signal: AbortSignal): Promise<CachedPreviewImage> {
     if (this.failed.has(url)) throw new Error("Preview image unavailable");
-    try { return await this.loadAsset(url, signal); }
-    catch (error) { if (!signal.aborted) this.failed.add(url); throw error; }
+    const generation = this.generation;
+    try {
+      const result = await this.loadAsset(url, signal, generation);
+      this.assertCurrent(signal, generation);
+      return result;
+    } catch (error) { if (!signal.aborted && generation === this.generation) this.failed.add(url); throw error; }
   }
 
-  private async loadAsset(url: string, signal: AbortSignal): Promise<CachedPreviewImage> {
+  private async loadAsset(url: string, signal: AbortSignal, generation: number): Promise<CachedPreviewImage> {
     const cached = this.entries.get(url);
     if (cached) { this.entries.delete(url); this.entries.set(url, cached); return cached; }
     const response = await fetch(url, { signal });
     if (!response.ok) throw new Error("Preview image unavailable");
     const blob = await response.blob();
-    if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
+    this.assertCurrent(signal, generation);
     const src = URL.createObjectURL(blob);
     const image = new Image(); image.decoding = "async"; image.src = src;
     try {
       await image.decode();
-      if (signal.aborted) throw new DOMException("Cancelled", "AbortError");
+      this.assertCurrent(signal, generation);
       const bytes = image.naturalWidth * image.naturalHeight * 4;
       if (bytes > 16 * 1024 * 1024) throw new Error("Preview image exceeds memory budget");
       while (this.entries.size >= 2 || this.totalBytes + bytes > 16 * 1024 * 1024) this.evict();
@@ -42,8 +47,12 @@ export class PreviewImageCache {
   /** Number of retained images; never more than two regardless of catalog size. */
   get size(): number { return this.entries.size; }
 
-  /** Release every object URL and decoded image when dropdown focus or open lifetime ends. */
-  clear(): void { while (this.entries.size) this.evict(); this.failed.clear(); }
+  /** Invalidate pending decodes and release retained URLs/images when the dropdown lifetime ends. */
+  clear(): void { this.generation += 1; while (this.entries.size) this.evict(); this.failed.clear(); }
+
+  private assertCurrent(signal: AbortSignal, generation: number): void {
+    if (signal.aborted || generation !== this.generation) throw new DOMException("Cancelled", "AbortError");
+  }
 
   private evict(): void {
     const key = this.entries.keys().next().value;

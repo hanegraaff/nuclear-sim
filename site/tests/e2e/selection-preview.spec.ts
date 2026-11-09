@@ -42,7 +42,7 @@ test("pointer and wheel browsing follow highlighted options and outside dismissa
   const list = page.getByRole("listbox", { name: "Weapon options" }); await expect(list).toBeVisible();
   const littleBoy = list.getByRole("option", { name: "Little Boy · 15 kt", exact: true });
   await littleBoy.hover(); await expect(preview(page)).toHaveAttribute("data-candidate-id", "little-boy");
-  await expect(preview(page)).toContainText("1 × Hiroshima"); await expect(select).toHaveValue("fat-man");
+  await expect(preview(page).locator(".preview-facts")).toContainText("COUNTRY OF ORIGIN"); await expect(select).toHaveValue("fat-man");
   await page.mouse.wheel(0, 180);
   await expect(preview(page)).toBeVisible();
   await expect(select).toBeFocused();
@@ -83,13 +83,15 @@ test("stationary repeated wheel scrolling keeps its active candidate on a visibl
   await select.press("End"); await expect(list.getByRole("option", { name: "1 Pt Earth-span stress test · 1 Pt", exact: true })).toBeInViewport();
 });
 
-test("weapon dossier shows annotated exterior facts and a Hiroshima comparison", async ({ page }) => {
+test("weapon dossier ends after its researched exterior facts", async ({ page }) => {
   const select = weapon(page); await select.click();
   await page.getByRole("listbox").getByRole("option", { name: "Fat Man · 21 kt", exact: true }).hover();
   await expect(preview(page)).toHaveAttribute("data-candidate-id", "fat-man");
   await expect(preview(page).locator(".preview-outline")).toHaveAttribute("data-image-state", "loaded");
   await expect(preview(page)).toContainText("TOTAL MASS"); await expect(preview(page)).toContainText("COUNTRY OF ORIGIN");
-  await expect(preview(page)).toContainText("1.4 × Hiroshima");
+  await expect(preview(page).locator(".preview-power, .preview-note, .preview-sources, footer, sup")).toHaveCount(0);
+  await expect(preview(page).getByRole("meter")).toHaveCount(0);
+  expect(await preview(page).locator("#selection-preview-description").evaluate((element) => element.lastElementChild?.className)).toBe("preview-facts");
   await expect(page).toHaveScreenshot("plan-18-weapon-preview.png", { maxDiffPixelRatio: 0.01 });
   await expect(preview(page)).toHaveScreenshot("plan-18-weapon-dossier.png", { maxDiffPixelRatio: 0.01 });
   await select.press("Escape"); await expect(preview(page)).toHaveCount(0);
@@ -112,18 +114,75 @@ test("scenario image and dark event text follow the candidate without moving cam
   await expect(map).toHaveAttribute("data-launch-count", "0");
 });
 
-test("all weapon categories and custom validation have informative previews", async ({ page }) => {
+test("all payload categories and custom input end with facts without comparison or under-sections", async ({ page }) => {
   const select = weapon(page);
-  for (const [id, text] of [["mk-82", "(est)"], ["rs-24-yars", "per warhead"], ["city-breaker", "Hiroshima"]]) {
-    await select.selectOption(id!); await select.focus(); await select.press("Enter");
+  for (const id of ["mk-82", "rs-24-yars", "city-breaker"]) {
+    await select.selectOption(id); await select.focus(); await select.press("Enter");
     await page.getByRole("listbox").getByRole("option").filter({ hasText: id === "mk-82" ? "Mk 82 (Tritonal)" : id === "rs-24-yars" ? "RS-24 Yars" : "100 Mt scale study" }).hover();
-    await expect(preview(page)).toHaveAttribute("data-candidate-id", id!); await expect(preview(page)).toContainText(text!);
+    await expect(preview(page)).toHaveAttribute("data-candidate-id", id);
+    await expect(preview(page).locator(".preview-facts")).toContainText("COUNTRY OF ORIGIN");
+    await expect(preview(page).locator(".preview-power, .preview-note, .preview-sources, footer, sup")).toHaveCount(0);
+    expect(await preview(page).locator("#selection-preview-description").evaluate((element) => element.lastElementChild?.className)).toBe("preview-facts");
     await select.press("Escape");
   }
-  await select.selectOption("custom"); await page.getByRole("textbox", { name: "Custom yield in megatons" }).fill("invalid");
+  await select.selectOption("custom"); const custom = page.getByRole("textbox", { name: "Custom yield in megatons" }); await custom.fill("invalid");
+  await expect(custom).toHaveAttribute("aria-invalid", "true");
   await select.focus(); await select.press("Home");
   await expect(preview(page)).toHaveAttribute("data-candidate-id", "custom");
-  await expect(preview(page)).toContainText("use a decimal point"); await expect(preview(page).getByRole("meter")).toHaveCount(0);
+  await expect(preview(page)).toContainText("Not applicable — simulation input");
+  await expect(preview(page).locator(".preview-power, .preview-note, .preview-sources, footer, sup")).toHaveCount(0);
+});
+
+test("all 52 silhouettes paint through the real image cache and remain available after eviction", async ({ page }, testInfo) => {
+  test.setTimeout(120_000);
+  const select = weapon(page);
+  const ids = await select.locator("option").evaluateAll((options) => options.map((option) => (option as HTMLOptionElement).value).filter((id) => id !== "custom"));
+  expect(ids).toHaveLength(52);
+  await select.focus(); await select.press("Home");
+  const rendered: Array<{ id: string; width: number; height: number; ink: number }> = [];
+  for (const id of ids) {
+    await select.press("ArrowDown"); await expect(preview(page)).toHaveAttribute("data-candidate-id", id);
+    await expect(preview(page).locator(".preview-outline")).toHaveAttribute("data-image-state", "loaded");
+    const pixels = await preview(page).locator(".preview-outline img").evaluate((image) => {
+      const element = image as HTMLImageElement; const canvas = document.createElement("canvas");
+      canvas.width = element.naturalWidth; canvas.height = element.naturalHeight;
+      const context = canvas.getContext("2d")!; context.drawImage(element, 0, 0);
+      const data = context.getImageData(0, 0, canvas.width, canvas.height).data; let ink = 0;
+      for (let offset = 3; offset < data.length; offset += 4) if (data[offset]! > 0) ink += 1;
+      return { width: element.naturalWidth, height: element.naturalHeight, ink };
+    });
+    expect(pixels.width).toBe(960); expect(pixels.height).toBe(320);
+    // More than 100 painted pixels rules out a decoded but blank/clipped SVG, independently of outline styling.
+    expect(pixels.ink).toBeGreaterThan(100); rendered.push({ id, ...pixels });
+  }
+  await select.press("Home"); for (let index = 0; index <= ids.indexOf("w54"); index += 1) await select.press("ArrowDown");
+  await expect(preview(page)).toHaveAttribute("data-candidate-id", "w54");
+  await expect(preview(page).locator(".preview-outline")).toHaveAttribute("data-image-state", "loaded");
+  await expect(preview(page)).toContainText("M388"); await expect(preview(page)).toContainText("34.5 kg"); await expect(preview(page)).toContainText("23.1 kg W54 warhead");
+  await expect(preview(page)).toHaveScreenshot("plan-18-davy-crockett-dossier.png", { maxDiffPixelRatio: .01 });
+  await testInfo.attach("all-silhouettes-rendered", { body: JSON.stringify(rendered, null, 2), contentType: "application/json" });
+  await select.press("Tab"); await expect(page.locator(".selection-preview-viewport")).toHaveCount(0);
+});
+
+test("fast browsing, delayed decodes, and reopening cannot strand Davy Crockett on an old image URL", async ({ page }) => {
+  let release!: () => void; const held = new Promise<void>((resolve) => { release = resolve; }); let first = true;
+  await page.route("**/media/devices/w54.svg", async (route) => {
+    if (first) { first = false; await held; }
+    await route.fulfill({ path: path.resolve("public/media/devices/w54.svg"), contentType: "image/svg+xml" }).catch(() => {});
+  });
+  const select = weapon(page); await select.selectOption("w54"); await select.focus(); await select.press("Enter");
+  await select.press("ArrowUp"); await select.press("ArrowDown");
+  await expect(preview(page)).toHaveAttribute("data-candidate-id", "w54");
+  await expect(preview(page).locator(".preview-outline")).toHaveAttribute("data-image-state", "loading");
+  for (let index = 0; index < 8; index += 1) await select.press("ArrowDown");
+  for (let index = 0; index < 8; index += 1) await select.press("ArrowUp");
+  await expect(preview(page)).toHaveAttribute("data-candidate-id", "w54");
+  await expect(preview(page).locator(".preview-outline")).toHaveAttribute("data-image-state", "loaded");
+  release(); await select.press("Escape");
+  await select.focus(); await select.press("Enter"); await select.press("ArrowUp"); await select.press("ArrowDown");
+  await expect(preview(page)).toHaveAttribute("data-candidate-id", "w54");
+  await expect(preview(page).locator(".preview-outline")).toHaveAttribute("data-image-state", "loaded");
+  expect(await preview(page).locator(".preview-outline img").evaluate((image) => (image as HTMLImageElement).complete && (image as HTMLImageElement).naturalWidth > 0)).toBe(true);
 });
 
 test("late or failed artwork never restores a blurred panel and text remains readable", async ({ page }) => {
@@ -167,47 +226,19 @@ test("resize cancels a desktop preview and 601px fine-pointer layout keeps choos
   expect(panelBounds!.x + panelBounds!.width).toBeLessThanOrEqual(601);
 });
 
-test("constrained panels expose their gauge and event ending through wheel and keyboard without losing dropdown focus", async ({ page }) => {
-  for (const viewport of [{ width: 601, height: 768 }, { width: 1024, height: 600 }]) {
-    await page.setViewportSize(viewport);
-    await page.getByRole("tab", { name: "DEVICE", exact: true }).click();
-    const select = weapon(page); await expect(select).toHaveAttribute("aria-expanded", "false");
-    await select.selectOption("rsm-56-bulava"); await select.click();
-    await page.getByRole("listbox").getByRole("option", { name: /RSM-56 Bulava/ }).hover();
-    const details = preview(page).locator("#selection-preview-description");
-    await expect(preview(page)).toHaveAttribute("data-candidate-id", "rsm-56-bulava");
-    await expect(preview(page).locator("footer")).toContainText("SHIFT + PAGE");
-    const candidate = await preview(page).getAttribute("data-candidate-id");
-    for (let index = 0; index < 5; index += 1) await select.press("Shift+PageDown");
-    await expect(select).toBeFocused(); await expect(preview(page)).toHaveAttribute("data-candidate-id", candidate!);
-    expect(await details.evaluate((element) => Math.abs(element.scrollHeight - element.clientHeight - element.scrollTop))).toBeLessThanOrEqual(1);
-    // At the bottom, all mandatory energy text and the end of supporting facts are reachable by keyboard.
-    const gauge = await preview(page).locator(".preview-power").boundingBox(); const clip = await details.boundingBox();
-    expect(gauge!.y).toBeGreaterThanOrEqual(clip!.y);
-    expect(gauge!.y + gauge!.height).toBeLessThanOrEqual(clip!.y + clip!.height);
-    expect(await details.evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
-    await select.press("Shift+PageUp");
-    const beforeWheel = await details.evaluate((element) => element.scrollTop);
-    const detailsBounds = await details.boundingBox(); await page.mouse.move(detailsBounds!.x + 30, detailsBounds!.y + 30); await page.mouse.wheel(0, 200);
-    const overflow = await details.evaluate((element) => element.scrollHeight > element.clientHeight);
-    if (overflow) await expect.poll(() => details.evaluate((element) => element.scrollTop)).toBeGreaterThan(beforeWheel);
-    await expect(select).toBeFocused();
-    await select.press("Escape");
-    await page.getByRole("tab", { name: "SCENARIO", exact: true }).click();
-    const scenario = page.getByRole("combobox", { name: "Scenario", exact: true });
-    await scenario.focus(); await scenario.press("Home"); await scenario.press("ArrowDown");
-    await expect(preview(page)).toHaveAttribute("data-candidate-id", "hiroshima");
-    for (let index = 0; index < 5; index += 1) await scenario.press("Shift+PageDown");
-    await expect(scenario).toBeFocused();
-    const lastLine = await preview(page).locator(".preview-event-copy").evaluate((element) => {
-      const text = element.firstChild!; const length = text.textContent!.length; const range = document.createRange();
-      range.setStart(text, Math.max(0, length - 20)); range.setEnd(text, length);
-      const end = range.getBoundingClientRect(); const clip = element.closest("#selection-preview-description")!.getBoundingClientRect();
-      return { top: end.top, bottom: end.bottom, clipTop: clip.top, clipBottom: clip.bottom };
-    });
-    expect(lastLine.top).toBeGreaterThanOrEqual(lastLine.clipTop); expect(lastLine.bottom).toBeLessThanOrEqual(lastLine.clipBottom);
-    await scenario.press("Escape");
-  }
+test("a preview owns its scrolling viewport only during focused browsing", async ({ page }) => {
+  const select = weapon(page); const viewport = page.locator(".selection-preview-viewport");
+  const bodyStyle = await page.locator("body").getAttribute("style");
+  await select.focus(); await expect(viewport).toHaveCount(0);
+  await select.press("Enter"); await expect(viewport).toHaveCount(0);
+  await select.press("ArrowDown"); await expect(viewport).toHaveCount(1);
+  expect(await viewport.evaluate((element) => getComputedStyle(element).overflowY)).toBe("auto");
+  expect(await preview(page).locator("#selection-preview-description").evaluate((element) => getComputedStyle(element).overflowY)).toBe("visible");
+  await select.press("Tab"); await expect(viewport).toHaveCount(0);
+  expect(await page.locator("body").getAttribute("style")).toBe(bodyStyle);
+  await select.focus(); await select.press("ArrowDown"); await expect(viewport).toHaveCount(1);
+  await select.press("Escape"); await expect(viewport).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollHeight <= innerHeight)).toBe(true);
 });
 
 test("warm candidate response and production transfer sizes respect preview budgets", async ({ page }, testInfo) => {

@@ -3,6 +3,8 @@ export type FactConfidence = "sourced" | "reported" | "estimated" | "unknown" | 
 
 /** Display-ready researched value, with explicit units in value and source URLs. */
 export interface DossierFact {
+  /** Optional fact-specific label distinguishing complete devices, warheads, and carrier loads. */
+  readonly label?: string;
   readonly value: string;
   readonly confidence: FactConfidence;
   readonly sources: readonly string[];

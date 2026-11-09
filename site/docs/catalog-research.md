@@ -1,12 +1,12 @@
 # Catalog preview research and limits
 
-Research reviewed on **2026-11-08** for R-16 and R-17. This file records public exterior dimensions and historical context only. It is not an engineering specification, a weapon design reference, or a forecast. Device yields and scenario coordinates remain the existing simulation catalog values.
+Research reviewed on **2026-11-09** for R-16 and R-17. This file records public exterior dimensions and historical context only. It is not an engineering specification, a weapon design reference, or a forecast. Device yields and scenario coordinates remain the existing simulation catalog values.
 
 ## Method and qualifications
 
 Primary government, museum and manufacturer records are preferred. Nuclear Weapon Archive is a specialist historical compilation used where no accessible primary exterior specification was found; its uncertain values remain estimated. CSIS carries public estimates and reported carrier specifications. A source access date records the research pass, not a claim that an old page establishes present service status. Where primary pages rejected retrieval, indexed fact-sheet excerpts were checked against independent archival or museum records and the limitation is retained here.
 
-Every fact in the lazy data has its own source URLs and confidence. **(est)** means a rounded/inferred physical value, uncertain assembly envelope, variant approximation, or historical decade estimate. **Reported** means an unverified claim, particularly FOAB and Russian carrier data. Unknown is used when no defensible estimate could be made; an empty fact is never silently replaced with a made-up number. Inapplicable identifies a one-off test or a study without real hardware. Dates explicitly identify first test, first production, or service entry; these are not interchangeable. Nuclear payload/fill mass is left unknown rather than presenting fissile inventory as TNT yield.
+Every fact in the lazy data has its own source URLs and confidence. **(est)** means a rounded/inferred physical value, uncertain assembly envelope, variant approximation, or historical decade estimate. **Reported** means an unverified claim, particularly FOAB and Russian carrier data. Unknown is used when no defensible estimate could be made; an empty fact is never silently replaced with a made-up number. Inapplicable identifies a one-off test or a study without real hardware. Dates explicitly identify first test, first production, or service entry; these are not interchangeable. A self-contained nuclear device has no separate delivery-payload field: it is inapplicable and omitted from the panel. Actual complete-device or warhead mass remains visible. Known child-warhead masses are explicitly labeled; fissile inventory is never substituted for payload, gross mass or TNT yield.
 
 Conversions: 1 inch = 0.0254 m; 1 foot = 0.3048 m; 1 pound = 0.45359237 kg; 1 metric tonne = 1,000 kg. Display values are rounded to sensible precision. No model yield is recalibrated. Complete-device mass, explosive fill, carrier payload capacity, and bare-warhead mass are separately labeled.
 
@@ -14,7 +14,7 @@ Conversions: 1 inch = 0.0254 m; 1 foot = 0.3048 m; 1 pound = 0.45359237 kg; 1 me
 
 The SVGs are newly authored line illustrations; source photographs/diagrams are references and are not copied as raster assets. All are estimates because line simplification, museum replicas, undocumented variants and perspective prevent engineering fidelity. Known length/diameter ratios determine drawing proportions. Unknown dimensions have **no calibrated scale**. Test assemblies are drawn as test apparatus, spherical assemblies, or gondolas where the record supports that form. A complete unknown exterior is represented by an explicitly qualified documentary enclosure, not a falsely precise operational weapon. No internal structure is depicted. Each asset is under 20 KiB.
 
-Particular limits: Greenhouse George shows a documented toroidal component because the archival history disputes whether it is the complete Cylinder/Silex apparatus. Gerboise Bleue and Canopus show estimated test enclosures/gondolas, not documented bomb casings. RDS-37 and Grapple X/Y use approximate air-drop exterior envelopes; no unsupported dimensions are supplied. W76/Mk4A is unscaled; W87/Mk21 and W88/Mk5 show public reentry envelopes, never bare warhead dimensions. Hypothetical studies use an energy-study symbol labeled Conceptual (est).
+Particular limits: Greenhouse George shows a documented toroidal component because the archival history disputes whether it is the complete Cylinder/Silex apparatus. Gerboise Bleue and Canopus show estimated test enclosures/gondolas, not documented bomb casings. RDS-37 and Grapple X/Y use approximate air-drop exterior envelopes; no unsupported dimensions are supplied. W76/Mk4A uses a qualified public Mk 4 envelope estimate; W87/Mk21 and W88/Mk5 show public reentry envelopes, never bare warhead dimensions. Hypothetical studies use an energy-study symbol labeled Conceptual (est).
 
 ## Source register
 
@@ -75,9 +75,26 @@ Particular limits: Greenhouse George shows a documented toroidal component becau
 - **kazakh** — [Kazakhstan Ministry of Foreign Affairs — test legacy](https://www.gov.kz/org/mfa/documents/details/512773?lang=en). Accessed 2026-11-08.
 - **model** — [Simulator model and unchanged catalog assumptions](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md). Accessed 2026-11-08.
 
+
+### Additional sources reviewed 2026-11-09
+
+- **davyHistory** — [Army Historical Foundation — complete M388 exterior and specifications](https://armyhistory.org/the-m28m29-davy-crockett-nuclear-weapon-system/). Accessed 2026-11-09.
+- **davyMuseum** — [National Museum of the U.S. Army — Davy Crockett history](https://www.thenmusa.org/curators-corner/). Accessed 2026-11-09.
+- **davyArmy** — [U.S. Army — Davy Crockett inventory dates](https://home.army.mil/hawaii/4615/5961/0076/Info_Booklet.pdf). Accessed 2026-11-09.
+- **mk4Study** — [Gronlund and Wright — public Mk 4 exterior parameters, Appendix A](https://scienceandglobalsecurity.org/archive/sgs03gronlund.pdf). Accessed 2026-11-09.
+- **foabReview** — [European Security & Defence — reported FOAB mass](https://euro-sd.com/2024/06/articles/39038/thermobaric-weapons-on-the-battlefield/). Accessed 2026-11-09.
+- **orangeGlossary** — [Nuclear Information Service — Orange Herald historical mass](https://www.nuclearinfo.org/wp-content/uploads/2023/05/The_real_meaning_of_the_words_a_pedantic_glossary_of_British_nuclear_weapons_John_Ainslie_Notes_March_2004..pdf). Accessed 2026-11-09.
+- **canopusINA** — [Le Point / INA archives — Canopus experimental device mass](https://www.lepoint.fr/dossiers/culture/histoire-ina-archives-evenements/il-y-a-53-ans-la-premiere-bombe-h-francaise-explosait-sur-fangataufa-24-08-2021-2440017_4300.php). Accessed 2026-11-09.
+- **jassmCurrent** — [Lockheed Martin — JASSM current manufacturer media record](https://www.lockheedmartin.com/en-us/products/jassm/jassm-media-kit.html). Accessed 2026-11-09.
+- **gb49Current** — [Swedish Government — current GBU-49 deliveries in 2026 budget](https://www.regeringen.se/contentassets/3416d1df56ae4fcaacf03ecd8ed81ab1/budgetpropositonen-for-2026-prop.-2025261-hela-dokumentet.pdf). Accessed 2026-11-09.
+- **airmanCurrent** — [Air & Space Forces — 2026 weapons almanac](https://www.airandspaceforces.com/app/uploads/2026/06/Almanac2026_Weapons-Platforms-1.pdf). Accessed 2026-11-09.
+
+- **foabCharge** — [VPK historical military review — explicitly reported FOAB explosive mass](https://vpk.name/en/612321_missiles-alone-are-not-enough-now-the-time-of-superbombs-and-superbombs-is-coming-back.html). Accessed 2026-11-09.
+
+
 ## Field evidence matrix
 
-All source names below resolve to the register above. The shipped data repeats full URLs per field so the panel can name its evidence without loading this document.
+All source names below resolve to the register above. Values and confidence flags correspond to the lazy catalog data; labels identify the actual object and units.
 
 ### mk-82 — Mk 82 low-drag bomb / Tritonal configuration
 
@@ -85,7 +102,7 @@ All source names below resolve to the register above. The shipped data repeats f
 | --- | --- | --- | --- |
 | Length / scale | 2.29 m | sourced | airman |
 | Total mass | 241 kg | sourced | weaponFile |
-| Payload / fill | 87.1 kg Tritonal fill | sourced | fill |
+| EXPLOSIVE FILL | 87.1 kg Tritonal fill | sourced | fill |
 | Created / milestone | 1950s — design family | estimated | mkHistory |
 | Retired / status | No retirement recorded; catalog remains in current Army inventory | sourced | armyBombs |
 | Country | United States | sourced | airman, weaponFile, armyBombs |
@@ -99,9 +116,9 @@ Low-drag tail configuration. Published lengths vary with fuze and tail; 7 ft 6.2
 | --- | --- | --- | --- |
 | Length / scale | 4.26 m | sourced | jassm |
 | Total mass | 1,023 kg | sourced | jassmCSIS |
-| Payload / fill | 450 kg warhead; 108.9 kg Tritonal fill | sourced | jassmCSIS, fill |
+| WARHEAD / FILL MASS | 450 kg warhead; 108.9 kg Tritonal fill | sourced | jassmCSIS, fill |
 | Created / milestone | 2003 — initial service | sourced | jassmCSIS |
-| Retired / status | Unknown — not established in public sources | unknown | jassm |
+| Retired / status | JASSM family in service; no date announced | sourced | jassmCurrent |
 | Country | United States | sourced | jassm, jassmCSIS |
 | Exterior | `/media/devices/agm-158-jassm.svg` | estimated | jassm, jassmCSIS |
 
@@ -113,9 +130,9 @@ Baseline AGM-158A, not the extended-range variant. Side outline shows the deploy
 | --- | --- | --- | --- |
 | Length / scale | 3.29 m | sourced | paveway |
 | Total mass | 275 kg complete bomb | estimated | weaponFile |
-| Payload / fill | 136.1 kg listed explosive load | sourced | fill |
+| LISTED EXPLOSIVE LOAD | 136.1 kg listed explosive load | sourced | fill |
 | Created / milestone | 2000s — Enhanced Paveway II introduction | estimated | danishPaveway |
-| Retired / status | Unknown — not established in public sources | unknown | paveway |
+| Retired / status | In service; no retirement announced | sourced | gb49Current |
 | Country | United States | sourced | paveway, fill |
 | Exterior | `/media/devices/gbu-49.svg` | estimated | paveway, fill |
 
@@ -127,7 +144,7 @@ Baseline AGM-158A, not the extended-range variant. Side outline shows the deploy
 | --- | --- | --- | --- |
 | Length / scale | 3.00 m | sourced | weaponFile |
 | Total mass | 454 kg class | sourced | armyBombs |
-| Payload / fill | 201.8 kg Tritonal fill | sourced | weaponFile |
+| EXPLOSIVE FILL | 201.8 kg Tritonal fill | sourced | weaponFile |
 | Created / milestone | 1950s — design family | estimated | mkHistory |
 | Retired / status | No retirement recorded; current Army inventory | sourced | armyBombs |
 | Country | United States | sourced | weaponFile, armyBombs |
@@ -141,7 +158,7 @@ Nominal 1,000 lb weight class; exact total mass and length vary with fuze and ta
 | --- | --- | --- | --- |
 | Length / scale | 3.78 m | sourced | airman |
 | Total mass | 907 kg class | sourced | armyBombs |
-| Payload / fill | 428.6 kg Tritonal fill | sourced | fill |
+| EXPLOSIVE FILL | 428.6 kg Tritonal fill | sourced | fill |
 | Created / milestone | 1950s — design family | estimated | mkHistory |
 | Retired / status | No retirement recorded; current Army inventory | sourced | armyBombs |
 | Country | United States | sourced | airman, armyBombs |
@@ -155,9 +172,9 @@ Nominal 1,000 lb weight class; exact total mass and length vary with fuze and ta
 | --- | --- | --- | --- |
 | Length / scale | 9.14 m | sourced | moab |
 | Total mass | 9,798 kg | sourced | moab |
-| Payload / fill | 8,482 kg H6 fill | sourced | moab |
+| EXPLOSIVE FILL | 8,482 kg H6 fill | sourced | moab |
 | Created / milestone | 2003-03-11 — first live test | sourced | moab |
-| Retired / status | Unknown — not established in public sources | unknown | moab |
+| Retired / status | Listed in 2026 inventory; no date announced | sourced | airmanCurrent |
 | Country | United States | sourced | moab |
 | Exterior | `/media/devices/moab.svg` | estimated | moab |
 
@@ -168,36 +185,36 @@ Museum gives 30 ft, 21,600 lb gross and 18,700 lb fill. Converted and rounded to
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | Unknown — not established in public sources | unknown | foab |
-| Total mass | Unknown — not established in public sources | unknown | foab |
-| Payload / fill | Unknown — not established in public sources | unknown | foab |
+| COMPLETE MUNITION MASS | Not established — gross/fill reports conflict | unknown | foabReview, foabCharge |
+| REPORTED EXPLOSIVE LOAD | 7,100 kg claimed explosive load | reported | foabCharge |
 | Created / milestone | 2007-09-11 — reported test | sourced | foab |
-| Retired / status | Operational / retirement status unconfirmed | unknown | foab |
+| Retired / status | Test demonstrator; service unconfirmed | reported | foabReview |
 | Country | Russia | reported | foab |
 | Exterior | `/media/devices/foab.svg` | estimated | foab |
 
-The reported 44 t yield is a Russian claim, not independently verified here. No defensible public dimensions or all-up mass were found. Outline is a documentary-style external envelope only; it has no calibrated physical scale.
+The 7,100 kg figure is explicitly explosive mass in some public reports and is called bomb weight in others. It is therefore shown only as a reported explosive-load claim; complete munition mass remains unestablished. Yield and operational status are also reported claims. No defensible public overall length was established. The documentary exterior envelope has no calibrated scale.
 
-### w54 — W54 / Mk 54 Davy Crockett warhead body
+### w54 — M388 Davy Crockett projectile / W54 warhead
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 0.447 m | sourced | nwa |
-| Total mass | 23–25 kg | sourced | nwa |
-| Payload / fill | Unknown — not established in public sources | unknown | nwa |
-| Created / milestone | 1961 — production | sourced | nwa |
-| Retired / status | 1971 — last Davy Crockett variants | sourced | nwa |
+| PROJECTILE LENGTH | 0.787 m | sourced | davyHistory |
+| PROJECTILE MASS | 34.5 kg | sourced | davyHistory |
+| WARHEAD MASS | 23.1 kg W54 warhead | sourced | davyHistory |
+| Created / milestone | 1961-05 — entered service | sourced | davyHistory, davyArmy |
+| Retired / status | 1971 — retired | sourced | davyMuseum, davyArmy |
 | Country | United States | sourced | nwa |
-| Exterior | `/media/devices/w54.svg` | estimated | nwa |
+| Exterior | `/media/devices/w54.svg` | estimated | davyHistory, davyMuseum |
 
-Bare warhead dimensions: 17.6 × 10.75 in and 50–55 lb. The M388 projectile, recoilless launcher and SADM package are different objects and are not included in this outline.
+The recognizable bulbous head, narrow spigot tail and four stabilizing fins depict the complete M388 round, not the bare W54 body or M28/M29 launcher. Army historical specifications give 31 in × 11 in and 76 lb complete; the 51 lb warhead is listed separately. A museum photograph caption incorrectly says 1956; the Army and museum history establish 1961–1971 service. The simulator retains its existing 20 t yield.
 
 ### w48 — W48 155 mm artillery projectile
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 0.846 m | sourced | nwa |
-| Total mass | 54–58 kg | sourced | nwa |
-| Payload / fill | Unknown — not established in public sources | unknown | nwa |
+| PROJECTILE MASS | 54–58 kg | sourced | nwa |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1963 — production | sourced | nwa |
 | Retired / status | 1992 — final variant retirement | sourced | nwa |
 | Country | United States | sourced | nwa |
@@ -210,8 +227,8 @@ Bare warhead dimensions: 17.6 × 10.75 in and 50–55 lb. The M388 projectile, r
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 0.610 m | sourced | nwa |
-| Total mass | 68 kg complete | sourced | nwa |
-| Payload / fill | 27 kg warhead body | sourced | nwa |
+| COMPLETE PACKAGE MASS | 68 kg complete | sourced | nwa |
+| WARHEAD MASS | 27 kg warhead body | sourced | nwa |
 | Created / milestone | 1964 — production | sourced | nwa |
 | Retired / status | 1989 — final retirement | sourced | nwa |
 | Country | United States | sourced | nwa |
@@ -225,7 +242,7 @@ Complete package envelope is 24 × 16 in and 150 lb; the approximately 59 lb war
 | --- | --- | --- | --- |
 | Length / scale | 3.05 m | sourced | littleBoy |
 | Total mass | 4,400 kg | sourced | littleBoy |
-| Payload / fill | Unknown — not established in public sources | unknown | littleBoy, nwa |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | littleBoy |
 | Created / milestone | 1945-08-06 — combat use | sourced | littleBoy |
 | Retired / status | 1950 — Mark I family retirement | sourced | nwa |
 | Country | United States | sourced | littleBoy, nwa |
@@ -239,7 +256,7 @@ National Archives gives 10 ft, 28 in and 9,700 lb for the Hiroshima assembly. So
 | --- | --- | --- | --- |
 | Length / scale | 1.5 m across assembly | estimated | gadget |
 | Total mass | Unknown — not established in public sources | unknown | gadget, trinity |
-| Payload / fill | Unknown — not established in public sources | unknown | gadget, trinity |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | gadget, trinity |
 | Created / milestone | 1945-07-16 — test | sourced | trinity |
 | Retired / status | Not applicable — one-off test | inapplicable | trinity |
 | Country | United States | sourced | gadget, trinity |
@@ -253,7 +270,7 @@ Approximate visible assembly diameter inferred from the NPS photograph with Norr
 | --- | --- | --- | --- |
 | Length / scale | 3.25 m | sourced | nwa |
 | Total mass | 4,672 kg | sourced | fatManWS |
-| Payload / fill | Unknown — not established in public sources | unknown | fatMan, fatManWS, nwa |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | fatManWS |
 | Created / milestone | 1945-08-09 — combat use | sourced | fatManWS |
 | Retired / status | 1950 — Mark III family retirement | sourced | fatMan |
 | Country | United States | sourced | fatMan, fatManWS, nwa |
@@ -267,7 +284,7 @@ Uses the 128 in Model 1561 external envelope, with the distinctive box tail. Som
 | --- | --- | --- | --- |
 | Length / scale | 3.70 m | sourced | rdsMuseum |
 | Total mass | 4,600 kg | sourced | rdsMuseum |
-| Payload / fill | Unknown — not established in public sources | unknown | rdsMuseum, rdsBook, soviet |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | rdsMuseum |
 | Created / milestone | 1949-08-29 — first test | sourced | kazakh |
 | Retired / status | 1950s — family withdrawal | estimated | soviet |
 | Country | Soviet Union | sourced | rdsMuseum, rdsBook, soviet |
@@ -281,7 +298,7 @@ Museum explicitly gives 3.7 m × 1.5 m and 4.6 t. Test was on a tower; the outli
 | --- | --- | --- | --- |
 | Length / scale | 3.56 m | sourced | b61spec |
 | Total mass | 374 kg | sourced | b61spec |
-| Payload / fill | Unknown — not established in public sources | unknown | b61, b61spec, b61production |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | b61spec |
 | Created / milestone | 2021 — first production unit | sourced | b61production |
 | Retired / status | In service; retirement date not announced | sourced | nnsa2027 |
 | Country | United States | sourced | b61, b61spec, b61production |
@@ -295,7 +312,7 @@ B61-12-specific 825 lb mass; legacy B61 family masses are lower. New tail guidan
 | --- | --- | --- | --- |
 | Length / scale | Unknown — not established in public sources | unknown | gerboise, france |
 | Total mass | Unknown — not established in public sources | unknown | gerboise, france |
-| Payload / fill | Unknown — not established in public sources | unknown | gerboise, france |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | gerboise, france |
 | Created / milestone | 1960-02-13 — test | sourced | gerboise |
 | Retired / status | Not applicable — one-off test | inapplicable | gerboise |
 | Country | France | sourced | gerboise, france |
@@ -307,15 +324,15 @@ Public parliamentary/CEA histories establish the event but do not establish a co
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Unknown — not established in public sources | unknown | w76, w76production, nnsa2027 |
-| Total mass | 164 kg — W76 family public estimate | estimated | w76 |
-| Payload / fill | Unknown — not established in public sources | unknown | w76, w76production, nnsa2027 |
+| REENTRY BODY LENGTH | 1.30 m Mk 4-family envelope | estimated | mk4Study |
+| REENTRY ASSEMBLY MASS | 90 kg Mk 4-family assembly | estimated | mk4Study |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | w76 |
 | Created / milestone | 2008-09 — first W76-1 unit | sourced | w76production |
 | Retired / status | Stockpile program; no retirement announced | sourced | nnsa2027 |
 | Country | United States | sourced | w76, w76production, nnsa2027 |
-| Exterior | `/media/devices/w76.svg` | estimated | w76, w76production, nnsa2027 |
+| Exterior | `/media/devices/w76.svg` | estimated | mk4Study, w76 |
 
-Public W76 sources do not establish length or diameter; the drawn Mk 4A reentry envelope is approximate and unscaled. Family mass is not a certified W76-1 complete reentry-vehicle mass. No hidden component dimensions are implied.
+The same public scholarly Mk 4 exterior model supplies both 1.3 m length, 0.40 m base diameter and 90 kg complete-RV mass. Using this family envelope for Mk 4A is an educated estimate, not a certified W76-1 bare-warhead specification. An older historical archive lists 164 kg with different scope; that figure is not substituted for the modeled assembly mass.
 
 ### sedan — Sedan underground test device
 
@@ -323,7 +340,7 @@ Public W76 sources do not establish length or diameter; the drawn Mk 4A reentry 
 | --- | --- | --- | --- |
 | Length / scale | 0.965 m | sourced | storax |
 | Total mass | 212 kg | sourced | storax |
-| Payload / fill | Unknown — not established in public sources | unknown | storax, sedan |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | storax |
 | Created / milestone | 1962-07-06 — test | sourced | sedan |
 | Retired / status | Not applicable — one-off test | inapplicable | sedan |
 | Country | United States | sourced | storax, sedan |
@@ -336,14 +353,14 @@ Public W76 sources do not establish length or diameter; the drawn Mk 4A reentry 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 0.798 m | sourced | w80, nwa, nnsa2027 |
-| Total mass | 132 kg | sourced | w80, nwa, nnsa2027 |
-| Payload / fill | Unknown — not established in public sources | unknown | w80, nwa, nnsa2027 |
+| WARHEAD MASS | 132 kg | sourced | w80, nwa, nnsa2027 |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | w80, nwa, nnsa2027 |
 | Created / milestone | 1981 — first production | sourced | w80, nwa, nnsa2027 |
 | Retired / status | Stockpile program; no retirement announced | sourced | nnsa2027 |
 | Country | United States | sourced | w80, nwa, nnsa2027 |
 | Exterior | `/media/devices/w80.svg` | estimated | w80, nwa, nnsa2027 |
 
-Public bare-warhead envelope: 31.4 × 11.8 in, 290 lb. It is not the complete AGM-86 or Tomahawk missile. The catalog generic W80 choice is documented here using the W80-1 variant.
+Public bare-warhead envelope: 31.4 × 11.8 in, 290 lb. The approximate W80-family profile includes the public aft collar; Mod 0/1 installation fittings differ. This is not a complete AGM-86 or Tomahawk missile. The generic catalog choice uses W80-1 history.
 
 ### greenhouse-george — Greenhouse George experimental assembly
 
@@ -351,7 +368,7 @@ Public bare-warhead envelope: 31.4 × 11.8 in, 290 lb. It is not the complete AG
 | --- | --- | --- | --- |
 | Length / scale | Unknown — not established in public sources | unknown | greenhouse |
 | Total mass | Unknown — not established in public sources | unknown | greenhouse |
-| Payload / fill | Unknown — not established in public sources | unknown | greenhouse |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | greenhouse |
 | Created / milestone | 1951-05-08 — test | sourced | greenhouse |
 | Retired / status | Not applicable — one-off test | inapplicable | greenhouse |
 | Country | United States | sourced | greenhouse |
@@ -363,9 +380,9 @@ Historical records call the apparatus Cylinder / Silex; a documented toroidal it
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 1.75 m exterior envelope | estimated | w87 |
-| Total mass | Over 363 kg complete assembly | estimated | w87 |
-| Payload / fill | 200–272 kg warhead body | estimated | w87 |
+| REENTRY BODY LENGTH | 1.75 m exterior envelope | estimated | w87 |
+| REENTRY ASSEMBLY MASS | Over 363 kg complete assembly | estimated | w87 |
+| WARHEAD MASS | 200–272 kg warhead body | estimated | w87 |
 | Created / milestone | 1986 — stockpile entry | sourced | gao2006 |
 | Retired / status | Stockpile program; no retirement announced | sourced | nnsa2027 |
 | Country | United States | sourced | w87, gao2006, nnsa2027 |
@@ -379,9 +396,9 @@ Dimensions describe the public Mk 21 reentry-vehicle envelope, not the bare warh
 | --- | --- | --- | --- |
 | Length / scale | 3.60 m | sourced | nwa |
 | Total mass | 324 kg | estimated | nwa |
-| Payload / fill | Unknown — not established in public sources | unknown | nwa, gao2006, b61production |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1985 — stockpile entry | sourced | gao2006 |
-| Retired / status | Replacement / retirement completion unconfirmed | unknown | b61production |
+| Retired / status | Being replaced by B61-12 / B61-13 | sourced | b61production, nnsa2027 |
 | Country | United States | sourced | nwa, gao2006, b61production |
 | Exterior | `/media/devices/b61-7.svg` | estimated | nwa, gao2006, b61production |
 
@@ -393,7 +410,7 @@ Mod 7 legacy casing with retarding-tail form, not Mod 12 guidance fins. NNSA rec
 | --- | --- | --- | --- |
 | Length / scale | 5.80 m casing | sourced | rdsBook |
 | Total mass | 7,000 kg complete device | sourced | rdsBook |
-| Payload / fill | Unknown — not established in public sources | unknown | rdsBook, soviet |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | rdsBook |
 | Created / milestone | 1953-08-12 — test | sourced | rdsBook |
 | Retired / status | Not applicable — one-off test | inapplicable | rdsBook |
 | Country | Soviet Union | sourced | rdsBook, soviet |
@@ -405,9 +422,9 @@ Museum catalog page 97 gives 5,800 mm casing length and 7 t complete mass. Outli
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 1.75 m exterior envelope | estimated | w88 |
-| Total mass | Below 363 kg complete assembly | estimated | w88 |
-| Payload / fill | Unknown — not established in public sources | unknown | w88, nwa, nnsa2027 |
+| REENTRY BODY LENGTH | 1.75 m exterior envelope | estimated | w88 |
+| REENTRY ASSEMBLY MASS | Below 363 kg complete assembly | estimated | w88 |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | w88 |
 | Created / milestone | 1988 — production | sourced | w88, nwa, nnsa2027 |
 | Retired / status | Stockpile program; no retirement announced | sourced | nnsa2027 |
 | Country | United States | sourced | w88, nwa, nnsa2027 |
@@ -421,7 +438,7 @@ Public Mk 5 envelope estimates, not a bare-warhead engineering specification. Th
 | --- | --- | --- | --- |
 | Length / scale | 3.25 m | sourced | nwa, ivy |
 | Total mass | 3,901 kg | sourced | nwa, ivy |
-| Payload / fill | Unknown — not established in public sources | unknown | nwa, ivy |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa, ivy |
 | Created / milestone | 1952-11-16 — test | sourced | ivy |
 | Retired / status | Not applicable — one-off test | inapplicable | ivy |
 | Country | United States | sourced | nwa, ivy |
@@ -434,22 +451,22 @@ King was the test of the Mark 18 bomb family. 128 in × 60 in and 8,600 lb are t
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 0.76 m across assembly | estimated | ukArchive |
-| Total mass | Unknown — not established in public sources | unknown | ukArchive, ukGlossary, ukTests |
-| Payload / fill | Unknown — not established in public sources | unknown | ukArchive, ukGlossary, ukTests |
+| TEST ASSEMBLY MASS | 1,000 kg test assembly | estimated | orangeGlossary |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | ukArchive, orangeGlossary, ukTests |
 | Created / milestone | 1957-05-31 — test | sourced | ukTests |
 | Retired / status | Not applicable — one-off test | inapplicable | ukTests |
-| Country | United Kingdom | sourced | ukArchive, ukGlossary, ukTests |
-| Exterior | `/media/devices/orange-herald.svg` | estimated | ukArchive, ukGlossary, ukTests |
+| Country | United Kingdom | sourced | ukArchive, orangeGlossary, ukTests |
+| Exterior | `/media/devices/orange-herald.svg` | estimated | ukArchive, orangeGlossary, ukTests |
 
-Outline depicts the spherical Orange Herald Small assembly seen in a supporting frame, not a complete Blue Danube casing. The 30 in diameter is a secondary historical estimate; gross complete test-bomb mass remains unknown.
+Historical glossary describes a one-ton Orange Herald assembly and distinguishes the 30 in Small sphere from the larger variant. The rounded 1,000 kg estimate applies to the test assembly, not a complete Blue Danube aerodynamic casing. Outline shows the sphere in its support frame; the carrier aircraft is excluded.
 
 ### w59 — W59 missile warhead body
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 1.21 m | sourced | nwa |
-| Total mass | 249–251 kg | sourced | nwa |
-| Payload / fill | Unknown — not established in public sources | unknown | nwa |
+| WARHEAD MASS | 249–251 kg | sourced | nwa |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1962 — production | sourced | nwa |
 | Retired / status | 1969 — final retirement | sourced | nwa |
 | Country | United States | sourced | nwa |
@@ -463,9 +480,9 @@ Bare warhead public dimensions: 47.8 × 16.3 in, 550–553 lb. Does not include 
 | --- | --- | --- | --- |
 | Length / scale | 3.68 m | sourced | b83, b83status |
 | Total mass | 1,089 kg | sourced | b83, b83status |
-| Payload / fill | Unknown — not established in public sources | unknown | b83, b83status |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | b83, b83status |
 | Created / milestone | 1983 — first production | sourced | b83, b83status |
-| Retired / status | Retirement planned; completion not established | unknown | b83status |
+| Retired / status | Retirement planned; completion not announced | sourced | b83status |
 | Country | United States | sourced | b83, b83status |
 | Exterior | `/media/devices/b83.svg` | estimated | b83, b83status |
 
@@ -476,8 +493,8 @@ Public dimensions 145 × 18 in and 2,400 lb. Retirement policy is not proof that
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 1.38–1.47 m | sourced | nwa |
-| Total mass | 744–762 kg | sourced | nwa |
-| Payload / fill | Unknown — not established in public sources | unknown | nwa |
+| WARHEAD MASS | 744–762 kg | sourced | nwa |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1958 — W49 production | sourced | nwa |
 | Retired / status | Not applicable — one-off test | inapplicable | nwa |
 | Country | United States | sourced | nwa |
@@ -491,7 +508,7 @@ W49 public warhead body range: 54.3–57.9 in and 1,640–1,680 lb. Outline excl
 | --- | --- | --- | --- |
 | Length / scale | Unknown — not established in public sources | unknown | rds37, soviet |
 | Total mass | Unknown — not established in public sources | unknown | rds37, soviet |
-| Payload / fill | Unknown — not established in public sources | unknown | rds37, soviet |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | rds37, soviet |
 | Created / milestone | 1955-11-22 — test | sourced | rds37 |
 | Retired / status | Not applicable — one-off test | inapplicable | rds37 |
 | Country | Soviet Union | sourced | rds37, soviet |
@@ -505,7 +522,7 @@ Reviewed primary historical account confirms the test but does not establish com
 | --- | --- | --- | --- |
 | Length / scale | Unknown — not established in public sources | unknown | ukTests, ukFilm, ukArchive |
 | Total mass | Unknown — not established in public sources | unknown | ukTests, ukFilm, ukArchive |
-| Payload / fill | Unknown — not established in public sources | unknown | ukTests, ukFilm, ukArchive |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | ukTests, ukFilm, ukArchive |
 | Created / milestone | 1957-11-08 — test | sourced | ukTests |
 | Retired / status | Not applicable — one-off test | inapplicable | ukTests |
 | Country | United Kingdom | sourced | ukTests, ukFilm, ukArchive |
@@ -518,14 +535,14 @@ Exterior outline is an approximate air-drop casing envelope informed by IWM test
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | Unknown — not established in public sources | unknown | canopus, france |
-| Total mass | Unknown — not established in public sources | unknown | canopus, france |
-| Payload / fill | Unknown — not established in public sources | unknown | canopus, france |
+| EXPERIMENTAL DEVICE MASS | 3,000 kg experimental device | estimated | canopusINA |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | canopus, france |
 | Created / milestone | 1968-08-24 — test | sourced | canopus |
 | Retired / status | Not applicable — one-off test | inapplicable | canopus |
 | Country | France | sourced | canopus, france |
 | Exterior | `/media/devices/canopus.svg` | estimated | canopus, france |
 
-CEA describes a test gondola suspended beneath a balloon. The visible outline represents this test assembly envelope (est), not a service bomb. Complete package dimensions/mass are not established; the suspension balloon is excluded.
+INA historical footage coverage describes an approximately three-ton device suspended at 520 m. This is device mass, not the combined balloon, suspension rig and gondola. CEA confirms the suspended test configuration, but does not establish complete external dimensions. The outline depicts that qualified exterior package.
 
 ### grapple-y — Grapple Y test bomb
 
@@ -533,7 +550,7 @@ CEA describes a test gondola suspended beneath a balloon. The visible outline re
 | --- | --- | --- | --- |
 | Length / scale | Unknown — not established in public sources | unknown | ukTests, ukArchive |
 | Total mass | Unknown — not established in public sources | unknown | ukTests, ukArchive |
-| Payload / fill | Unknown — not established in public sources | unknown | ukTests, ukArchive |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | ukTests, ukArchive |
 | Created / milestone | 1958-04-28 — test | sourced | ukTests |
 | Retired / status | Not applicable — one-off test | inapplicable | ukTests |
 | Country | United Kingdom | sourced | ukTests, ukArchive |
@@ -546,8 +563,8 @@ Approximate air-dropped test casing silhouette; no defensible complete external 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 2.68 m | sourced | nwa |
-| Total mass | 2,826–2,903 kg | sourced | nwa |
-| Payload / fill | Unknown — not established in public sources | unknown | nwa |
+| WARHEAD MASS | 2,826–2,903 kg | sourced | nwa |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1958 — production | sourced | nwa |
 | Retired / status | 1965 — final Snark variant retirement | sourced | nwa |
 | Country | United States | sourced | nwa |
@@ -561,7 +578,7 @@ Approximate air-dropped test casing silhouette; no defensible complete external 
 | --- | --- | --- | --- |
 | Length / scale | 3.76 m | sourced | nwa |
 | Total mass | 4,037 kg | sourced | nwa |
-| Payload / fill | Unknown — not established in public sources | unknown | b53, nwa |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1962 — production | sourced | b53, nwa |
 | Retired / status | 1997 — active-service retirement | sourced | b53, nwa |
 | Country | United States | sourced | b53, nwa |
@@ -575,7 +592,7 @@ Approximate air-dropped test casing silhouette; no defensible complete external 
 | --- | --- | --- | --- |
 | Length / scale | 2.85 m | sourced | poplar |
 | Total mass | 4,226 kg | sourced | poplar |
-| Payload / fill | Unknown — not established in public sources | unknown | poplar |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | poplar |
 | Created / milestone | 1958-07-12 — test | sourced | poplar |
 | Retired / status | Not applicable — one-off test | inapplicable | poplar |
 | Country | United States | sourced | poplar |
@@ -589,7 +606,7 @@ Poplar experimental device: 112.1 × 48.2 in and 9,316 lb. It preceded the longe
 | --- | --- | --- | --- |
 | Length / scale | 6.19 m main apparatus | sourced | ivyDims |
 | Total mass | 74,400 kg with diagnostic equipment | estimated | ivyDims |
-| Payload / fill | Unknown — not established in public sources | unknown | ivy, ivyDims |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | ivyDims |
 | Created / milestone | 1952-11-01 — local test date | sourced | ivy |
 | Retired / status | Not applicable — one-off test | inapplicable | ivy |
 | Country | United States | sourced | ivy, ivyDims |
@@ -603,7 +620,7 @@ The large upright experimental apparatus is not a deliverable bomb. Source gives
 | --- | --- | --- | --- |
 | Length / scale | 5.71 m | sourced | castle |
 | Total mass | 17,963 kg | sourced | castle |
-| Payload / fill | Unknown — not established in public sources | unknown | castle |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | castle |
 | Created / milestone | 1954-05-05 — local test date | sourced | castle |
 | Retired / status | Not applicable — one-off test | inapplicable | castle |
 | Country | United States | sourced | castle |
@@ -617,7 +634,7 @@ Runt II used the same exterior casing, dimensions and weight as the Runt I test 
 | --- | --- | --- | --- |
 | Length / scale | 4.56 m | sourced | castle |
 | Total mass | 10,659 kg | sourced | castle |
-| Payload / fill | Unknown — not established in public sources | unknown | castle, bravoDTRA |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | castle |
 | Created / milestone | 1954-03-01 — local test date | sourced | bravoDTRA |
 | Retired / status | Not applicable — one-off test | inapplicable | bravoDTRA |
 | Country | United States | sourced | castle, bravoDTRA |
@@ -631,7 +648,7 @@ Runt II used the same exterior casing, dimensions and weight as the Runt I test 
 | --- | --- | --- | --- |
 | Length / scale | 3.76 m | sourced | poplar |
 | Total mass | 4,840 kg | sourced | poplar |
-| Payload / fill | Unknown — not established in public sources | unknown | poplar |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | poplar |
 | Created / milestone | 1960 — production | sourced | poplar |
 | Retired / status | 1976 — final retirement | sourced | poplar |
 | Country | United States | sourced | poplar |
@@ -645,7 +662,7 @@ Runt II used the same exterior casing, dimensions and weight as the Runt I test 
 | --- | --- | --- | --- |
 | Length / scale | 8.00 m | sourced | boomba |
 | Total mass | 27,000 kg | estimated | boomba |
-| Payload / fill | Unknown — not established in public sources | unknown | boomba, rdsMuseum |
+| SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | boomba |
 | Created / milestone | 1961-10-30 — test | sourced | boomba |
 | Retired / status | Not applicable — one-off test | inapplicable | boomba |
 | Country | Soviet Union | sourced | boomba, rdsMuseum |
@@ -658,8 +675,8 @@ Public reported gross masses range roughly 24.5–27.5 t; 27 t is a rounded esti
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 22.5 m | estimated | yars |
-| Total mass | 49,000 kg launch mass | estimated | yars |
-| Payload / fill | 1,200 kg payload | estimated | yars |
+| LAUNCH MASS | 49,000 kg launch mass | estimated | yars |
+| DELIVERY PAYLOAD | 1,200 kg payload | estimated | yars |
 | Created / milestone | 2007-05 — first flight test | sourced | yars |
 | Retired / status | Operational in reviewed record; retirement unknown | reported | yars |
 | Country | Russia | sourced | yars |
@@ -672,8 +689,8 @@ Carrier exterior, not one warhead. CSIS table lists 49,600 kg but its narrative 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 12.1 m | estimated | bulava |
-| Total mass | 36,800 kg launch mass | estimated | bulava |
-| Payload / fill | 1,150 kg payload | estimated | bulava |
+| LAUNCH MASS | 36,800 kg launch mass | estimated | bulava |
+| DELIVERY PAYLOAD | 1,150 kg payload | estimated | bulava |
 | Created / milestone | 2005-09 — first powered flight | sourced | bulava |
 | Retired / status | Operational in reviewed record; retirement unknown | reported | bulava |
 | Country | Russia | sourced | bulava |
@@ -686,10 +703,10 @@ Public dimensions vary: CSIS narrative gives 12–13.5 m and 36–39 t; preview 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
 | Length / scale | 35.3 m | reported | sarmat |
-| Total mass | 208,100 kg launch mass | reported | sarmat |
-| Payload / fill | 10,000 kg payload capacity | reported | sarmat |
+| LAUNCH MASS | 208,100 kg launch mass | reported | sarmat |
+| DELIVERY PAYLOAD | 10,000 kg payload capacity | reported | sarmat |
 | Created / milestone | 2022-04 — first full-flight test | sourced | sarmatStatus |
-| Retired / status | Service entry disputed; no retirement date | unknown | sarmat, sarmatStatus |
+| Retired / status | Service-entry claims disputed; no retirement | reported | sarmat, sarmatStatus |
 | Country | Russia | sourced | sarmat, sarmatStatus |
 | Exterior | `/media/devices/rs-28-sarmat.svg` | estimated | sarmat, sarmatStatus |
 
@@ -806,190 +823,193 @@ Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, p
 | Exterior | `/media/devices/earth-spanning.svg` | estimated | model |
 
 Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, physical size, mass, national origin or service dates are implied. Extreme yields exceed the calibrated range of the screening model.
-
-
 ## Scenario event descriptions
 
-Each of the 20 previews contains an original 60–100-word account, paired by scenario ID with its image. Historical prose summarizes the sources below; no eyewitness quotation or casualty count is invented. Descriptions use a dark, sober voice while separating observable event facts from reflective language. The nine hypothetical entries are explicitly conditional illustrations; none claims a calibrated continental or planetary forecast. Image content is not evidence for the text. The displayed prose remains static and does not call an AI service at runtime.
+Each original description is now **30–45 words**, paired by the unchanged stable scenario ID with its existing image. Historical prose retains date, place, action and aftermath; hypothetical prose remains explicitly conditional. The deliberately dark, sober voice does not invent eyewitness quotations, casualty counts or calibrated continental forecasts. Source citations are retained in the data.
 
 ### hiroshima
 
-Historical account. 84 words. Sources reviewed 2026-11-08:
+40 words; sources reviewed on 2026-11-09:
 
 - [www.pref.hiroshima.lg.jp](https://www.pref.hiroshima.lg.jp/site/hiroshimaforpeace-en/reconstruction-atomic-bombing.html)
 - [prologue.blogs.archives.gov](https://prologue.blogs.archives.gov/2020/08/06/little-boy-the-first-atomic-bomb/)
 
-On the morning of 6 August 1945, Little Boy exploded above Hiroshima. A familiar city of bridges, homes and crowded streets became a landscape of fire and wreckage. The blast destroyed places of shelter and care as well as the people within them; survivors faced burns, injury, radiation illness and the long search for missing families. The flash lasted an instant. Its consequences did not. This illustration evokes the event, while the account remembers an actual city and lives that no diagram can restore.
+On 6 August 1945, Little Boy exploded above Hiroshima. Heat and blast tore through streets, homes and places of care. The city burned beneath a rising cloud; survivors faced ruined shelter, missing families and radiation long after the light faded.
 
 ### nagasaki
 
-Historical account. 81 words. Sources reviewed 2026-11-08:
+39 words; sources reviewed on 2026-11-09:
 
 - [nagasakipeace.jp](https://nagasakipeace.jp/en/search/record/)
 - [nagasakipeace.jp](https://nagasakipeace.jp/content/files/english/abm/leaflet_e.pdf)
 
-At 11:02 on 9 August 1945, Fat Man detonated over Nagasaki after the bomber diverted from its primary target, Kokura. The Urakami valley, its factories, neighborhoods and cathedral were struck by heat and blast. Hills shaped the destruction without sparing the people caught beneath the cloud. Survivors entered a city of broken buildings and desperate need, with radiation adding an unseen aftermath to visible wounds. Three days after Hiroshima, another city had learned how abruptly ordinary life could be torn away.
+At 11:02 on 9 August 1945, Fat Man detonated over Nagasaki’s Urakami valley. Factories, homes and the cathedral became wreckage. Hills shaped the destruction without sheltering everyone beneath the cloud; burns, loss and radiation followed survivors into the aftermath.
 
 ### trinity
 
-Historical account. 83 words. Sources reviewed 2026-11-08:
+39 words; sources reviewed on 2026-11-09:
 
 - [www.energy.gov](https://www.energy.gov/lm/trinity-site-worlds-first-nuclear-explosion)
 - [home.nps.gov](https://home.nps.gov/articles/000/the-gadget.htm)
 
-Before dawn on 16 July 1945, the Trinity Gadget detonated above the Jornada del Muerto in New Mexico. The tower vanished in a flash, and sand near ground zero became green glass. This was the first nuclear explosion: an experiment whose result opened a new and darker chapter in warfare. Beyond the instruments and observation posts lay a real landscape, carrying the radioactive aftermath of a secret test. The desert returned to daylight; the world could not return to the morning before it.
+Before dawn on 16 July 1945, the Trinity Gadget exploded above New Mexico’s Jornada del Muerto. The tower vanished and sand became green glass. Humanity’s first nuclear test left radioactive ground beneath a cloud that announced a darker age.
 
 ### sedan
 
-Historical account. 83 words. Sources reviewed 2026-11-08:
+39 words; sources reviewed on 2026-11-09:
 
 - [nnss.gov](https://nnss.gov/wp-content/uploads/2023/04/NNSS-SEDN-U-0047-Rev01-1.pdf)
 - [eros.usgs.gov](https://eros.usgs.gov/earthshots/sedan-crater)
 
-On 6 July 1962, the Sedan experiment detonated beneath the Nevada desert as part of Project Plowshare, a program exploring nuclear excavation. The earth rose, broke open and fell back around a crater roughly 390 meters across. A promise of peaceful earthmoving left a vast wound in the landscape and radioactive debris above it. The crater remains a physical record of that bargain: enormous force could move a mountain of soil, but the disturbed ground and its contamination were part of the result.
+On 6 July 1962, Sedan detonated beneath the Nevada desert in an experiment in nuclear excavation. The ground rose and broke, leaving a crater roughly 390 meters across. A promise of peaceful earthmoving left displaced soil and radioactive debris.
 
 ### castle-bravo
 
-Historical account. 89 words. Sources reviewed 2026-11-08:
+39 words; sources reviewed on 2026-11-09:
 
 - [www.dtra.mil](https://www.dtra.mil/Portals/125/Documents/NTPR/newDocs/ANTHReport/1954_DNA_6035F.pdf)
 - [www.nuclearweaponarchive.org](https://www.nuclearweaponarchive.org/Usa/Tests/Castle.html)
 
-On 1 March 1954, Castle Bravo erupted on Bikini Atoll with a yield far above its planners' expectations. The reef disappeared beneath a towering cloud, while radioactive fallout traveled beyond the immediate test area. Marshallese communities and the crew of the Japanese fishing boat Daigo Fukuryu Maru were exposed. The bright tropical setting concealed no safe boundary between an experiment and the people downwind. Long after the cloud dispersed, displacement, contamination and the consequences of exposure remained. This is an illustration of a real catastrophe, not an archival photograph.
+On 1 March 1954, Castle Bravo erupted at Bikini Atoll far above its predicted yield. Fallout reached Marshallese communities and a Japanese fishing crew beyond the test area. The cloud dispersed; exposure, contamination and displacement outlasted the tropical glare.
 
 ### tsar-bomba
 
-Historical account. 82 words. Sources reviewed 2026-11-08:
+39 words; sources reviewed on 2026-11-09:
 
 - [www.nuclearweaponarchive.org](https://www.nuclearweaponarchive.org/~nuclearw/Russia/TsarBomba.html)
 
-On 30 October 1961, the Soviet Union detonated Tsar Bomba over Novaya Zemlya. The roughly 50-megaton test was the largest nuclear explosion ever conducted. A specially modified bomber released a weapon too large for its ordinary bomb bay, and an immense flash and cloud rose over the Arctic test landscape. Its scale was a demonstration of power with little resemblance to a usable human place beneath it. The distant, cold setting made the spectacle appear abstract; the energy released was brutally real.
+On 30 October 1961, Tsar Bomba detonated over Novaya Zemlya. The roughly 50-megaton explosion was the largest nuclear test ever conducted. An immense flash and cloud overwhelmed the Arctic horizon: a cold landscape beneath a demonstration of terrifying power.
 
 ### rds-1-semipalatinsk
 
-Historical account. 80 words. Sources reviewed 2026-11-08:
+42 words; sources reviewed on 2026-11-09:
 
 - [www.vniief.ru](https://www.vniief.ru/vniief/nuclear-center/museum/museum-of-nuclear-weapons/)
 - [semi-nuc.iarc.who.int](https://semi-nuc.iarc.who.int/)
 
-On 29 August 1949, RDS-1 detonated at Semipalatinsk in the Kazakh steppe, marking the Soviet Union's first nuclear test. The blast ended the United States' nuclear monopoly and began a long test history at this site. Settlements and grazing land existed beyond the test structures; fallout did not stop at their boundaries. Later research has examined radiation exposure among surrounding populations. The cloud belongs to one morning, but the broader testing legacy reaches into land, health and memory across generations.
+On 29 August 1949, RDS-1 exploded at Semipalatinsk in the Kazakh steppe, the Soviet Union’s first nuclear test. Fallout crossed a landscape of settlements and grazing land. The testing era that followed left exposure, contaminated ground and a lasting burden of memory.
 
 ### gerboise-reggane
 
-Historical account. 84 words. Sources reviewed 2026-11-08:
+41 words; sources reviewed on 2026-11-09:
 
 - [www.assemblee-nationale.fr](https://www.assemblee-nationale.fr/rap-oecst/essais_nucleaires/i3571.asp)
 - [www.senat.fr](https://www.senat.fr/rap/o97-179/o97-1799.html)
 
-On 13 February 1960, France detonated Gerboise Bleue near Reggane in the Algerian Sahara, then under French colonial rule. A tower-mounted device made France a nuclear power, and a harsh desert landscape became a radioactive test site. Parliamentary records describe contamination extending beyond the immediate ground-zero area. Calling the region remote did not make it empty, or make the aftermath disappear. Behind the official milestone were exposed land, personnel and surrounding communities, and a legacy whose consequences outlasted the brief glare over the sand.
+On 13 February 1960, Gerboise Bleue detonated near Reggane in the Algerian Sahara, then under French colonial rule. A tower-mounted device made France a nuclear power. The desert was not empty: radioactive contamination reached beyond the brief glare and official milestone.
 
 ### ivy-mike-elugelab
 
-Historical account. 85 words. Sources reviewed 2026-11-08:
+39 words; sources reviewed on 2026-11-09:
 
 - [www.army.mil](https://www.army.mil/article/47341/the_island_is_missing)
 - [www.govinfo.gov](https://www.govinfo.gov/content/pkg/GOVPUB-D15-PURL-gpo222810/pdf/GOVPUB-D15-PURL-gpo222810.pdf)
 
-On 1 November 1952, local time, Ivy Mike detonated on Elugelab in Enewetak Atoll. The experimental apparatus demonstrated a full-scale thermonuclear explosion; the island beneath it was obliterated, leaving a crater where coral and vegetation had stood. Instruments measured success while the geography itself was erased. The lagoon and the surrounding islands became part of the aftermath of Pacific testing, not a blank background for it. In this scene, the enormous cloud rises over a place that would no longer exist in its previous form.
+On 1 November 1952, Ivy Mike detonated on Elugelab in Enewetak Atoll. The full-scale thermonuclear experiment obliterated the island, leaving a crater beneath the lagoon. Instruments recorded success while a living piece of Pacific geography disappeared beneath the cloud.
 
 ### orange-herald-malden
 
-Historical account. 87 words. Sources reviewed 2026-11-08:
+41 words; sources reviewed on 2026-11-09:
 
 - [assets.publishing.service.gov.uk](https://assets.publishing.service.gov.uk/media/5a755567e5274a59fa717577/ntvfactsheet5.pdf)
 - [www.nuclearweaponarchive.org](https://www.nuclearweaponarchive.org/~nuclearw/Uk/UKTesting.html)
 
-On 31 May 1957, Britain tested Orange Herald near Malden Island during Operation Grapple. The powerful fission explosion formed part of the drive toward a British thermonuclear capability. A low coral island and open Pacific horizon became the setting for another immense cloud, watched and measured by test personnel. The official yield describes energy; it does not describe what it means to work beneath the threat of fallout or to turn an ocean landscape into a proving ground. The image is an artistic reconstruction of that event.
+On 31 May 1957, Britain tested Orange Herald near Malden Island during Operation Grapple. A powerful fission explosion rose above the Pacific horizon. A military milestone also turned coral, ocean and the personnel watching it into a setting for radioactive aftermath.
 
 ### canopus-fangataufa
 
-Historical account. 81 words. Sources reviewed 2026-11-08:
+37 words; sources reviewed on 2026-11-09:
 
 - [archives.ecpad.fr](https://archives.ecpad.fr/archives/acceder-a-la-liste-des-series-photographiques?detail=129652)
 - [www.cea.fr](https://www.cea.fr/multimedia/Documents/publications/ouvrages/LIVRE-Les-essais-nucleaires-en-Polynesie-francaise.pdf)
 
-On 24 August 1968, Canopus detonated above Fangataufa Atoll in French Polynesia. Suspended beneath a balloon, the device produced France's first full-scale thermonuclear test, with a yield of about 2.6 megatons. The bright lagoon and reef were transformed into a stage for overwhelming heat, blast and radioactive fallout. A scientific and military milestone was also an intervention in a living Pacific environment. The cloud vanished from the horizon; the history of testing, exposure and altered landscapes did not vanish with it.
+On 24 August 1968, Canopus detonated above Fangataufa Atoll. The balloon-suspended device produced France’s first full-scale thermonuclear test. Beneath the immense cloud lay lagoon and reef: a living Pacific environment subjected to heat, blast and radioactive fallout.
 
 ### tsar-manhattan
 
-Hypothetical, conditional illustration. 86 words. Sources reviewed 2026-11-08:
+44 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-In this hypothetical scenario, a Tsar Bomba-scale explosion would rise above Midtown Manhattan. The skyline would cease to be a collection of familiar towers and become a fragile surface beneath a vastly larger event. Heat, blast and shattered infrastructure could turn connected neighborhoods into isolated places of darkness and loss. This imagined scene is deliberately bleak: the bridges, streets and windows make the scale human. It is an illustration of a conditional catastrophe, not an event that happened or a forecast of individual buildings and lives.
+In this hypothetical event, a Tsar Bomba-scale blast would loom above Midtown Manhattan. Familiar towers would become fragile outlines beneath a vastly larger cloud. Heat, wreckage and failed infrastructure could sever the city’s ordinary connections, leaving darkness where movement and shelter once seemed certain.
 
 ### tokyo-100
 
-Hypothetical, conditional illustration. 85 words. Sources reviewed 2026-11-08:
+41 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-This hypothetical 100-megaton event imagines a colossal blast over central Tokyo. The dense pattern of streets and buildings would lie beneath a glare large enough to make the city feel suddenly small. Transport, power and communications could fail together, leaving survivors cut off from help across an urban landscape built on constant connection. The red cloud is an artistic warning about scale, not a calculated skyline of destruction. No such event occurred here, and the simulator cannot predict its detailed human, structural or environmental aftermath.
+This hypothetical 100-megaton explosion would rise over central Tokyo, dwarfing its dense streets and skyline. Transport, power and communications could fail together. Beneath the red cloud, a city built on constant connection would become an imagined landscape of isolation and loss.
 
 ### europe-continent
 
-Hypothetical, conditional illustration. 90 words. Sources reviewed 2026-11-08:
+41 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-This hypothetical small-continent study places an extreme energy release in Central Europe. Towns, fields and transport corridors would become details beneath a cloud drawn at a scale beyond familiar weapons. The image imagines a region losing its ordinary distances: neighboring countries would no longer feel safely beyond the horizon. It is a dark illustration of the limits of human shelter, rather than a measured prediction of continental devastation. At this yield the screening model is far outside its calibrated range; the imagined aftermath must not be mistaken for a forecast.
+This hypothetical extreme release over Central Europe would dwarf towns, fields and transport corridors beneath an enormous cloud. National borders would offer little comfort in the imagined scene. It is a dark study of scale, beyond the screening model’s calibrated range.
 
 ### north-america-continent
 
-Hypothetical, conditional illustration. 88 words. Sources reviewed 2026-11-08:
+41 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-This hypothetical continent-scale event begins over the interior of North America. A vast blast would loom above the plains, dwarfing the roads, settlements and agricultural land that normally define the view. The imagined scene turns openness into exposure: distance alone would offer little comfort beneath such an impossible horizon. The consequences shown are artistic, and no claim is made about particular cities or populations. These yields exceed the model's calibrated range. The illustration asks what overwhelming scale would feel like, while leaving unsupported forecasts and casualty counts unwritten.
+This hypothetical continent-scale event would rise over North America’s interior, dwarfing plains, roads and settlements. Openness would become exposure beneath an impossible horizon. The imagined catastrophe exceeds the model’s calibrated range; the ordinary distances between places would cease to feel reassuring.
 
 ### africa-continent
 
-Hypothetical, conditional illustration. 90 words. Sources reviewed 2026-11-08:
+42 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-This hypothetical large-continent study imagines an extreme release over Central Africa. Forest, rivers and distant settlements would be reduced to a thin living surface beneath an enormous red cloud. The darkness of the scene lies in that imbalance: landscapes that sustain generations could become the backdrop to a force no community could meaningfully confront. This is an illustrative thought experiment, not a historical event or a reliable model of continental damage. Its yield lies far outside calibration, and the image does not predict climate, famine, radiation doses or human losses.
+This hypothetical extreme event would tower above Central Africa. Forest, rivers and settlements would seem a thin living surface beneath the red cloud. Landscapes sustaining generations would become terribly slight in the imagined scene, whose continental consequences lie beyond this model’s calibration.
 
 ### asia-continent
 
-Hypothetical, conditional illustration. 89 words. Sources reviewed 2026-11-08:
+41 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-This hypothetical large-continent event is placed in Central Asia. The wide land, mountain horizons and scattered routes would lie beneath a blast imagined on a scale that overwhelms them all. What looks empty from far above still contains lives, water, movement and memory; the red cloud would make those ordinary connections seem terribly slight. The scene is intentionally ominous, but its consequences remain conditional and artistic. This extreme energy study exceeds the simulator's calibrated physics and cannot establish the fate of a continent or the people beyond the frame.
+This hypothetical extreme event would loom over Central Asia’s wide land and mountain horizons. Routes, water and scattered communities would seem fragile beneath the cloud. The dark scene imagines broken connections across an inhabited landscape; it cannot forecast a continent’s fate.
 
 ### australia-continent
 
-Hypothetical, conditional illustration. 88 words. Sources reviewed 2026-11-08:
+43 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-This hypothetical continent-scale study places an extreme blast above the Australian interior. A huge red cloud would rise over desert ranges and long, thin roads, making the distance between isolated places feel like abandonment. The landscape is not empty simply because the view is wide; communities, Country and ecosystems give it meaning beyond a map. The image imagines that living setting under a catastrophic sky. It depicts no real event, and this out-of-range screening model cannot predict continent-wide damage, ecological collapse or the experience of any particular community.
+This hypothetical continent-scale blast would rise over Australia’s interior. Desert ranges and long roads would become small beneath an overwhelming red sky. Communities, Country and ecosystems give that landscape meaning; the imagined loss is immense, while literal continental damage exceeds this model’s calibration.
 
 ### point-nemo-hemisphere
 
-Hypothetical, conditional illustration. 89 words. Sources reviewed 2026-11-08:
+42 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-This hypothetical hemisphere-scale event is centered near Point Nemo in the South Pacific. Open ocean would stretch below an immense, unreal-looking blast, with no skyline to make its size comforting or comprehensible. A place chosen for its remoteness would become the center of an imagined catastrophe whose scale makes ordinary boundaries meaningless. The red scene is an artistic stress test, not evidence that the ocean could contain such an event or a prediction of global effects. At this yield, blast, atmosphere and climate lie beyond the model's calibrated assumptions.
+This hypothetical hemisphere-scale event would erupt near Point Nemo in the South Pacific. No skyline would make the huge cloud comprehensible, only ocean beneath an impossible glare. Remoteness would offer no reassuring boundary in an artistic catastrophe beyond the model’s calibrated assumptions.
 
 ### earth-thought-experiment
 
-Hypothetical, conditional illustration. 88 words. Sources reviewed 2026-11-08:
+40 words; sources reviewed on 2026-11-09:
 
 - [github.com](https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md)
 
-This hypothetical one-petaton stress test uses a global map origin, not a proposed target or a real weapon. From a distant view, Earth would appear as a fragile, inhabited surface beneath an imagined release of almost ungraspable scale. There would be no familiar city edge in the picture, only the unease of seeing a whole world treated as an experimental frame. The illustration is dark by design. The simulator's screening formulas cannot support literal planetary consequences at this yield, and this scene makes no claim to predict them.
+This hypothetical one-petaton stress test imagines Earth beneath a release of almost ungraspable scale. No familiar city edge would soften the distant view: only an inhabited world reduced to an experimental frame. Literal planetary consequences lie beyond the screening formulas.
 
-## Research discrepancies retained
+## Review correction and remaining evidence limits
 
-- Canopus: an older French parliamentary text prints 26 August; the French military ECPAD archive and CEA record agree on **24 August 1968**, which this catalog uses.
-- Ivy Mike: **1 November 1952 local time** is **31 October UTC**. Scenario text uses the local date; both date labels can be correct.
-- Fat Man: broad accounts sometimes give 12 feet; the specific museum casing is 128 inches (3.25 m).
-- Little Boy: generic Mark I tables list 8,900 lb; the National Archives gives 9,700 lb for the assembled Hiroshima bomb.
-- B61-12: 825 lb specific total differs from the approximately 700 lb legacy family. Fin/tail variants also differ.
-- FOAB: claims of yield, delivery and operational readiness are not independently established. No all-up dimensions/mass are invented.
-- Sarmat: public service announcements conflict with later reporting. No forecast service date is marked achieved, and no retirement date is invented.
-- W87/W88: public dimensions refer to complete reentry envelopes; schematic line drawings do not disclose or imply bare-warhead dimensions.
-- GBU-49: the 500 lb body class is not a complete kit mass. The 300 lb listed explosive configuration supports the unchanged model estimate; it is not asserted to describe every GBU-49.
+On 2026-11-09, all 52 dossier records and exterior assets were audited. Unknown field counts before this correction: `{'length': 8, 'totalMass': 9, 'payloadMass': 33, 'created': 0, 'retired': 7, 'country': 0}`; after: `{'length': 7, 'totalMass': 7, 'payloadMass': 0, 'created': 0, 'retired': 0, 'country': 0}`. The large reduction comes from correcting semantics, providing published estimates, and showing known status milestones rather than treating an unannounced retirement date as an unknown entire history.
+
+- **Davy Crockett:** the old rounded-rectangle drawing represented the bare W54 body while the selector named the delivery weapon. It now depicts the recognizable complete M388 projectile: 0.787 m, 34.5 kg, with the 23.1 kg W54 separately identified. The launcher is excluded.
+- **W76:** the archive alone lacked a public length. The same scholarly Mk 4 model supplies 1.3 m × 0.40 m and 90 kg for a complete reentry assembly. Applying that family envelope to Mk 4A is an educated estimate. The old archive’s differently scoped 164 kg is retained as a research discrepancy, not combined into the new displayed mass.
+- **FOAB:** public reports disagree whether 7,100 kg is complete or explosive mass. The field is now explicitly **reported explosive load**, following the record that names its scope; gross munition mass remains unknown. No overall length is invented.
+- **Orange Herald Small:** the specialist historical glossary describes a one-ton assembly. It is now displayed as an approximately 1,000 kg estimate, excluding the complete aerodynamic bomb casing.
+- **Canopus:** INA historical coverage gives approximately three tonnes for the experimental device. Balloon and suspension-rig mass are not included; external package dimensions remain unavailable.
+- **Retirement/status:** current JASSM family, GBU-49 and MOAB records, B61 replacement documentation, B83 policy, and disputed Sarmat service claims are presented as statuses. None is converted into an invented retirement date.
+- **Genuine remaining gaps:** complete dimensions or total assembly masses for Gerboise Bleue, Greenhouse George, RDS-37 and Grapple X/Y remain unsupported by reviewed public exterior records. Gadget complete assembly mass is also unestablished; tower-hoist capacity and the later Fat Man gross mass are not used as substitutes. FOAB overall length and verified complete mass remain unavailable; its 7,100 kg explosive-load figure is only a reported claim. These are specific evidence gaps rather than generic unknown weapon statistics.
+- **Preserved discrepancies:** Canopus 24 August 1968 is supported by ECPAD/CEA despite an older parliamentary 26 August typo. Ivy Mike 1 November local time is 31 October UTC. Fat Man specific 128 in casing is used rather than a broad 12 ft account. Little Boy uses the National Archives assembled combat mass rather than generic Mark I mass. B61-12 mass/tail differ from legacy B61. W87/W88 dimensions describe reentry envelopes, not bare warheads. GBU-49 exact assembled configuration remains estimated.
+
+## Exterior audit on 2026-11-09
+
+All 52 SVG paths exist, retain valid explicit 960 × 320 image dimensions, and stay below the 20 KiB per-outline budget. Stroke weight was increased for the actual small preview display, where the original hairlines could become subpixel. M388 was redrawn as the complete projectile; W80 gained its public aft collar; W76 gained a calibrated estimated Mk 4A exterior; Fat Man, Ivy King, RDS-1 and RDS-6s were refined against their distinct casing families. Remaining outlines preserve their documented object identity, external ratio and qualifiers. Unknown test-assembly drawings remain estimated documentary envelopes, not secretly precise real casings. No internal weapon construction is depicted. A background headless Google Chrome pass decoded all 52 images at 960 × 320, checked every transformed drawing bound for clipping, and inspected the contact sheet. Eight conceptual symbols received smaller internal transforms to keep their orbital strokes safely inside the SVG viewport.

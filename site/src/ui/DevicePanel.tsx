@@ -69,7 +69,7 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, statusT
           <div className="payload-input" id="payload-selection-panel" role="tabpanel" aria-labelledby={`${state.tab}-tab`}>
             <div className="select-wrap">
               {state.tab === "scenario" ? (
-                <PreviewSelect key="scenario" kind="scenario" label="Scenario" value={state.scenarioId} options={SCENARIO_OPTIONS} customYieldInput={state.customYieldInput} resetVersion={resetVersion + (panelsVisible ? 0 : 1)} onChange={onSelectScenario}>
+                <PreviewSelect key="scenario" kind="scenario" label="Scenario" value={state.scenarioId} options={SCENARIO_OPTIONS} resetVersion={resetVersion + (panelsVisible ? 0 : 1)} onChange={onSelectScenario}>
                   <option value="">Choose a location + device</option>
                   <optgroup label="Historical locations + real devices">
                     {SCENARIOS.filter((scenario) => scenario.kind === "historical").map((scenario) => (
@@ -83,7 +83,7 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, statusT
                   </optgroup>
                 </PreviewSelect>
               ) : (
-              <PreviewSelect key="device" kind="device" label="Weapon or delivery system" value={state.selectedId} options={DEVICE_OPTIONS} customYieldInput={state.customYieldInput} resetVersion={resetVersion + (panelsVisible ? 0 : 1)} onChange={onSelectDevice}>
+              <PreviewSelect key="device" kind="device" label="Weapon or delivery system" value={state.selectedId} options={DEVICE_OPTIONS} resetVersion={resetVersion + (panelsVisible ? 0 : 1)} onChange={onSelectDevice}>
                 <option value={CUSTOM_DEVICE_ID}>Custom yield…</option>
                 {DEVICE_GROUPS.map((group) => (
                   <optgroup key={group.id} label={group.label}>

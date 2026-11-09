@@ -44,6 +44,17 @@ describe("preview artwork cache", () => {
     expect(cache.size).toBe(0); expect(created).toBe(0);
   });
 
+  it("invalidates a pending decode on clear even when its caller has not yet aborted", async () => {
+    let finishDecode!: () => void;
+    vi.stubGlobal("Image", class { naturalWidth = 1200; naturalHeight = 800; src = ""; decoding = ""; decode = () => new Promise<void>((resolve) => { finishDecode = resolve; }); });
+    const cache = new PreviewImageCache(); const signal = new AbortController().signal;
+    const loading = cache.load("/closing.webp", signal);
+    await vi.waitFor(() => expect(finishDecode).toBeTypeOf("function"));
+    cache.clear(); finishDecode();
+    await expect(loading).rejects.toHaveProperty("name", "AbortError");
+    expect(cache.size).toBe(0); expect(revoked).toHaveLength(1);
+  });
+
   it("rejects oversized decoded images and failed downloads without retaining resources", async () => {
     width = 3000; height = 2000;
     const cache = new PreviewImageCache(); const signal = new AbortController().signal;

@@ -14,7 +14,7 @@ The historical scenes use period surroundings: river-delta Hiroshima, the Urakam
 
 Every full-size output and the [complete contact sheet](scenario-artwork-contact.webp) were visually inspected for consistent color treatment, legible subject, distinct location character, and absence of in-image labels. The contact sheet is documentation only and is not loaded by the application. The illustrations intentionally exaggerate the blast for the requested dramatic presentation. Cloud size, stage, lighting, exact landmark layout, geography, and historical built details are artistic approximations; they must not be read as an archival reconstruction or as the simulator's physical output. Regional and planet-scale scenes are especially conceptual.
 
-The event descriptions retain a dark, ominous, sober voice while separating fact from speculation. They are static reviewed prose, not generated on selection. The text remains readable if an image is pending or fails, and both image and prose disappear immediately when the dropdown loses focus or closes.
+The event descriptions are concise, targeting 30–45 words, with a dark, ominous, sober voice that separates fact from speculation. They are static reviewed prose, not generated on selection. The full image is displayed at its natural 3:2 ratio without a cover crop. When space is limited, a popup-owned outer viewport scrolls the complete image and description by wheel, scrollbar dragging, or Shift+Page keys while dropdown focus remains in place. The text stays readable if its image is pending or fails; image, prose, viewport, and scrollbar disappear together when the dropdown loses focus or closes.
 
 ## Shipped assets and performance
 
