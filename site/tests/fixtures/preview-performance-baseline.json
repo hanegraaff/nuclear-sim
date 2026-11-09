@@ -1,0 +1,9 @@
+{
+  "sourceCommit": "7053938",
+  "measurement": "Node gzipSync default over production initial index JavaScript, before Plan 18 code changes; separate MapLibre worker excluded because unchanged",
+  "initialJavaScriptGzipBytes": 399142,
+  "maximumIncreaseBytes": 5120,
+  "maximumScenarioImageBytes": 307200,
+  "maximumOutlineBytes": 20480,
+  "maximumArtworkBytes": 8388608
+}

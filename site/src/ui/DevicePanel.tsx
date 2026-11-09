@@ -6,6 +6,11 @@ import { memo, type KeyboardEvent } from "react";
 import type { CloudPresentation } from "../application/cloudPresentation";
 import { CloudProfileMonitor } from "./CloudProfileMonitor";
 import { EyeOffIcon, MoonIcon } from "./ControlIcons";
+import { PreviewSelect } from "./PreviewSelect";
+import type { PreviewOption } from "../application/selectionPreview";
+
+const DEVICE_OPTIONS: readonly PreviewOption[] = [{ id: CUSTOM_DEVICE_ID, label: "Custom yield…", group: "" }, ...DEVICE_GROUPS.flatMap((group) => group.devices.map((device) => ({ id: device.id, label: `${device.name} · ${device.displayYield}`, group: group.label })))];
+const SCENARIO_OPTIONS: readonly PreviewOption[] = [{ id: "", label: "Choose a location + device", group: "" }, ...SCENARIOS.map((scenario) => ({ id: scenario.id, label: scenario.name, group: scenario.kind === "historical" ? "Historical locations + real devices" : "Hypothetical scale studies" }))];
 
 interface DevicePanelProps {
   readonly state: Pick<ScenarioSelectionState, "tab" | "scenarioId" | "selectedId" | "customYieldInput">;
@@ -17,6 +22,7 @@ interface DevicePanelProps {
   readonly multiLaunch: boolean;
   readonly totalCount: number;
   readonly pendingLaunch?: boolean;
+  readonly resetVersion?: number;
   readonly onReset: () => void;
   readonly onSetMapTone: (tone: "day" | "night") => void;
   readonly onSetPanelsVisible: (visible: boolean) => void;
@@ -28,7 +34,7 @@ interface DevicePanelProps {
 }
 
 /** Prototype-style selector; tab and input actions update application state. */
-export const DevicePanel = memo(function DevicePanel({ state, selection, statusText, mapTone, panelsVisible, cloud, multiLaunch, totalCount, pendingLaunch = false, onReset, onSetMapTone, onSetPanelsVisible, onSetMultiLaunch, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
+export const DevicePanel = memo(function DevicePanel({ state, selection, statusText, mapTone, panelsVisible, cloud, multiLaunch, totalCount, pendingLaunch = false, resetVersion = 0, onReset, onSetMapTone, onSetPanelsVisible, onSetMultiLaunch, onSelectTab, onSelectScenario, onSelectDevice, onCustomYieldChange }: DevicePanelProps) {
   const handleTabKey = (event: KeyboardEvent<HTMLButtonElement>) => {
     if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
     event.preventDefault();
@@ -63,7 +69,7 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, statusT
           <div className="payload-input" id="payload-selection-panel" role="tabpanel" aria-labelledby={`${state.tab}-tab`}>
             <div className="select-wrap">
               {state.tab === "scenario" ? (
-                <select aria-label="Scenario" value={state.scenarioId} onChange={(event) => onSelectScenario(event.target.value)}>
+                <PreviewSelect key="scenario" kind="scenario" label="Scenario" value={state.scenarioId} options={SCENARIO_OPTIONS} resetVersion={resetVersion + (panelsVisible ? 0 : 1)} onChange={onSelectScenario}>
                   <option value="">Choose a location + device</option>
                   <optgroup label="Historical locations + real devices">
                     {SCENARIOS.filter((scenario) => scenario.kind === "historical").map((scenario) => (
@@ -75,13 +81,9 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, statusT
                       <option key={scenario.id} value={scenario.id}>{scenario.name}</option>
                     ))}
                   </optgroup>
-                </select>
+                </PreviewSelect>
               ) : (
-              <select
-                aria-label="Weapon or delivery system"
-                value={state.selectedId}
-                onChange={(event) => onSelectDevice(event.target.value)}
-              >
+              <PreviewSelect key="device" kind="device" label="Weapon or delivery system" value={state.selectedId} options={DEVICE_OPTIONS} resetVersion={resetVersion + (panelsVisible ? 0 : 1)} onChange={onSelectDevice}>
                 <option value={CUSTOM_DEVICE_ID}>Custom yield…</option>
                 {DEVICE_GROUPS.map((group) => (
                   <optgroup key={group.id} label={group.label}>
@@ -92,7 +94,7 @@ export const DevicePanel = memo(function DevicePanel({ state, selection, statusT
                     ))}
                   </optgroup>
                 ))}
-              </select>
+              </PreviewSelect>
               )}
               <span className="select-chevron" aria-hidden="true" />
             </div>

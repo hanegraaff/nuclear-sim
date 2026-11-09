@@ -1,0 +1,68 @@
+{
+  "browser": "156.0.8078.81",
+  "checks": [
+    {
+      "name": "native track and thumb retain focus then dismiss 1024x600",
+      "pass": true,
+      "evidence": {
+        "viewport": {
+          "width": 1024,
+          "height": 600
+        },
+        "before": {
+          "box": {
+            "x": 374,
+            "y": 0,
+            "width": 650,
+            "height": 548,
+            "top": 0,
+            "right": 1024,
+            "bottom": 548,
+            "left": 374
+          },
+          "bar": 12,
+          "client": 548,
+          "scroll": 690,
+          "top": 0
+        },
+        "afterTrack": 118,
+        "afterDrag": 25,
+        "tabDismissed": true,
+        "outsideDismissed": true,
+        "launchCount": 0
+      }
+    },
+    {
+      "name": "native track and thumb retain focus then dismiss 601x768",
+      "pass": true,
+      "evidence": {
+        "viewport": {
+          "width": 601,
+          "height": 768
+        },
+        "before": {
+          "box": {
+            "x": 0,
+            "y": 333.59375,
+            "width": 601,
+            "height": 382.40625,
+            "top": 333.59375,
+            "right": 601,
+            "bottom": 716,
+            "left": 0
+          },
+          "bar": 12,
+          "client": 382,
+          "scroll": 624,
+          "top": 0
+        },
+        "afterTrack": 222,
+        "afterDrag": 20,
+        "tabDismissed": true,
+        "outsideDismissed": true,
+        "launchCount": 0
+      }
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,23 @@
+{
+  "version": "35",
+  "url": "https://nuke.maquaman.chatgpt.site",
+  "browser": "156.0.8078.81",
+  "desktop": {
+    "http": 200,
+    "initialPreviewRequests": 0,
+    "weaponPreview": "Fat Man / 1.4×",
+    "scenarioPreview": "Hiroshima image + event text",
+    "blurDismissal": "passed",
+    "conventionalLaunch": "complete",
+    "totalPreviewRequests": 4,
+    "attribution": "visible"
+  },
+  "mobile": {
+    "http": 200,
+    "viewport": "390×844 touch",
+    "nativeSelection": "passed",
+    "previewRequests": 0,
+    "panelCount": 0
+  },
+  "pageErrors": []
+}

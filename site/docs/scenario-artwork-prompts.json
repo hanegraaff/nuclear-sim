@@ -1,0 +1,162 @@
+[
+  {
+    "id": "hiroshima",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Scene: Hiroshima, Japan, August 1945, viewed from above the city's low-rise river delta with winding waterways and bridges, distant green hills, era-appropriate wooden neighborhoods, no contemporary skyscrapers. Subject: immense luminous nuclear blast and towering mushroom cloud rising above the city. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries.",
+    "sourceFile": "exec-d8462174-f92f-4137-8712-361e9bb178a1.png",
+    "output": "/media/scenarios/hiroshima.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "nagasaki",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Primary request: create a NEW photograph-style scene at this specific location. Nagasaki, Japan, August 1945: view across the densely built Urakami valley, steep surrounding hills and industrial rooftops, with distant harbor geography; era-appropriate low-rise city, no modern towers. A vast nuclear mushroom cloud towers above the valley. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: Hiroshima image for red monochrome grain, contrast and photographic treatment ONLY; do not copy its buildings, rivers or skyline.",
+    "sourceFile": "exec-764be635-24d0-4f90-9ea1-359375360e67.png",
+    "output": "/media/scenarios/nagasaki.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "trinity",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Primary request: create a NEW photograph-style scene at this specific location. Trinity test site, Jornada del Muerto, New Mexico, July 1945: vast flat dry desert basin with sparse scrub, distant low mountains, empty foreground. An enormous ground-origin nuclear fireball and mushroom column illuminates dust across the plain. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: Hiroshima image for red monochrome grain, contrast and photographic treatment ONLY; do not copy its buildings, rivers or skyline.",
+    "sourceFile": "exec-334b96ad-981c-42cb-b0d0-3a4c95acff28.png",
+    "output": "/media/scenarios/trinity.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "sedan",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Primary request: create a NEW photograph-style scene at this specific location. Sedan underground excavation test, Nevada desert, July 1962: arid basin and distant mountains; a colossal broad domed earth-and-dust blast plume erupting from the desert, rolling ejecta and low ground-hugging dust, not a clean city airburst mushroom. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: Hiroshima image for red monochrome grain, contrast and photographic treatment ONLY; do not copy its buildings, rivers or skyline.",
+    "sourceFile": "exec-7c40d08a-7d70-4a55-9bec-493c32a7dd78.png",
+    "output": "/media/scenarios/sedan.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "castle-bravo",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Create a NEW specific scene: Bikini Atoll, Marshall Islands, March 1954: aerial-oblique view of a luminous enormous nuclear cloud erupting over a tropical lagoon, a thin curved rim of low coral islands and palm silhouettes across turquoise-like lagoon rendered entirely red monochrome; open Pacific beyond. No city or mountains. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: use ONLY the red photographic style/grain/tone; replace the location completely.",
+    "sourceFile": "exec-5f4573ac-eecd-4386-a205-0a8bc311707a.png",
+    "output": "/media/scenarios/castle-bravo.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "tsar-bomba",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Create a NEW specific scene: Novaya Zemlya, Soviet Arctic, October 1961: enormous towering nuclear mushroom cloud above a barren polar island, long snowy ridges and cold coastal inlet visible in foreground. Sparse, remote, no city or trees. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: use ONLY the red photographic style/grain/tone; replace the location completely.",
+    "sourceFile": "exec-863f2a19-8138-4cc3-a19b-f886ad19e813.png",
+    "output": "/media/scenarios/tsar-bomba.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "rds-1-semipalatinsk",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Create a NEW specific scene: Semipalatinsk test site, Kazakhstan, August 1949: vast empty semiarid steppe with dry grass and gently undulating horizon, a few very small distant test structures; immense nuclear mushroom cloud rising centrally. No high mountains or city. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: use ONLY the red photographic style/grain/tone; replace the location completely.",
+    "sourceFile": "exec-db3d076f-2b8e-4390-8625-1eb6332c0e4e.png",
+    "output": "/media/scenarios/rds-1-semipalatinsk.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "gerboise-reggane",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Create a NEW specific scene: Reggane test region in the Algerian Sahara, February 1960: flat stony desert plateau with low dunes and rocky foreground, vast empty horizon, enormous nuclear mushroom blast lifting dust. No city, palms or high mountains. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: use ONLY the red photographic style/grain/tone; replace the location completely.",
+    "sourceFile": "exec-f4f71355-90eb-41aa-954c-cebf8d0ffe0e.png",
+    "output": "/media/scenarios/gerboise-reggane.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "ivy-mike-elugelab",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Create a NEW specific scene: Elugelab island at Enewetak Atoll in the Marshall Islands, November 1952: oblique aerial view across low coral reef, lagoon and open ocean, distant low palm-lined island. A truly gigantic nuclear mushroom cloud at the tiny island footprint and a broad luminous spray/dust base over the lagoon. No mountains or city. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: use ONLY red photographic style/grain/contrast; change scenery to this location.",
+    "sourceFile": "exec-7cf45924-278a-4ed3-92d6-29023d9d51a3.png",
+    "output": "/media/scenarios/ivy-mike-elugelab.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "orange-herald-malden",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Create a NEW specific scene: Malden Island in the central Pacific, May 1957: remote flat coral island with pale exposed ground, sparse low vegetation and long surf-lined coast, ocean stretching to horizon. A massive airburst mushroom cloud rises above the island, reflected in nearby ocean. No tropical mountain or city. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: use ONLY red photographic style/grain/contrast; change scenery to this location.",
+    "sourceFile": "exec-7acb96d5-50d9-4d42-bb1f-8bda5a8a2192.png",
+    "output": "/media/scenarios/orange-herald-malden.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "canopus-fangataufa",
+    "prompt": "Use case: historical-scene. Asset type: static scenario-preview illustration. Create a NEW specific scene: Fangataufa Atoll in French Polynesia, August 1968: a nearly enclosed broad lagoon bounded by low coral reef and thin vegetated islets, viewed obliquely from the air. A gigantic nuclear blast/cloud above the lagoon, luminous base and dark expanding vapor; retain clear atoll geography. No city or high mountains. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: use ONLY red photographic style/grain/contrast; change scenery to this location.",
+    "sourceFile": "exec-653ed4ed-e27c-4adb-ab6d-9a58ff58ceea.png",
+    "output": "/media/scenarios/canopus-fangataufa.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "tsar-manhattan",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical present-day Manhattan, New York, seen from across the East River toward Midtown: recognizable dense skyline with the Empire State Building and bridges in the foreground. An enormous nuclear blast and towering mushroom cloud dwarf the skyline; strong reflections on the river. Imagined event, photographic illustration. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Input reference: use ONLY red photographic style/grain/contrast; change scenery to this location.",
+    "sourceFile": "exec-37a8c417-14ef-406c-866f-43ea649fff0a.png",
+    "output": "/media/scenarios/tsar-manhattan.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "tokyo-100",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical modern Tokyo, Japan: wide elevated view of a dense metropolitan city, Shinjuku-style towers and a Tokyo skyline, Mount Fuji small on the far horizon, no American buildings. An immense luminous nuclear blast and enormous mushroom cloud dwarf the skyline, pale-hot cloud against deep red sky. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. For near-space views adapt the horizon/ground rule to the visible planetary curve. Input reference: use ONLY red photographic style/grain/contrast, not identical cloud or landscape.",
+    "sourceFile": "exec-c1476bfc-d778-42a6-85e7-834e20d79518.png",
+    "output": "/media/scenarios/tokyo-100.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "europe-continent",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical continent-scale blast centered in Central Europe: very high-altitude near-space oblique view over the curved European landmass, discernible Alpine arc, Mediterranean and continental geography. A huge luminous blast dome and towering atmospheric plume over central Europe, much larger than cities; no arbitrary city skyline. Wide geography remains readable, artistic scale study. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. For near-space views adapt the horizon/ground rule to the visible planetary curve. Input reference: use ONLY red photographic style/grain/contrast, not identical cloud or landscape.",
+    "sourceFile": "exec-683e5d57-3d2a-4d83-b803-d1071f4087b2.png",
+    "output": "/media/scenarios/europe-continent.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "north-america-continent",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical continent-scale blast centered in the interior of North America: near-space oblique view showing curved continental landmass from the Great Plains toward the Rockies and distant continental coasts. A colossal central luminous blast dome and atmospheric plume dwarf regional geography; no arbitrary city foreground. Entirely red duotone, artistic scale study. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. For near-space views adapt the horizon/ground rule to the visible planetary curve. Input reference: use ONLY red photographic style/grain/contrast, not identical cloud or landscape.",
+    "sourceFile": "exec-aae9e125-e532-4744-bc05-c30ce63e0cad.png",
+    "output": "/media/scenarios/north-america-continent.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "africa-continent",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical large-continent scale blast in central Africa: high near-space oblique view of the African landmass, Sahara across north, dark central terrain, recognizable west and east coast outline and curvature. Vast luminous central blast dome and roiling atmospheric front spanning a large part of the continent. Illustrative thought experiment, continent geography remains clear. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. For near-space views adapt the horizon/ground rule to the visible planetary curve. Input reference: use ONLY red photographic style/grain/contrast, not identical cloud or landscape.",
+    "sourceFile": "exec-c366770c-1f81-4a00-b438-819978a244a9.png",
+    "output": "/media/scenarios/africa-continent.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "asia-continent",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical large-continent-scale blast centered in Central Asia: high near-space oblique view across the broad Asian interior, recognizable Himalayan arc and plateau to the south, immense continental curvature. An enormous pale-hot blast dome and roiling atmospheric plume expand across regional geography. Artistic thought experiment rather than measured scale. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Adapt composition/landscape rule to near-space planetary framing. Input reference: use ONLY red photographic style/grain/contrast, not city buildings or identical mushroom shape.",
+    "sourceFile": "exec-3a43a06f-2a2c-4956-85c6-2eda92f7f2de.png",
+    "output": "/media/scenarios/asia-continent.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "australia-continent",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical continent-scale blast in central Australia: near-space oblique view showing the recognizable island-continent outline, dry red interior and darker coastal fringe, ocean surrounding. Vast luminous central blast and atmospheric cloud/dome dwarf the inland terrain, continental geography still legible. Artistic scale study. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Adapt composition/landscape rule to near-space planetary framing. Input reference: use ONLY red photographic style/grain/contrast, not city buildings or identical mushroom shape.",
+    "sourceFile": "exec-6387a1ff-ff89-4967-8acc-7580ab7cbd25.png",
+    "output": "/media/scenarios/australia-continent.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "point-nemo-hemisphere",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical hemisphere-scale blast at Point Nemo in the remote South Pacific: high near-space view over a huge uninterrupted ocean hemisphere, visible curved Earth horizon, no invented island or city. An enormous luminous blast dome and concentric atmospheric shock fronts rise from the empty sea, filling much of the visible hemisphere. Photographic cosmic-scale thought experiment. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Adapt composition/landscape rule to near-space planetary framing. Input reference: use ONLY red photographic style/grain/contrast, not city buildings or identical mushroom shape.",
+    "sourceFile": "exec-203ab7ff-908f-4fc6-81a6-e5993e08b1bf.png",
+    "output": "/media/scenarios/point-nemo-hemisphere.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  },
+  {
+    "id": "earth-thought-experiment",
+    "prompt": "Use case: stylized-concept. Asset type: static scenario-preview illustration. Create a NEW specific scene: Hypothetical Earth-span 1-petaton stress-test: full planet Earth viewed from space in red monochrome, recognizable continents and atmospheric rim, black starless space. A planet-spanning luminous blast front and vast boiling atmospheric clouds envelop the visible globe; this is a visibly conceptual global thought experiment, not a physically precise forecast. Preserve the planetary silhouette. Photographic red-and-black monochrome duotone, ominous archival-documentary character, silver-gelatin film grain, deep charcoal shadows, crimson midtones, pale hot red highlights, natural atmospheric haze. Wide landscape 3:2 composition for a dark simulator information card. Enormous blast/cloud integrated into recognizable geography; landscape occupies lower third, cloud dominates central frame, horizon visible, strong readable silhouette, physically suggestive but artistic. No typography, no captions, no collage, no borders, no logos, no people or graphic injuries. Adapt composition/landscape rule to near-space planetary framing. Input reference: use ONLY red photographic style/grain/contrast, not city buildings or identical mushroom shape.",
+    "sourceFile": "exec-193aacdc-3225-402b-85be-febaba3211a4.png",
+    "output": "/media/scenarios/earth-thought-experiment.webp",
+    "generation": "built-in image_gen",
+    "date": "2026-11-08"
+  }
+]

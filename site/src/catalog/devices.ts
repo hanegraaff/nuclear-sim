@@ -32,14 +32,14 @@ export interface DeviceGroup {
 }
 
 const CONVENTIONAL_DEVICES = [
-  { id: "moab", name: "GBU-43/B MOAB", yieldMt: 0.000011, displayYield: "11 t TNT" },
-  { id: "foab", name: "FOAB (reported)", yieldMt: 0.000044, displayYield: "44 t TNT · reported" },
-  // Rounded peak-pressure TNT-equivalent estimates for specified Tritonal fills; see docs/model.md.
+  // Ascending TNT-equivalent yield; sourced estimates are documented in docs/model.md.
   { id: "mk-82", name: "Mk 82 (Tritonal)", yieldMt: 0.000000093, displayYield: "93 kg TNT · estimated" },
   { id: "agm-158-jassm", name: "AGM-158 JASSM", yieldMt: 0.000000116, displayYield: "116 kg TNT · estimated" },
   { id: "gbu-49", name: "GBU-49", yieldMt: 0.000000146, displayYield: "146 kg TNT · estimated" },
   { id: "mk-83", name: "Mk 83 (Tritonal)", yieldMt: 0.000000216, displayYield: "216 kg TNT · estimated" },
   { id: "mk-84", name: "Mk 84 (Tritonal)", yieldMt: 0.000000459, displayYield: "459 kg TNT · estimated" },
+  { id: "moab", name: "GBU-43/B MOAB", yieldMt: 0.000011, displayYield: "11 t TNT" },
+  { id: "foab", name: "FOAB (reported)", yieldMt: 0.000044, displayYield: "44 t TNT · reported" },
 ] as const satisfies readonly SingleDeviceDefinition[];
 
 const NUCLEAR_DEVICES = [
