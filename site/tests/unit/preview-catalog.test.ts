@@ -1,12 +1,14 @@
 /** R-16/R-17: every selectable fixed ID has research metadata and every scenario pairs distinct prose with local artwork. */
 import { existsSync, statSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { DEVICES } from "../../src/catalog/devices";
 import { DEVICE_DOSSIERS } from "../../src/catalog/deviceDossiers";
 import { SCENARIOS } from "../../src/catalog/scenarios";
 import { SCENARIO_PREVIEWS } from "../../src/catalog/scenarioPreviews";
 
-const asset = (src: string) => new URL(`../../public${src}`, import.meta.url);
+// npm scripts run in the Site root. Native fs paths avoid Vite rewriting dynamic new URL templates as client assets.
+const asset = (src: string) => resolve(process.cwd(), "public", src.slice(1));
 const confidences = ["sourced", "reported", "estimated", "unknown", "inapplicable"];
 
 describe("complete public device dossiers", () => {
