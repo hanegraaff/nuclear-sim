@@ -1,0 +1,62 @@
+{
+  "version": "36",
+  "url": "https://nuke.maquaman.chatgpt.site",
+  "browser": "156.0.8078.81",
+  "desktop": {
+    "http": 200,
+    "initialPreviewRequests": 0,
+    "davyCrockett": "complete M388 image and 0.787 m / 34.5 kg / 23.1 kg component facts",
+    "payloadEndsAtFacts": true,
+    "blurRemovesViewport": true
+  },
+  "constrained": [
+    {
+      "width": 601,
+      "height": 768,
+      "geometry": {
+        "naturalWidth": 1200,
+        "naturalHeight": 800,
+        "width": 525,
+        "height": 350,
+        "fit": "contain"
+      },
+      "words": 40,
+      "scrollbarAndKeyboardKeepFocus": true,
+      "blurRemovesViewport": true
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "geometry": {
+        "naturalWidth": 1200,
+        "naturalHeight": 800,
+        "width": 544,
+        "height": 362.65625,
+        "fit": "contain"
+      },
+      "words": 40,
+      "scrollbarAndKeyboardKeepFocus": true,
+      "blurRemovesViewport": true
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "geometry": {
+        "naturalWidth": 1200,
+        "naturalHeight": 800,
+        "width": 544,
+        "height": 362.65625,
+        "fit": "contain"
+      },
+      "words": 40,
+      "scrollbarAndKeyboardKeepFocus": true,
+      "blurRemovesViewport": true
+    }
+  ],
+  "mobile": {
+    "http": 200,
+    "nativeSelection": true,
+    "previewRequests": 0
+  },
+  "pageErrors": []
+}

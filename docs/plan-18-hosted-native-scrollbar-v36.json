@@ -1,0 +1,326 @@
+{
+  "browser": "156.0.8078.81",
+  "url": "https://nuke.maquaman.chatgpt.site",
+  "checks": [
+    {
+      "viewport": {
+        "width": 601,
+        "height": 768
+      },
+      "http": 200,
+      "keyboardDown": {
+        "bounds": {
+          "x": 0,
+          "y": 333.59375,
+          "width": 601,
+          "height": 382.40625,
+          "top": 333.59375,
+          "right": 601,
+          "bottom": 716,
+          "left": 0
+        },
+        "offsetWidth": 601,
+        "clientWidth": 589,
+        "offsetHeight": 382,
+        "clientHeight": 382,
+        "scrollWidth": 589,
+        "scrollHeight": 624,
+        "scrollTop": 242,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "before": {
+        "bounds": {
+          "x": 0,
+          "y": 333.59375,
+          "width": 601,
+          "height": 382.40625,
+          "top": 333.59375,
+          "right": 601,
+          "bottom": 716,
+          "left": 0
+        },
+        "offsetWidth": 601,
+        "clientWidth": 589,
+        "offsetHeight": 382,
+        "clientHeight": 382,
+        "scrollWidth": 589,
+        "scrollHeight": 624,
+        "scrollTop": 0,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "rootPoint": {
+        "x": 595,
+        "y": 711,
+        "target": {
+          "tag": "DIV",
+          "classes": "selection-preview-viewport",
+          "rect": {
+            "x": 0,
+            "y": 333.59375,
+            "width": 601,
+            "height": 382.40625,
+            "top": 333.59375,
+            "right": 601,
+            "bottom": 716,
+            "left": 0
+          }
+        }
+      },
+      "afterRootPoint": {
+        "bounds": {
+          "x": 0,
+          "y": 333.59375,
+          "width": 601,
+          "height": 382.40625,
+          "top": 333.59375,
+          "right": 601,
+          "bottom": 716,
+          "left": 0
+        },
+        "offsetWidth": 601,
+        "clientWidth": 589,
+        "offsetHeight": 382,
+        "clientHeight": 382,
+        "scrollWidth": 589,
+        "scrollHeight": 624,
+        "scrollTop": 241,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "safePoint": {
+        "x": 595,
+        "y": 707.59375,
+        "target": {
+          "tag": "DIV",
+          "classes": "selection-preview-viewport"
+        }
+      },
+      "afterSafePoint": {
+        "bounds": {
+          "x": 0,
+          "y": 333.59375,
+          "width": 601,
+          "height": 382.40625,
+          "top": 333.59375,
+          "right": 601,
+          "bottom": 716,
+          "left": 0
+        },
+        "offsetWidth": 601,
+        "clientWidth": 589,
+        "offsetHeight": 382,
+        "clientHeight": 382,
+        "scrollWidth": 589,
+        "scrollHeight": 624,
+        "scrollTop": 241,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "afterDrag": {
+        "bounds": {
+          "x": 0,
+          "y": 333.59375,
+          "width": 601,
+          "height": 382.40625,
+          "top": 333.59375,
+          "right": 601,
+          "bottom": 716,
+          "left": 0
+        },
+        "offsetWidth": 601,
+        "clientWidth": 589,
+        "offsetHeight": 382,
+        "clientHeight": 382,
+        "scrollWidth": 589,
+        "scrollHeight": 624,
+        "scrollTop": 0,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "cleanup": {
+        "wrapper": 0,
+        "panel": 0,
+        "launch": "0"
+      },
+      "errors": [],
+      "consoleErrors": []
+    },
+    {
+      "viewport": {
+        "width": 1024,
+        "height": 600
+      },
+      "http": 200,
+      "keyboardDown": {
+        "bounds": {
+          "x": 374,
+          "y": 0,
+          "width": 650,
+          "height": 548,
+          "top": 0,
+          "right": 1024,
+          "bottom": 548,
+          "left": 374
+        },
+        "offsetWidth": 650,
+        "clientWidth": 638,
+        "offsetHeight": 548,
+        "clientHeight": 548,
+        "scrollWidth": 638,
+        "scrollHeight": 690,
+        "scrollTop": 142,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "before": {
+        "bounds": {
+          "x": 374,
+          "y": 0,
+          "width": 650,
+          "height": 548,
+          "top": 0,
+          "right": 1024,
+          "bottom": 548,
+          "left": 374
+        },
+        "offsetWidth": 650,
+        "clientWidth": 638,
+        "offsetHeight": 548,
+        "clientHeight": 548,
+        "scrollWidth": 638,
+        "scrollHeight": 690,
+        "scrollTop": 0,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "rootPoint": {
+        "x": 1018,
+        "y": 543,
+        "target": {
+          "tag": "DIV",
+          "classes": "selection-preview-viewport",
+          "rect": {
+            "x": 374,
+            "y": 0,
+            "width": 650,
+            "height": 548,
+            "top": 0,
+            "right": 1024,
+            "bottom": 548,
+            "left": 374
+          }
+        }
+      },
+      "afterRootPoint": {
+        "bounds": {
+          "x": 374,
+          "y": 0,
+          "width": 650,
+          "height": 548,
+          "top": 0,
+          "right": 1024,
+          "bottom": 548,
+          "left": 374
+        },
+        "offsetWidth": 650,
+        "clientWidth": 638,
+        "offsetHeight": 548,
+        "clientHeight": 548,
+        "scrollWidth": 638,
+        "scrollHeight": 690,
+        "scrollTop": 136,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "safePoint": {
+        "x": 1018,
+        "y": 540,
+        "target": {
+          "tag": "DIV",
+          "classes": "selection-preview-viewport"
+        }
+      },
+      "afterSafePoint": {
+        "bounds": {
+          "x": 374,
+          "y": 0,
+          "width": 650,
+          "height": 548,
+          "top": 0,
+          "right": 1024,
+          "bottom": 548,
+          "left": 374
+        },
+        "offsetWidth": 650,
+        "clientWidth": 638,
+        "offsetHeight": 548,
+        "clientHeight": 548,
+        "scrollWidth": 638,
+        "scrollHeight": 690,
+        "scrollTop": 142,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "afterDrag": {
+        "bounds": {
+          "x": 374,
+          "y": 0,
+          "width": 650,
+          "height": 548,
+          "top": 0,
+          "right": 1024,
+          "bottom": 548,
+          "left": 374
+        },
+        "offsetWidth": 650,
+        "clientWidth": 638,
+        "offsetHeight": 548,
+        "clientHeight": 548,
+        "scrollWidth": 638,
+        "scrollHeight": 690,
+        "scrollTop": 1,
+        "overflowX": "auto",
+        "overflowY": "auto",
+        "scrollbarWidth": "auto",
+        "active": "Scenario",
+        "focus": "SELECT"
+      },
+      "cleanup": {
+        "wrapper": 0,
+        "panel": 0,
+        "launch": "0"
+      },
+      "errors": [],
+      "consoleErrors": []
+    }
+  ]
+}
