@@ -23,7 +23,7 @@ test("the complete grouped catalog selects a device and survives map interaction
   await expect(selector).toHaveValue("fat-man");
   await expect(panel.getByRole("status")).toContainText("Fat Man · 21 kt");
   await expect(selector.locator("optgroup")).toHaveCount(4);
-  await expect(selector.locator("option")).toHaveCount(53);
+  await expect(selector.locator("option")).toHaveCount(50); // 49 retained devices plus custom yield
   expect(await selector.locator("optgroup").evaluateAll((groups) => groups.map((group) => (group as HTMLOptGroupElement).label))).toEqual([
     "Conventional weapons", "Nuclear devices", "MIRV delivery systems", "Hypothetical scale studies",
   ]);
@@ -48,7 +48,7 @@ test("scenario selection moves the map, prepares its device, and supports keyboa
   await expect(scenarioTab).toBeFocused();
   await expect(scenarioTab).toHaveAttribute("aria-selected", "true");
   const selector = panel.getByRole("combobox", { name: "Scenario" });
-  await expect(selector.locator("option")).toHaveCount(21);
+  await expect(selector.locator("option")).toHaveCount(17); // 16 retained scenarios plus the empty choice
   await expect(selector.locator("optgroup")).toHaveCount(2);
   expect(await selector.locator("optgroup").evaluateAll((groups) => groups.map((group) => (group as HTMLOptGroupElement).label))).toEqual([
     "Historical locations + real devices", "Hypothetical scale studies",
