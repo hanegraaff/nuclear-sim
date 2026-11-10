@@ -27,11 +27,7 @@ export const SCENARIOS: readonly ScenarioDefinition[] = [
   { id: "tokyo-100", kind: "hypothetical", name: "What if: 100 Mt over Tokyo?", deviceId: "city-breaker", point: { longitude: 139.6917, latitude: 35.6895 }, locationName: "Central Tokyo" },
   { id: "europe-continent", kind: "hypothetical", name: "Continent scale · Central Europe", deviceId: "continent-scale", point: { longitude: 8.6821, latitude: 50.1109 }, locationName: "Central Europe" },
   { id: "north-america-continent", kind: "hypothetical", name: "Continent scale · North America", deviceId: "continent-scale", point: { longitude: -98.4842, latitude: 39.0119 }, locationName: "Geographic center of the contiguous US" },
-  { id: "africa-continent", kind: "hypothetical", name: "Large-continent scale · Africa", deviceId: "large-continent", point: { longitude: 21, latitude: 8 }, locationName: "Central Africa · illustrative" },
-  { id: "asia-continent", kind: "hypothetical", name: "Large-continent scale · Asia", deviceId: "large-continent", point: { longitude: 90, latitude: 45 }, locationName: "Central Asia · illustrative" },
   { id: "australia-continent", kind: "hypothetical", name: "Continent scale · Australia", deviceId: "continent-scale", point: { longitude: 134, latitude: -25 }, locationName: "Central Australia · illustrative" },
-  { id: "point-nemo-hemisphere", kind: "hypothetical", name: "Hemisphere scale · Point Nemo", deviceId: "hemisphere-scale", point: { longitude: -123.3933, latitude: -48.8763 }, locationName: "Point Nemo, South Pacific" },
-  { id: "earth-thought-experiment", kind: "hypothetical", name: "Earth-span stress test · 1 Pt", deviceId: "earth-spanning", point: { longitude: 0, latitude: 0 }, locationName: "Global overlay origin" },
 ];
 
 /** Find a scenario by its stable ID, returning undefined for an unknown ID. */

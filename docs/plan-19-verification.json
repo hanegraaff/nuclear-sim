@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-09",
+  "node": "26.13.0",
+  "githubApplicationCommit": "efd4216054123c7ebb3c16e7612f4e087d73633d",
+  "verifiedSiteTree": "a5c381620654b2b3bfa00aa1d4eea019c47834e9",
+  "checkout": "clean temporary Sites source checkout, npm ci with pinned lockfile",
+  "command": "npm run verify",
+  "result": "passed",
+  "checks": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "build": "passed",
+    "unit": 295,
+    "integration": 133,
+    "browser": 86
+  },
+  "browserElapsed": "9.6 minutes",
+  "initialGate": {
+    "unit": 295,
+    "integration": 133,
+    "browserPassed": 83,
+    "browserFailed": 3,
+    "cause": "Two obsolete catalog counts and the narrow MIRV palette baseline; only test expectations changed. All three affected paths passed focused reruns before the complete corrected gate."
+  },
+  "interruptedRestart": "A restart after the staged-source synchronization guard was stopped and excluded from release evidence; the corrected source tree was checked before the successful final gate.",
+  "baselineReview": "Eight affected snapshots inspected against the prototype intent and correct single gradient; no threshold changes.",
+  "prototypeDirectories": "unchanged",
+  "release": {
+    "version": 37,
+    "url": "https://nuke.maquaman.chatgpt.site",
+    "audience": "public",
+    "sitesSourceCommit": "b63298539a7b7b80d8064626be0f28f76a548012",
+    "deploymentId": "appgdep_6af26b2eadf88191bdf9dfe2b0df2440",
+    "deploymentResult": "succeeded",
+    "hostedReport": "plan-19-hosted-v37.json",
+    "nativeChromeReadback": "Exact camera/age and all alpha pixels; gradient band RGBA exact; full canvas RGB differs by at most 1 byte. No application or pinned-test threshold changes."
+  },
+  "independentFinalReview": {
+    "role": "plan_reviewer",
+    "result": "No actionable findings",
+    "scope": "Final diff, prototype comparisons, catalog/input boundaries, accessibility, rendering/cache/cancellation, Fallout preservation, tests/docs, direct base-commit image checksums, exact GitHub/Sites tree parity, public version37, hosted/mobile evidence"
+  }
+}

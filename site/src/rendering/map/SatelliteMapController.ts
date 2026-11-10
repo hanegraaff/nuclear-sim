@@ -374,7 +374,12 @@ export class SatelliteMapController {
     this.callbacks.onVisibleInspectionChange?.(null);
     this.callbacks.onFalloutInspectionChange?.(null);
     const groupedSingle = !this.multiLaunch && this.sceneFrames.length > 1;
-    if (this.multiLaunch || groupedSingle) this.multiBlastRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch);
+    if (this.sceneFrames.length > 1) this.multiBlastRenderer?.render(this.sceneFrames, container.clientWidth, container.clientHeight, this.multiLaunch);
+    else {
+      // A queued combined-field chunk must never repaint over a mode change or Reset.
+      this.multiBlastRenderer?.dispose();
+      if (this.multiLaunch) this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, null, false);
+    }
     const inspection = this.multiLaunch ? null : groupedSingle
       ? this.blastRenderer?.renderInspectionOnly(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, this.highlightedZoneId) ?? null
       : this.blastRenderer?.render(this.launch, this.elapsedMs, container.clientWidth, container.clientHeight, this.highlightedZoneId) ?? null;

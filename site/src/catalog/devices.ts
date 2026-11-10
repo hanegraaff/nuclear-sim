@@ -91,9 +91,6 @@ const HYPOTHETICAL_DEVICES = [
   { id: "regional-event", name: "10 Gt regional extreme", yieldMt: 10_000, displayYield: "10 Gt" },
   { id: "hundred-gigaton", name: "100 Gt regional extreme", yieldMt: 100_000, displayYield: "100 Gt" },
   { id: "continent-scale", name: "1.5 Tt small-continent study", yieldMt: 1_500_000, displayYield: "1.5 Tt" },
-  { id: "large-continent", name: "20 Tt large-continent study", yieldMt: 20_000_000, displayYield: "20 Tt" },
-  { id: "hemisphere-scale", name: "100 Tt hemisphere study", yieldMt: 100_000_000, displayYield: "100 Tt" },
-  { id: "earth-spanning", name: "1 Pt Earth-span stress test", yieldMt: 1_000_000_000, displayYield: "1 Pt" },
 ] as const satisfies readonly SingleDeviceDefinition[];
 
 /** Stable catalog ordering for the native grouped selector. */
@@ -104,7 +101,7 @@ export const DEVICE_GROUPS: readonly DeviceGroup[] = [
   { id: "hypothetical", label: "Hypothetical scale studies", devices: HYPOTHETICAL_DEVICES },
 ];
 
-/** The 47 prototype devices plus five conventional estimates, excluding custom yield. */
+/** The 49 retained catalog devices, excluding custom yield. */
 export const DEVICES: readonly DeviceDefinition[] = DEVICE_GROUPS.flatMap((group) => group.devices);
 
 const deviceById = new Map(DEVICES.map((device) => [device.id, device]));

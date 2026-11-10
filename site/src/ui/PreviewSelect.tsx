@@ -98,7 +98,7 @@ export function PreviewSelect({ kind, label, value, options, children, resetVers
     <select ref={control} aria-label={label} value={value} onChange={(event) => commit(event.target.value)}
       aria-expanded={eligible ? state.open : undefined} aria-controls={eligible && state.open ? listId : undefined}
       aria-activedescendant={eligible && state.open ? `${listId}-${state.activeId || "empty"}` : undefined}
-      aria-describedby={eligible && state.open && state.browsed && state.activeId !== "" ? "selection-preview-description" : undefined}
+      aria-describedby={eligible && state.open && state.browsed && state.activeId !== "" ? `selection-preview-description ${kind}-preview-help` : eligible ? `${kind}-preview-help` : undefined}
       onBlur={dismiss} onKeyDown={handleKey}
       onMouseDown={(event) => {
         if (!eligible || event.button !== 0) return;
@@ -107,6 +107,7 @@ export function PreviewSelect({ kind, label, value, options, children, resetVers
       }}>
       {children}
     </select>
+    {eligible && <span className="sr-only" id={`${kind}-preview-help`}>Browse options to show details. Scroll the preview with its scrollbar, wheel, or Shift plus Page Up or Page Down. Leave the dropdown to dismiss.</span>}
     {eligible && state.open && <Suspense fallback={<div className="preview-picker-loading">Loading catalog…</div>}>
       <PickerOverlay kind={kind} options={options} state={state} listId={listId}
         anchor={control.current?.getBoundingClientRect()} onBrowse={browse} onCommit={commit} />

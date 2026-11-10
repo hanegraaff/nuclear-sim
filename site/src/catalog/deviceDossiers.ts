@@ -121,7 +121,7 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
         "https://missilethreat.csis.org/missile/jassm/"
       ]
     },
-    "notes": "Baseline AGM-158A, not the extended-range variant. Side outline shows the deployed wing silhouette; wing span is not body diameter. Retirement date is not established in the reviewed manufacturer record."
+    "notes": "Baseline AGM-158A, not the extended-range variant. Estimated plan-view outline shows the deployed wing silhouette; wing span is not body diameter. Retirement date is not established in the reviewed manufacturer record."
   },
   "gbu-49": {
     "id": "gbu-49",
@@ -1205,7 +1205,7 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
         "https://www.deepspace.ucsb.edu/wp-content/uploads/2025/08/SA2VOLII.pdf"
       ]
     },
-    "notes": "Historical records call the apparatus Cylinder / Silex; a documented toroidal item may be only one component. Outline shows that recognizable exterior component (est), not a complete known assembly or its internal construction. Complete size/mass remain unknown."
+    "notes": "Experimental apparatus; its documented toroidal thermonuclear component does not establish the complete exterior. The dashed apparatus envelope is conceptual (est); complete dimensions and mass remain unknown."
   },
   "w87": {
     "id": "w87",
@@ -1888,7 +1888,7 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
         "https://www.nuclearweaponarchive.org/~nuclearw/Uk/UKTesting.html"
       ]
     },
-    "notes": "Exterior outline is an approximate air-drop casing envelope informed by IWM test footage. No defensible complete dimensions/mass established. Do not confuse the test assembly, its carrier aircraft, and a later service warhead."
+    "notes": "Round C test device. Public footage metadata describes blast imagery and the IWM AWE34 record says the footage is unavailable; it cannot establish casing likeness. Dashed approximate exterior envelope (est) is not a verified casing drawing. Dimensions and mass remain unknown."
   },
   "canopus": {
     "id": "canopus",
@@ -2929,174 +2929,6 @@ export const DEVICE_DOSSIERS: Readonly<Record<string, DeviceDossier>> = {
     },
     "silhouette": {
       "src": "/media/devices/continent-scale.svg",
-      "width": 960,
-      "height": 320,
-      "confidence": "estimated",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "notes": "Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, physical size, mass, national origin or service dates are implied. Extreme yields exceed the calibrated range of the screening model."
-  },
-  "large-continent": {
-    "id": "large-continent",
-    "entityLabel": "20 Tt large-continent study",
-    "length": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "totalMass": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "payloadMass": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "created": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "retired": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "country": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "silhouette": {
-      "src": "/media/devices/large-continent.svg",
-      "width": 960,
-      "height": 320,
-      "confidence": "estimated",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "notes": "Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, physical size, mass, national origin or service dates are implied. Extreme yields exceed the calibrated range of the screening model."
-  },
-  "hemisphere-scale": {
-    "id": "hemisphere-scale",
-    "entityLabel": "100 Tt hemisphere study",
-    "length": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "totalMass": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "payloadMass": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "created": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "retired": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "country": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "silhouette": {
-      "src": "/media/devices/hemisphere-scale.svg",
-      "width": 960,
-      "height": 320,
-      "confidence": "estimated",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "notes": "Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, physical size, mass, national origin or service dates are implied. Extreme yields exceed the calibrated range of the screening model."
-  },
-  "earth-spanning": {
-    "id": "earth-spanning",
-    "entityLabel": "1 Pt Earth-span stress test",
-    "length": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "totalMass": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "payloadMass": {
-      "value": "Not applicable — no real device",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "created": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "retired": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "country": {
-      "value": "Not applicable — hypothetical study",
-      "confidence": "inapplicable",
-      "sources": [
-        "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-      ]
-    },
-    "silhouette": {
-      "src": "/media/devices/earth-spanning.svg",
       "width": 960,
       "height": 320,
       "confidence": "estimated",

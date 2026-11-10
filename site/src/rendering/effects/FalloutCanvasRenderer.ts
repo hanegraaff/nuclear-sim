@@ -2,7 +2,7 @@ import type { LaunchFrame } from "../../application/launch";
 import type { FalloutBandId, FalloutFootprint } from "../../domain/fallout";
 import { destinationPoint } from "../../domain/geodesy";
 import type { MapCameraAdapter } from "../map/MapCameraAdapter";
-import { MULTI_BLAST_COLOR_LUT } from "./multiBlastPalette";
+import { FALLOUT_COLOR_LUT } from "./falloutPalette";
 import { buildFalloutInspection, drawFalloutInspection, type FalloutInspectionGeometry } from "../overlays/falloutInspection";
 import { buildFalloutTexture, FALLOUT_CACHE_TEXELS, type FalloutTexture } from "./falloutTexture";
 import { projectFalloutTexture } from "./projectFalloutTexture";
@@ -139,7 +139,7 @@ export class FalloutCanvasRenderer {
     for (let i = 0; i < columns * rows; i++) {
       const value = samples.data[i * 4]!;
       if (value < 3) continue;
-      for (let channel = 0; channel < 4; channel++) image.data[i * 4 + channel] = MULTI_BLAST_COLOR_LUT[value * 4 + channel]!;
+      for (let channel = 0; channel < 4; channel++) image.data[i * 4 + channel] = FALLOUT_COLOR_LUT[value * 4 + channel]!;
     }
     color.putImageData(image, 0, 0);
   }

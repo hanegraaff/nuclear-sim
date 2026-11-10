@@ -1,12 +1,13 @@
+import { MAX_SELECTABLE_YIELD_MT } from "../catalog/selectableYield";
 import { getDeviceById, type DeviceDefinition, type SingleDeviceDefinition } from "../catalog/devices";
 
 /** The prototype's minimum custom yield, in megatons. */
 export const MIN_CUSTOM_YIELD_MT = 1e-9;
 
-/** The largest supported custom yield, matching the catalog's 1 Pt study, in Mt. */
-export const MAX_CUSTOM_YIELD_MT = 1_000_000_000;
+/** Inclusive selectable custom-yield ceiling, in megatons. */
+export const MAX_CUSTOM_YIELD_MT = MAX_SELECTABLE_YIELD_MT;
 
-/** Stable ID for the custom choice; it is not one of the 47 catalog devices. */
+/** Stable ID for the custom choice; it is separate from the fixed catalog. */
 export const CUSTOM_DEVICE_ID = "custom";
 
 /** UI-independent selection state; custom input survives switching devices. */
@@ -31,7 +32,7 @@ export type CustomYieldResult =
   | { readonly valid: true; readonly yieldMt: number }
   | { readonly valid: false; readonly error: string };
 
-const CUSTOM_YIELD_ERROR = "Enter a positive yield (0.000000001–1,000,000,000 Mt).";
+const CUSTOM_YIELD_ERROR = "Enter a positive yield (0.000000001–1,500,000 Mt).";
 const CUSTOM_YIELD_FORMAT_ERROR = "Enter a number; use a decimal point and group three digits.";
 const PLAIN_YIELD_PATTERN = /^\+?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
 const GROUPED_YIELD_PATTERN = /^\+?\d{1,3}([,_ ])\d{3}(?:\1\d{3})*(?:\.\d*)?(?:e[+-]?\d+)?$/i;

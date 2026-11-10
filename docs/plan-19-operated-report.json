@@ -1,0 +1,2061 @@
+{
+  "date": "2026-11-09",
+  "browser": "157.0.8103.40",
+  "mode": "background headless installed Google Chrome through Playwright",
+  "candidate": "http://127.0.0.1:4174",
+  "tiles": "fixed local satellite-tile.png",
+  "devicePixelRatio": 1,
+  "actionableDefects": [],
+  "uiChecks": [
+    {
+      "name": "49 fixed choices and1.5Tt custom boundary",
+      "pass": true,
+      "evidence": {
+        "ids": [
+          "custom",
+          "mk-82",
+          "agm-158-jassm",
+          "gbu-49",
+          "mk-83",
+          "mk-84",
+          "moab",
+          "foab",
+          "w54",
+          "w48",
+          "sadm",
+          "little-boy",
+          "trinity-gadget",
+          "fat-man",
+          "rds-1",
+          "b61",
+          "gerboise-bleue",
+          "w76",
+          "sedan",
+          "w80",
+          "greenhouse-george",
+          "w87",
+          "b61-7",
+          "rds-6s",
+          "w88",
+          "ivy-king",
+          "orange-herald",
+          "w59",
+          "b83",
+          "starfish-prime",
+          "rds-37",
+          "grapple-x",
+          "canopus",
+          "grapple-y",
+          "w39",
+          "b53",
+          "hard-tack-poplar",
+          "ivy-mike",
+          "castle-yankee",
+          "castle-bravo",
+          "mk41",
+          "tsar-bomba",
+          "rs-24-yars",
+          "rsm-56-bulava",
+          "rs-28-sarmat",
+          "city-breaker",
+          "gigaton-study",
+          "regional-event",
+          "hundred-gigaton",
+          "continent-scale"
+        ],
+        "values": [
+          {
+            "value": "1,500,000",
+            "valid": true,
+            "error": ""
+          },
+          {
+            "value": "1_500_000",
+            "valid": true,
+            "error": ""
+          },
+          {
+            "value": "1 500 000",
+            "valid": true,
+            "error": ""
+          },
+          {
+            "value": "1500000.000001",
+            "valid": false,
+            "error": "Enter a positive yield (0.000000001\u20131,500,000 Mt)."
+          },
+          {
+            "value": "1,500,001",
+            "valid": false,
+            "error": "Enter a positive yield (0.000000001\u20131,500,000 Mt)."
+          },
+          {
+            "value": "1,50,000",
+            "valid": false,
+            "error": "Enter a number; use a decimal point and group three digits."
+          },
+          {
+            "value": "0.000000001",
+            "valid": true,
+            "error": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "49 exterior SVGs decode with visible ink and no reference text",
+      "pass": true,
+      "evidence": [
+        {
+          "id": "mk-82",
+          "width": 960,
+          "height": 320,
+          "ink": 12572,
+          "texts": []
+        },
+        {
+          "id": "agm-158-jassm",
+          "width": 960,
+          "height": 320,
+          "ink": 13616,
+          "texts": []
+        },
+        {
+          "id": "gbu-49",
+          "width": 960,
+          "height": 320,
+          "ink": 15802,
+          "texts": []
+        },
+        {
+          "id": "mk-83",
+          "width": 960,
+          "height": 320,
+          "ink": 11875,
+          "texts": []
+        },
+        {
+          "id": "mk-84",
+          "width": 960,
+          "height": 320,
+          "ink": 11882,
+          "texts": []
+        },
+        {
+          "id": "moab",
+          "width": 960,
+          "height": 320,
+          "ink": 22147,
+          "texts": []
+        },
+        {
+          "id": "foab",
+          "width": 960,
+          "height": 320,
+          "ink": 6442,
+          "texts": []
+        },
+        {
+          "id": "w54",
+          "width": 960,
+          "height": 320,
+          "ink": 15164,
+          "texts": []
+        },
+        {
+          "id": "w48",
+          "width": 960,
+          "height": 320,
+          "ink": 12945,
+          "texts": []
+        },
+        {
+          "id": "sadm",
+          "width": 960,
+          "height": 320,
+          "ink": 6865,
+          "texts": []
+        },
+        {
+          "id": "little-boy",
+          "width": 960,
+          "height": 320,
+          "ink": 14921,
+          "texts": []
+        },
+        {
+          "id": "trinity-gadget",
+          "width": 960,
+          "height": 320,
+          "ink": 8206,
+          "texts": []
+        },
+        {
+          "id": "fat-man",
+          "width": 960,
+          "height": 320,
+          "ink": 13572,
+          "texts": []
+        },
+        {
+          "id": "rds-1",
+          "width": 960,
+          "height": 320,
+          "ink": 13512,
+          "texts": []
+        },
+        {
+          "id": "b61",
+          "width": 960,
+          "height": 320,
+          "ink": 13901,
+          "texts": []
+        },
+        {
+          "id": "gerboise-bleue",
+          "width": 960,
+          "height": 320,
+          "ink": 10951,
+          "texts": []
+        },
+        {
+          "id": "w76",
+          "width": 960,
+          "height": 320,
+          "ink": 11943,
+          "texts": []
+        },
+        {
+          "id": "sedan",
+          "width": 960,
+          "height": 320,
+          "ink": 7824,
+          "texts": []
+        },
+        {
+          "id": "w80",
+          "width": 960,
+          "height": 320,
+          "ink": 13585,
+          "texts": []
+        },
+        {
+          "id": "greenhouse-george",
+          "width": 960,
+          "height": 320,
+          "ink": 6452,
+          "texts": []
+        },
+        {
+          "id": "w87",
+          "width": 960,
+          "height": 320,
+          "ink": 10102,
+          "texts": []
+        },
+        {
+          "id": "b61-7",
+          "width": 960,
+          "height": 320,
+          "ink": 13127,
+          "texts": []
+        },
+        {
+          "id": "rds-6s",
+          "width": 960,
+          "height": 320,
+          "ink": 15290,
+          "texts": []
+        },
+        {
+          "id": "w88",
+          "width": 960,
+          "height": 320,
+          "ink": 10102,
+          "texts": []
+        },
+        {
+          "id": "ivy-king",
+          "width": 960,
+          "height": 320,
+          "ink": 13572,
+          "texts": []
+        },
+        {
+          "id": "orange-herald",
+          "width": 960,
+          "height": 320,
+          "ink": 5738,
+          "texts": []
+        },
+        {
+          "id": "w59",
+          "width": 960,
+          "height": 320,
+          "ink": 9700,
+          "texts": []
+        },
+        {
+          "id": "b83",
+          "width": 960,
+          "height": 320,
+          "ink": 14441,
+          "texts": []
+        },
+        {
+          "id": "starfish-prime",
+          "width": 960,
+          "height": 320,
+          "ink": 9244,
+          "texts": []
+        },
+        {
+          "id": "rds-37",
+          "width": 960,
+          "height": 320,
+          "ink": 6442,
+          "texts": []
+        },
+        {
+          "id": "grapple-x",
+          "width": 960,
+          "height": 320,
+          "ink": 6442,
+          "texts": []
+        },
+        {
+          "id": "canopus",
+          "width": 960,
+          "height": 320,
+          "ink": 10709,
+          "texts": []
+        },
+        {
+          "id": "grapple-y",
+          "width": 960,
+          "height": 320,
+          "ink": 6442,
+          "texts": []
+        },
+        {
+          "id": "w39",
+          "width": 960,
+          "height": 320,
+          "ink": 14687,
+          "texts": []
+        },
+        {
+          "id": "b53",
+          "width": 960,
+          "height": 320,
+          "ink": 15855,
+          "texts": []
+        },
+        {
+          "id": "hard-tack-poplar",
+          "width": 960,
+          "height": 320,
+          "ink": 8052,
+          "texts": []
+        },
+        {
+          "id": "ivy-mike",
+          "width": 960,
+          "height": 320,
+          "ink": 15157,
+          "texts": []
+        },
+        {
+          "id": "castle-yankee",
+          "width": 960,
+          "height": 320,
+          "ink": 15944,
+          "texts": []
+        },
+        {
+          "id": "castle-bravo",
+          "width": 960,
+          "height": 320,
+          "ink": 15450,
+          "texts": []
+        },
+        {
+          "id": "mk41",
+          "width": 960,
+          "height": 320,
+          "ink": 9012,
+          "texts": []
+        },
+        {
+          "id": "tsar-bomba",
+          "width": 960,
+          "height": 320,
+          "ink": 17459,
+          "texts": []
+        },
+        {
+          "id": "rs-24-yars",
+          "width": 960,
+          "height": 320,
+          "ink": 9841,
+          "texts": []
+        },
+        {
+          "id": "rsm-56-bulava",
+          "width": 960,
+          "height": 320,
+          "ink": 11382,
+          "texts": []
+        },
+        {
+          "id": "rs-28-sarmat",
+          "width": 960,
+          "height": 320,
+          "ink": 9751,
+          "texts": []
+        },
+        {
+          "id": "city-breaker",
+          "width": 960,
+          "height": 320,
+          "ink": 8454,
+          "texts": []
+        },
+        {
+          "id": "gigaton-study",
+          "width": 960,
+          "height": 320,
+          "ink": 8454,
+          "texts": []
+        },
+        {
+          "id": "regional-event",
+          "width": 960,
+          "height": 320,
+          "ink": 8454,
+          "texts": []
+        },
+        {
+          "id": "hundred-gigaton",
+          "width": 960,
+          "height": 320,
+          "ink": 8454,
+          "texts": []
+        },
+        {
+          "id": "continent-scale",
+          "width": 960,
+          "height": 320,
+          "ink": 8454,
+          "texts": []
+        }
+      ]
+    },
+    {
+      "name": "16scenario images load correct IDs, short prose and no visible instruction footer",
+      "pass": true,
+      "evidence": [
+        {
+          "id": "hiroshima",
+          "words": 40,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Hiroshima hypocenter"
+          }
+        },
+        {
+          "id": "nagasaki",
+          "words": 39,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Nagasaki hypocenter"
+          }
+        },
+        {
+          "id": "trinity",
+          "words": 39,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Trinity Site"
+          }
+        },
+        {
+          "id": "sedan",
+          "words": 39,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Sedan Crater, Nevada"
+          }
+        },
+        {
+          "id": "castle-bravo",
+          "words": 39,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Castle Bravo ground zero"
+          }
+        },
+        {
+          "id": "tsar-bomba",
+          "words": 39,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Tsar Bomba test area"
+          }
+        },
+        {
+          "id": "rds-1-semipalatinsk",
+          "words": 42,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Semipalatinsk Ground Zero"
+          }
+        },
+        {
+          "id": "gerboise-reggane",
+          "words": 41,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Gerboise Bleue test area"
+          }
+        },
+        {
+          "id": "ivy-mike-elugelab",
+          "words": 39,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Ivy Mike crater"
+          }
+        },
+        {
+          "id": "orange-herald-malden",
+          "words": 41,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Malden Island test area"
+          }
+        },
+        {
+          "id": "canopus-fangataufa",
+          "words": 37,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Canopus detonation point"
+          }
+        },
+        {
+          "id": "tsar-manhattan",
+          "words": 44,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Midtown Manhattan"
+          }
+        },
+        {
+          "id": "tokyo-100",
+          "words": 41,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Central Tokyo"
+          }
+        },
+        {
+          "id": "europe-continent",
+          "words": 41,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Central Europe"
+          }
+        },
+        {
+          "id": "north-america-continent",
+          "words": 41,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Geographic center of the contiguous US"
+          }
+        },
+        {
+          "id": "australia-continent",
+          "words": 43,
+          "image": {
+            "width": 1200,
+            "height": 800,
+            "alt": "Red monochrome illustration of a huge blast at Central Australia \u00b7 illustrative"
+          }
+        }
+      ]
+    },
+    {
+      "name": "footer-free native scrolling and blur 601x768",
+      "pass": true,
+      "evidence": {
+        "image": {
+          "width": 525,
+          "height": 350,
+          "fit": "contain"
+        },
+        "wheel": 212,
+        "track": 141
+      }
+    },
+    {
+      "name": "footer-free native scrolling and blur 1024x600",
+      "pass": true,
+      "evidence": {
+        "image": {
+          "width": 544,
+          "height": 362.65625,
+          "fit": "contain"
+        },
+        "wheel": 109,
+        "track": 55
+      }
+    },
+    {
+      "name": "mobile zero preview assets 390x844",
+      "pass": true,
+      "evidence": {
+        "preview": []
+      }
+    },
+    {
+      "name": "mobile zero preview assets 600x800",
+      "pass": true,
+      "evidence": {
+        "preview": []
+      }
+    },
+    {
+      "name": "mobile zero preview assets 844x390",
+      "pass": true,
+      "evidence": {
+        "preview": []
+      }
+    }
+  ],
+  "rendering": {
+    "settledIsolated": {
+      "cx": 1003.984375,
+      "cy": 577.09375,
+      "r": 209.82800632024345,
+      "initial": [
+        {
+          "normalizedRadius": 0.04,
+          "rgba": [
+            255,
+            254,
+            243,
+            255
+          ]
+        },
+        {
+          "normalizedRadius": 0.15,
+          "rgba": [
+            253,
+            173,
+            82,
+            220
+          ]
+        },
+        {
+          "normalizedRadius": 0.32,
+          "rgba": [
+            235,
+            61,
+            61,
+            154
+          ]
+        },
+        {
+          "normalizedRadius": 0.58,
+          "rgba": [
+            195,
+            42,
+            114,
+            116
+          ]
+        },
+        {
+          "normalizedRadius": 0.82,
+          "rgba": [
+            169,
+            46,
+            128,
+            110
+          ]
+        },
+        {
+          "normalizedRadius": 0.96,
+          "rgba": [
+            155,
+            48,
+            136,
+            106
+          ]
+        }
+      ],
+      "multi": [
+        {
+          "normalizedRadius": 0.04,
+          "rgba": [
+            255,
+            254,
+            243,
+            255
+          ]
+        },
+        {
+          "normalizedRadius": 0.15,
+          "rgba": [
+            253,
+            173,
+            82,
+            220
+          ]
+        },
+        {
+          "normalizedRadius": 0.32,
+          "rgba": [
+            235,
+            61,
+            61,
+            154
+          ]
+        },
+        {
+          "normalizedRadius": 0.58,
+          "rgba": [
+            195,
+            42,
+            114,
+            116
+          ]
+        },
+        {
+          "normalizedRadius": 0.82,
+          "rgba": [
+            169,
+            46,
+            128,
+            110
+          ]
+        },
+        {
+          "normalizedRadius": 0.96,
+          "rgba": [
+            155,
+            48,
+            136,
+            106
+          ]
+        }
+      ],
+      "back": [
+        {
+          "normalizedRadius": 0.04,
+          "rgba": [
+            255,
+            254,
+            243,
+            255
+          ]
+        },
+        {
+          "normalizedRadius": 0.15,
+          "rgba": [
+            253,
+            173,
+            82,
+            220
+          ]
+        },
+        {
+          "normalizedRadius": 0.32,
+          "rgba": [
+            235,
+            61,
+            61,
+            154
+          ]
+        },
+        {
+          "normalizedRadius": 0.58,
+          "rgba": [
+            195,
+            42,
+            114,
+            116
+          ]
+        },
+        {
+          "normalizedRadius": 0.82,
+          "rgba": [
+            169,
+            46,
+            128,
+            110
+          ]
+        },
+        {
+          "normalizedRadius": 0.96,
+          "rgba": [
+            155,
+            48,
+            136,
+            106
+          ]
+        }
+      ],
+      "differences": [
+        {
+          "normalizedRadius": 0.04,
+          "channels": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "normalizedRadius": 0.15,
+          "channels": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "normalizedRadius": 0.32,
+          "channels": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "normalizedRadius": 0.58,
+          "channels": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "normalizedRadius": 0.82,
+          "channels": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "normalizedRadius": 0.96,
+          "channels": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "cycles": [
+        [
+          {
+            "normalizedRadius": 0.04,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.15,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.32,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.58,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.82,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.96,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        [
+          {
+            "normalizedRadius": 0.04,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.15,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.32,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.58,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.82,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.96,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ],
+        [
+          {
+            "normalizedRadius": 0.04,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.15,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.32,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.58,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.82,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          {
+            "normalizedRadius": 0.96,
+            "channels": [
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        ]
+      ]
+    },
+    "outerBands": {
+      "single": [
+        {
+          "r": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "r": 25,
+          "rgba": [
+            254,
+            195,
+            96,
+            229
+          ]
+        },
+        {
+          "r": 50,
+          "rgba": [
+            248,
+            96,
+            50,
+            184
+          ]
+        },
+        {
+          "r": 75,
+          "rgba": [
+            226,
+            56,
+            72,
+            142
+          ]
+        },
+        {
+          "r": 100,
+          "rgba": [
+            208,
+            43,
+            101,
+            124
+          ]
+        },
+        {
+          "r": 125,
+          "rgba": [
+            193,
+            42,
+            115,
+            115
+          ]
+        },
+        {
+          "r": 150,
+          "rgba": [
+            181,
+            43,
+            122,
+            113
+          ]
+        },
+        {
+          "r": 175,
+          "rgba": [
+            168,
+            47,
+            129,
+            109
+          ]
+        },
+        {
+          "r": 200,
+          "rgba": [
+            154,
+            48,
+            137,
+            106
+          ]
+        },
+        {
+          "r": 225,
+          "rgba": [
+            141,
+            50,
+            144,
+            103
+          ]
+        },
+        {
+          "r": 250,
+          "rgba": [
+            129,
+            53,
+            149,
+            101
+          ]
+        },
+        {
+          "r": 275,
+          "rgba": [
+            117,
+            55,
+            156,
+            98
+          ]
+        },
+        {
+          "r": 300,
+          "rgba": [
+            105,
+            56,
+            164,
+            95
+          ]
+        },
+        {
+          "r": 325,
+          "rgba": [
+            111,
+            74,
+            201,
+            76
+          ]
+        },
+        {
+          "r": 350,
+          "rgba": [
+            111,
+            74,
+            199,
+            55
+          ]
+        },
+        {
+          "r": 375,
+          "rgba": [
+            107,
+            67,
+            201,
+            19
+          ]
+        },
+        {
+          "r": 400,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "r": 425,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "r": 450,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "multi": [
+        {
+          "r": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "r": 25,
+          "rgba": [
+            254,
+            195,
+            96,
+            229
+          ]
+        },
+        {
+          "r": 50,
+          "rgba": [
+            248,
+            96,
+            50,
+            184
+          ]
+        },
+        {
+          "r": 75,
+          "rgba": [
+            226,
+            56,
+            72,
+            142
+          ]
+        },
+        {
+          "r": 100,
+          "rgba": [
+            208,
+            43,
+            101,
+            124
+          ]
+        },
+        {
+          "r": 125,
+          "rgba": [
+            193,
+            42,
+            115,
+            115
+          ]
+        },
+        {
+          "r": 150,
+          "rgba": [
+            181,
+            43,
+            122,
+            113
+          ]
+        },
+        {
+          "r": 175,
+          "rgba": [
+            168,
+            47,
+            129,
+            109
+          ]
+        },
+        {
+          "r": 200,
+          "rgba": [
+            154,
+            48,
+            137,
+            106
+          ]
+        },
+        {
+          "r": 225,
+          "rgba": [
+            141,
+            50,
+            144,
+            103
+          ]
+        },
+        {
+          "r": 250,
+          "rgba": [
+            129,
+            53,
+            149,
+            101
+          ]
+        },
+        {
+          "r": 275,
+          "rgba": [
+            117,
+            55,
+            156,
+            98
+          ]
+        },
+        {
+          "r": 300,
+          "rgba": [
+            105,
+            56,
+            164,
+            95
+          ]
+        },
+        {
+          "r": 325,
+          "rgba": [
+            111,
+            74,
+            201,
+            76
+          ]
+        },
+        {
+          "r": 350,
+          "rgba": [
+            111,
+            74,
+            199,
+            55
+          ]
+        },
+        {
+          "r": 375,
+          "rgba": [
+            107,
+            67,
+            201,
+            19
+          ]
+        },
+        {
+          "r": 400,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "r": 425,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "r": 450,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "returnedSingle": [
+        {
+          "r": 0,
+          "rgba": [
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "r": 25,
+          "rgba": [
+            254,
+            195,
+            96,
+            229
+          ]
+        },
+        {
+          "r": 50,
+          "rgba": [
+            248,
+            96,
+            50,
+            184
+          ]
+        },
+        {
+          "r": 75,
+          "rgba": [
+            226,
+            56,
+            72,
+            142
+          ]
+        },
+        {
+          "r": 100,
+          "rgba": [
+            208,
+            43,
+            101,
+            124
+          ]
+        },
+        {
+          "r": 125,
+          "rgba": [
+            193,
+            42,
+            115,
+            115
+          ]
+        },
+        {
+          "r": 150,
+          "rgba": [
+            181,
+            43,
+            122,
+            113
+          ]
+        },
+        {
+          "r": 175,
+          "rgba": [
+            168,
+            47,
+            129,
+            109
+          ]
+        },
+        {
+          "r": 200,
+          "rgba": [
+            154,
+            48,
+            137,
+            106
+          ]
+        },
+        {
+          "r": 225,
+          "rgba": [
+            141,
+            50,
+            144,
+            103
+          ]
+        },
+        {
+          "r": 250,
+          "rgba": [
+            129,
+            53,
+            149,
+            101
+          ]
+        },
+        {
+          "r": 275,
+          "rgba": [
+            117,
+            55,
+            156,
+            98
+          ]
+        },
+        {
+          "r": 300,
+          "rgba": [
+            105,
+            56,
+            164,
+            95
+          ]
+        },
+        {
+          "r": 325,
+          "rgba": [
+            111,
+            74,
+            201,
+            76
+          ]
+        },
+        {
+          "r": 350,
+          "rgba": [
+            111,
+            74,
+            199,
+            55
+          ]
+        },
+        {
+          "r": 375,
+          "rgba": [
+            107,
+            67,
+            201,
+            19
+          ]
+        },
+        {
+          "r": 400,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "r": 425,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "r": 450,
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "matchingAlphaFootprintPixels": 491662
+    },
+    "spatialScenes": {
+      "separatedFieldsPreserved": true,
+      "maximumAllowedChannelDelta": 12,
+      "partialOverlapRedMinusBlueIncreaseGreaterThan": 15,
+      "sixStrikeSceneInspected": true,
+      "panZoomPitchResizeRetainedTarget": true,
+      "viewsOperated": [
+        "blast",
+        "fallout",
+        "audible",
+        "visible"
+      ],
+      "resetCleared": true
+    },
+    "expansionToggle": {
+      "before": [
+        236,
+        69,
+        62,
+        160
+      ],
+      "duringMulti": [
+        236,
+        69,
+        62,
+        160
+      ],
+      "back": [
+        236,
+        69,
+        62,
+        160
+      ],
+      "cleared": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "mirv": {
+      "cleanDefaultCameraNormalFrameAdvanceMs": 12500,
+      "impactsAfterLaunch": "3",
+      "impactsInMulti": "3",
+      "impactsAfterReturnToSingle": "3"
+    },
+    "notes": [
+      "Initial fast-forward-only MIRV step after a complex camera/view sequence was inconclusive. A clean default-camera operated keyboard launch with normal frame execution completed all three impacts and retained the group across mode changes.",
+      "Color/alpha comparisons sample the field at fixed settled states and representative radial points, including the purple fade and transparent exterior. Whole-canvas optical-texture hashes are not the comparison criterion."
+    ]
+  },
+  "artworkReview": {
+    "historicalScenes": 11,
+    "historicalCompositionReview": "Reviewed contact sheet and matching preview images; distinct delta, valley, desert, excavation, atoll/ocean and Arctic compositions with consistent red monochrome treatment.",
+    "preservedHypotheticalChecksums": {
+      "tsar-manhattan": "6fd267637eb14cac6d1da319f2d2e6cdc82b30ab95df9af39a709e3f30dc55fb",
+      "tokyo-100": "c5b1ad0381b7530fda1cf4fd210d72317d5ffe8f4da97adabb0d0e4b69c7512b",
+      "europe-continent": "485161a7d343baa8f823ba103d02ddb6a79ef84156a620c69fbc1ac17a3aa95e",
+      "north-america-continent": "2b4607fc8d65d7d8f09f903b7acd4dc8d3ab9233c96560968f778fb280e11078",
+      "australia-continent": "88766898f219291598aa093c135098f9b0fae02d55b34be59150a06aa3fcee41"
+    },
+    "allFiveChecksumsMatch": true,
+    "all49OutlineContactSheetReviewed": true
+  },
+  "visualPhasesInspected": [
+    "launch3200ms",
+    "impact6550ms",
+    "expansion8800ms",
+    "settled11150ms"
+  ],
+  "evidenceImages": [
+    "plan-19-operated-single.webp",
+    "plan-19-operated-multi.webp",
+    "plan-19-operated-scenario.webp",
+    "plan-19-operated-601.webp",
+    "plan-19-operated-pitched.webp",
+    "plan-19-operated-final-overlap.webp",
+    "plan-19-operated-final-reset.webp"
+  ],
+  "pageErrors": [],
+  "evidenceEncoding": "QA screenshot WebP exports preserve captured dimensions; original PNGs and operated harnesses remain in /private/tmp/plan19-tester and /private/tmp/plan19-*-operated.mjs.",
+  "finalOptimizationRecheck": {
+    "browser": "157.0.8103.40",
+    "bundle": "/assets/index-BBhLUEWf.js",
+    "errors": [],
+    "single": [
+      {
+        "r": 0,
+        "rgba": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "r": 25,
+        "rgba": [
+          248,
+          108,
+          56,
+          192
+        ]
+      },
+      {
+        "r": 50,
+        "rgba": [
+          208,
+          45,
+          100,
+          125
+        ]
+      },
+      {
+        "r": 75,
+        "rgba": [
+          181,
+          43,
+          122,
+          113
+        ]
+      },
+      {
+        "r": 100,
+        "rgba": [
+          155,
+          48,
+          136,
+          107
+        ]
+      },
+      {
+        "r": 125,
+        "rgba": [
+          129,
+          53,
+          149,
+          101
+        ]
+      },
+      {
+        "r": 150,
+        "rgba": [
+          106,
+          57,
+          163,
+          94
+        ]
+      },
+      {
+        "r": 175,
+        "rgba": [
+          114,
+          73,
+          205,
+          56
+        ]
+      },
+      {
+        "r": 200,
+        "rgba": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "r": 225,
+        "rgba": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "multiIsolated": [
+      {
+        "r": 0,
+        "rgba": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "r": 25,
+        "rgba": [
+          248,
+          108,
+          56,
+          192
+        ]
+      },
+      {
+        "r": 50,
+        "rgba": [
+          208,
+          45,
+          100,
+          125
+        ]
+      },
+      {
+        "r": 75,
+        "rgba": [
+          181,
+          43,
+          122,
+          113
+        ]
+      },
+      {
+        "r": 100,
+        "rgba": [
+          155,
+          48,
+          136,
+          107
+        ]
+      },
+      {
+        "r": 125,
+        "rgba": [
+          129,
+          53,
+          149,
+          101
+        ]
+      },
+      {
+        "r": 150,
+        "rgba": [
+          106,
+          57,
+          163,
+          94
+        ]
+      },
+      {
+        "r": 175,
+        "rgba": [
+          114,
+          73,
+          205,
+          56
+        ]
+      },
+      {
+        "r": 200,
+        "rgba": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "r": 225,
+        "rgba": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "separatedFirst": [
+      {
+        "r": 0,
+        "rgba": [
+          255,
+          255,
+          255,
+          255
+        ]
+      },
+      {
+        "r": 25,
+        "rgba": [
+          248,
+          108,
+          56,
+          191
+        ]
+      },
+      {
+        "r": 50,
+        "rgba": [
+          208,
+          45,
+          100,
+          125
+        ]
+      },
+      {
+        "r": 75,
+        "rgba": [
+          180,
+          43,
+          123,
+          112
+        ]
+      },
+      {
+        "r": 100,
+        "rgba": [
+          156,
+          48,
+          137,
+          106
+        ]
+      },
+      {
+        "r": 125,
+        "rgba": [
+          131,
+          53,
+          149,
+          101
+        ]
+      },
+      {
+        "r": 150,
+        "rgba": [
+          105,
+          56,
+          161,
+          95
+        ]
+      },
+      {
+        "r": 175,
+        "rgba": [
+          114,
+          73,
+          200,
+          56
+        ]
+      },
+      {
+        "r": 200,
+        "rgba": [
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      {
+        "r": 225,
+        "rgba": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    ],
+    "separatedDeltas": [
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        1,
+        1
+      ],
+      [
+        1,
+        0,
+        1,
+        1
+      ],
+      [
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        1,
+        2,
+        1
+      ],
+      [
+        0,
+        0,
+        5,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "overlapBefore": [
+      178,
+      43,
+      123,
+      112
+    ],
+    "overlapAfter": [
+      239,
+      60,
+      54,
+      127
+    ],
+    "overlapWarmthIncrease": 130,
+    "resetState": {
+      "phase": "armed",
+      "count": "0",
+      "oldFirst": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "oldOverlap": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "newScene": {
+      "phase": "complete",
+      "impacts": "1",
+      "newCenter": [
+        255,
+        255,
+        255,
+        255
+      ],
+      "oldFirst": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "oldOverlap": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "oldRegionAfterExtraFrames": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "pass": true,
+    "tolerances": {
+      "separatedMaximumRGBDelta": 8,
+      "separatedMaximumAlphaDelta": 2,
+      "reason": "Small changes from resampling the multi-field mask are accepted; isolated mode changes must match exactly and separate fields must not dim systematically."
+    }
+  }
+}

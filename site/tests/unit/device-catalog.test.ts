@@ -6,7 +6,7 @@ const expectedGroups = [
   ["conventional", "Conventional weapons", 7],
   ["nuclear", "Nuclear devices", 34],
   ["mirv", "MIRV delivery systems", 3],
-  ["hypothetical", "Hypothetical scale studies", 8],
+  ["hypothetical", "Hypothetical scale studies", 5],
 ] as const;
 
 // Group, ID, exact name, aggregate Mt, exact displayed yield, and MIRV loadout.
@@ -60,16 +60,13 @@ const expectedDevices: ReadonlyArray<readonly [string, string, string, number, s
   ["hypothetical", "regional-event", "10 Gt regional extreme", 10_000, "10 Gt"],
   ["hypothetical", "hundred-gigaton", "100 Gt regional extreme", 100_000, "100 Gt"],
   ["hypothetical", "continent-scale", "1.5 Tt small-continent study", 1_500_000, "1.5 Tt"],
-  ["hypothetical", "large-continent", "20 Tt large-continent study", 20_000_000, "20 Tt"],
-  ["hypothetical", "hemisphere-scale", "100 Tt hemisphere study", 100_000_000, "100 Tt"],
-  ["hypothetical", "earth-spanning", "1 Pt Earth-span stress test", 1_000_000_000, "1 Pt"],
 ];
 
 describe("device catalog parity", () => {
-  it("keeps four groups and 52 unique devices with ascending conventional yield", () => {
+  it("keeps four groups and 49 unique devices with ascending conventional yield", () => {
     expect(DEVICE_GROUPS.map((group) => [group.id, group.label, group.devices.length])).toEqual(expectedGroups);
     expect(DEVICES.map((device) => device.id)).toEqual(expectedDevices.map(([, id]) => id));
-    expect(new Set(DEVICES.map((device) => device.id)).size).toBe(52);
+    expect(new Set(DEVICES.map((device) => device.id)).size).toBe(49);
   });
 
   for (const [groupId, id, name, yieldMt, displayYield, warheadCount, warheadYieldMt] of expectedDevices) {

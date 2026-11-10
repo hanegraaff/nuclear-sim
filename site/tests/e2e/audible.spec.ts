@@ -107,8 +107,8 @@ test("first Audible entry keeps a round green field throughout its camera ease",
   await expect(page.locator(".audible-marker")).toHaveCount(4);
 });
 
-test("20 Tt Audible entry keeps its capped full-world field visible during camera motion", async ({ page }) => {
-  await page.getByRole("combobox", { name: "Weapon or delivery system" }).selectOption("large-continent");
+test("1.5 Tt Audible entry keeps its large field visible during camera motion", async ({ page }) => {
+  await page.getByRole("combobox", { name: "Weapon or delivery system" }).selectOption("continent-scale");
   await page.mouse.click(1050, 700);
   await page.clock.fastForward(11_300);
   await expect(page.locator("main.simulator")).toHaveAttribute("data-launch-phase", "complete");

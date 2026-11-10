@@ -1,0 +1,340 @@
+{
+  "version": "37",
+  "url": "https://nuke.maquaman.chatgpt.site",
+  "browser": "157.0.8103.40",
+  "desktop": {
+    "http": 200,
+    "initialPreviewRequests": 0,
+    "davyCrockett": "complete M388 image and 0.787 m / 34.5 kg / 23.1 kg component facts",
+    "payloadEndsAtFacts": true,
+    "blurRemovesViewport": true
+  },
+  "constrained": [
+    {
+      "width": 601,
+      "height": 768,
+      "geometry": {
+        "naturalWidth": 1200,
+        "naturalHeight": 800,
+        "width": 525,
+        "height": 350,
+        "fit": "contain"
+      },
+      "words": 40,
+      "scrollbarAndKeyboardKeepFocus": true,
+      "blurRemovesViewport": true
+    },
+    {
+      "width": 1024,
+      "height": 600,
+      "geometry": {
+        "naturalWidth": 1200,
+        "naturalHeight": 800,
+        "width": 544,
+        "height": 362.65625,
+        "fit": "contain"
+      },
+      "words": 40,
+      "scrollbarAndKeyboardKeepFocus": true,
+      "blurRemovesViewport": true
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "geometry": {
+        "naturalWidth": 1200,
+        "naturalHeight": 800,
+        "width": 544,
+        "height": 362.65625,
+        "fit": "contain"
+      },
+      "words": 40,
+      "scrollbarAndKeyboardKeepFocus": true,
+      "blurRemovesViewport": true
+    }
+  ],
+  "mobile": {
+    "http": 200,
+    "nativeSelection": true,
+    "previewRequests": 0
+  },
+  "blastModeParity": {
+    "single": {
+      "hash": 1526725498,
+      "state": {
+        "data-center-longitude": "-73.985700",
+        "data-center-latitude": "40.748400",
+        "data-zoom": "10.600",
+        "data-pitch": "0.000",
+        "data-bearing": "0.000",
+        "data-launch-elapsed": "2100",
+        "data-target-longitude": "-73.937680",
+        "data-target-latitude": "40.693466",
+        "data-launch-count": "1"
+      },
+      "diff": {
+        "maxRGB": 0,
+        "maxAlpha": 0,
+        "changedPixels": 0
+      },
+      "bands": [
+        [
+          0,
+          255,
+          255,
+          255,
+          255
+        ],
+        [
+          10,
+          254,
+          212,
+          128,
+          237
+        ],
+        [
+          20,
+          249,
+          136,
+          67,
+          204
+        ],
+        [
+          30,
+          238,
+          73,
+          58,
+          167
+        ],
+        [
+          40,
+          219,
+          51,
+          82,
+          136
+        ],
+        [
+          50,
+          204,
+          42,
+          105,
+          121
+        ],
+        [
+          65,
+          190,
+          42,
+          119,
+          114
+        ],
+        [
+          80,
+          174,
+          44,
+          128,
+          110
+        ],
+        [
+          100,
+          154,
+          48,
+          137,
+          106
+        ],
+        [
+          120,
+          134,
+          53,
+          149,
+          101
+        ]
+      ]
+    },
+    "multi": {
+      "hash": 1771715151,
+      "state": {
+        "data-center-longitude": "-73.985700",
+        "data-center-latitude": "40.748400",
+        "data-zoom": "10.600",
+        "data-pitch": "0.000",
+        "data-bearing": "0.000",
+        "data-launch-elapsed": "2100",
+        "data-target-longitude": "-73.937680",
+        "data-target-latitude": "40.693466",
+        "data-launch-count": "1"
+      },
+      "diff": {
+        "maxRGB": 1,
+        "maxAlpha": 0,
+        "changedPixels": 6952
+      },
+      "bands": [
+        [
+          0,
+          255,
+          255,
+          255,
+          255
+        ],
+        [
+          10,
+          254,
+          212,
+          128,
+          237
+        ],
+        [
+          20,
+          249,
+          136,
+          67,
+          204
+        ],
+        [
+          30,
+          238,
+          73,
+          58,
+          167
+        ],
+        [
+          40,
+          219,
+          51,
+          82,
+          136
+        ],
+        [
+          50,
+          204,
+          42,
+          105,
+          121
+        ],
+        [
+          65,
+          190,
+          42,
+          119,
+          114
+        ],
+        [
+          80,
+          174,
+          44,
+          128,
+          110
+        ],
+        [
+          100,
+          154,
+          48,
+          137,
+          106
+        ],
+        [
+          120,
+          134,
+          53,
+          149,
+          101
+        ]
+      ]
+    },
+    "back": {
+      "hash": 1771715151,
+      "state": {
+        "data-center-longitude": "-73.985700",
+        "data-center-latitude": "40.748400",
+        "data-zoom": "10.600",
+        "data-pitch": "0.000",
+        "data-bearing": "0.000",
+        "data-launch-elapsed": "2100",
+        "data-target-longitude": "-73.937680",
+        "data-target-latitude": "40.693466",
+        "data-launch-count": "1"
+      },
+      "diff": {
+        "maxRGB": 1,
+        "maxAlpha": 0,
+        "changedPixels": 6952
+      },
+      "bands": [
+        [
+          0,
+          255,
+          255,
+          255,
+          255
+        ],
+        [
+          10,
+          254,
+          212,
+          128,
+          237
+        ],
+        [
+          20,
+          249,
+          136,
+          67,
+          204
+        ],
+        [
+          30,
+          238,
+          73,
+          58,
+          167
+        ],
+        [
+          40,
+          219,
+          51,
+          82,
+          136
+        ],
+        [
+          50,
+          204,
+          42,
+          105,
+          121
+        ],
+        [
+          65,
+          190,
+          42,
+          119,
+          114
+        ],
+        [
+          80,
+          174,
+          44,
+          128,
+          110
+        ],
+        [
+          100,
+          154,
+          48,
+          137,
+          106
+        ],
+        [
+          120,
+          134,
+          53,
+          149,
+          101
+        ]
+      ]
+    },
+    "bandColorsAndEveryPixelAlphaIdentical": true,
+    "nativeChromeRGBTolerance": 1,
+    "diagnostic": "plan-19-hosted-render-details.json documents the prior hash-only probe; no application or pinned-test changes."
+  },
+  "pageErrors": []
+}

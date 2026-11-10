@@ -1,0 +1,254 @@
+[
+  {
+    "id": "hiroshima",
+    "yield": "15 kt airburst",
+    "scene": "Hiroshima, 6 August 1945. Elevated oblique aircraft perspective looking down diagonally across the branching Ota river delta, low wooden city blocks and bridges, hills distant at top edge. Show an early rising asymmetric dust-and-smoke column displaced to the upper left; broad low spreading destruction and fires follow the river-island city fabric, with a few masonry shells remaining. City and river geography fill most of frame, no huge symmetrical dome centered on horizon. The cloud should belong to a 15-kiloton city airburst, not a megaton explosion. Pale flash glow behind smoke, intact outskirts visible. A respectful devastating cinematic scene.",
+    "sources": [
+      "https://www.atomicarchive.com/resources/documents/bombing-survey/section_II.html",
+      "https://www.ctbto.org/news-and-events/news/hiroshima-and-nagasaki-anniversaries"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Hiroshima, 6 August 1945. Elevated oblique aircraft perspective looking down diagonally across the branching Ota river delta, low wooden city blocks and bridges, hills distant at top edge. Show an early rising asymmetric dust-and-smoke column displaced to the upper left; broad low spreading destruction and fires follow the river-island city fabric, with a few masonry shells remaining. City and river geography fill most of frame, no huge symmetrical dome centered on horizon. The cloud should belong to a 15-kiloton city airburst, not a megaton explosion. Pale flash glow behind smoke, intact outskirts visible. A respectful devastating cinematic scene.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/hiroshima.webp",
+    "status": "accepted",
+    "sourceFile": "exec-30492b04-ba2c-4a71-86f4-1b1a4d7097e0.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "nagasaki",
+    "yield": "21 kt airburst",
+    "scene": "Nagasaki Urakami valley, 9 August 1945. View from a distant hillside across a narrow industrial valley bounded by steep wooded hills. Industrial roof skeletons and shattered low houses trace the valley floor, harbor only a distant glimpse. A turbulent nuclear column rises from the valley toward the right side, upper cloud partly beyond the top edge, heavy ground dust confined by ridges; nearer hill remains visibly separate and partly undamaged. NOT a flat river delta or a citywide concentric fire wall. A 21-kiloton airburst with terrain-shaped devastation, sombre backlit smoking wreckage and ravaged factory roofs. Wide hillside foreground leads into depth.",
+    "sources": [
+      "https://www.atomicarchive.com/resources/documents/bombing-survey/section_II.html",
+      "https://www.atomicarchive.com/resources/documents/british-report/chapter-2.html"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Nagasaki Urakami valley, 9 August 1945. View from a distant hillside across a narrow industrial valley bounded by steep wooded hills. Industrial roof skeletons and shattered low houses trace the valley floor, harbor only a distant glimpse. A turbulent nuclear column rises from the valley toward the right side, upper cloud partly beyond the top edge, heavy ground dust confined by ridges; nearer hill remains visibly separate and partly undamaged. NOT a flat river delta or a citywide concentric fire wall. A 21-kiloton airburst with terrain-shaped devastation, sombre backlit smoking wreckage and ravaged factory roofs. Wide hillside foreground leads into depth.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/nagasaki.webp",
+    "status": "accepted",
+    "sourceFile": "exec-521c525a-4102-4c94-9e2c-dce551780fbb.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "trinity",
+    "yield": "18.6 kt tower test",
+    "scene": "Trinity, Jornada del Muerto desert New Mexico, predawn 16 July 1945. Very low distant instrument-camera view across sparse scrub and flat desert with low mountain silhouette. Capture the first expanding luminous near-hemispherical fireball just above the ground with a ragged scalloped underside, vaporized tower gone, thin luminous ground dust sweeping sideways. Early moment BEFORE a mature mushroom cloud forms. Fireball left of center with large dark sky and sharp distant mountain ridge; bare desert lit by intense glare, no city, no ocean, no giant later mushroom. Scientific test scene with palpable immense but tens-of-kilotons scale.",
+    "sources": [
+      "https://www.energy.gov/lm/trinity-site-worlds-first-nuclear-explosion"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Trinity, Jornada del Muerto desert New Mexico, predawn 16 July 1945. Very low distant instrument-camera view across sparse scrub and flat desert with low mountain silhouette. Capture the first expanding luminous near-hemispherical fireball just above the ground with a ragged scalloped underside, vaporized tower gone, thin luminous ground dust sweeping sideways. Early moment BEFORE a mature mushroom cloud forms. Fireball left of center with large dark sky and sharp distant mountain ridge; bare desert lit by intense glare, no city, no ocean, no giant later mushroom. Scientific test scene with palpable immense but tens-of-kilotons scale.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/trinity.webp",
+    "status": "accepted",
+    "sourceFile": "exec-9eb6c7f9-8da7-4b1e-9449-82bac8efd41e.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "sedan",
+    "yield": "104 kt shallow underground excavation",
+    "scene": "Sedan test, Yucca Flat Nevada, 6 July 1962. High oblique view down into a broad arid basin at the moment a shallow underground excavation vents: an enormous low ragged domed mass of earth and dark dust heaves upward, radial dirty ejecta fans across the desert, a broad ground-hugging dust surge, opening crater partly visible under the near rim. Distant layered Nevada ridges and dry gullies give scale. Earth excavation, NOT a luminous atmospheric fireball, no clean narrow mushroom stalk, no city, no lava. Off-center eruption fills lower right, diagonally sweeping dust across landscape. Rough soil texture and oppressive haze.",
+    "sources": [
+      "https://nnss.gov/publication-library/anniversary-publications/",
+      "https://nnss.gov/wp-content/uploads/2023/04/NNSS-SEDN-U-0047-Rev01-1.pdf"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Sedan test, Yucca Flat Nevada, 6 July 1962. High oblique view down into a broad arid basin at the moment a shallow underground excavation vents: an enormous low ragged domed mass of earth and dark dust heaves upward, radial dirty ejecta fans across the desert, a broad ground-hugging dust surge, opening crater partly visible under the near rim. Distant layered Nevada ridges and dry gullies give scale. Earth excavation, NOT a luminous atmospheric fireball, no clean narrow mushroom stalk, no city, no lava. Off-center eruption fills lower right, diagonally sweeping dust across landscape. Rough soil texture and oppressive haze.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/sedan.webp",
+    "status": "accepted",
+    "sourceFile": "exec-61471ce6-1b07-4cea-8617-ea2a51be8e05.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "castle-bravo",
+    "yield": "15 Mt surface test",
+    "scene": "Castle Bravo, Bikini Atoll, 1 March 1954. Very wide high-altitude diagonal aerial panorama of a coral atoll arc and immense lagoon surrounded by open Pacific. A gigantic surface thermonuclear cloud with broad low condensation skirt rises near the far reef at upper right; the immense low rolling spray/dust front obscures a section of coral rim. Cloud width strongly larger relative to tiny reef islets than any kiloton test, yet retain enough lagoon and island arc to recognize atoll geometry. Distant detached observer-like viewpoint, no close palm-tree foreground, no city, no mountains, no planet curvature. Bright cloud above black-red water, thin reef line leading diagonally.",
+    "sources": [
+      "https://www.ctbto.org/news-and-events/news/ctbto-enhances-cooperation-pacific-states",
+      "https://www.dtra.mil/Portals/125/Documents/NTPR/newDocs/ANTHReport/1954_DNA_6035F.pdf"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Castle Bravo, Bikini Atoll, 1 March 1954. Very wide high-altitude diagonal aerial panorama of a coral atoll arc and immense lagoon surrounded by open Pacific. A gigantic surface thermonuclear cloud with broad low condensation skirt rises near the far reef at upper right; the immense low rolling spray/dust front obscures a section of coral rim. Cloud width strongly larger relative to tiny reef islets than any kiloton test, yet retain enough lagoon and island arc to recognize atoll geometry. Distant detached observer-like viewpoint, no close palm-tree foreground, no city, no mountains, no planet curvature. Bright cloud above black-red water, thin reef line leading diagonally.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/castle-bravo.webp",
+    "status": "accepted",
+    "sourceFile": "exec-6a8377fe-98ee-4f72-94c4-7b1104477054.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "tsar-bomba",
+    "yield": "50 Mt airburst",
+    "scene": "Tsar Bomba, Novaya Zemlya Soviet Arctic, 30 October 1961. Extreme-distance cinematic panorama across barren snowy ridges and dark Arctic coastal water, from an aircraft above a ridge. A vast elevated thermonuclear luminous cloud with multiple huge stacked billowing lobes and thin atmospheric condensation layers dominates the remote sky on the left; ground dust/haze far below is separated from the elevated luminous region. The image clearly suggests vastly greater power than kiloton tests. Sweeping snow-covered diagonals cross bottom foreground, severe empty polar landscape, dark water inlet right, no trees, palms, city, conventional small fire plume, or outer space view.",
+    "sources": [
+      "https://www.dtra.mil/Portals/61/Documents/History/Defense%27s%20Nuclear%20Agency%201947-1997.pdf",
+      "https://www.nuclearweaponarchive.org/~nuclearw/Russia/TsarBomba.html"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Tsar Bomba, Novaya Zemlya Soviet Arctic, 30 October 1961. Extreme-distance cinematic panorama across barren snowy ridges and dark Arctic coastal water, from an aircraft above a ridge. A vast elevated thermonuclear luminous cloud with multiple huge stacked billowing lobes and thin atmospheric condensation layers dominates the remote sky on the left; ground dust/haze far below is separated from the elevated luminous region. The image clearly suggests vastly greater power than kiloton tests. Sweeping snow-covered diagonals cross bottom foreground, severe empty polar landscape, dark water inlet right, no trees, palms, city, conventional small fire plume, or outer space view.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/tsar-bomba.webp",
+    "status": "accepted",
+    "sourceFile": "exec-aac4d1bf-66f1-4949-b2d7-de7220048c2d.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "rds-1-semipalatinsk",
+    "yield": "22 kt tower test",
+    "scene": "RDS-1, Semipalatinsk Kazakh steppe, 29 August 1949. Low long-lens perspective across an expansive dry grass steppe, distant tiny 1940s test structures barely visible. Mid-distance asymmetric dark mushroom column with a flattened billowing cap, stem laden with dust, low shock-dust front sweeping horizontally across test ground. Place column on right third, long flat horizon low across frame, foreground seed heads dark and out of focus. This is a tens-of-kilotons tower test, smaller apparent destruction than the remote megaton scenes. No high mountain wall, no forest, no city, no desert dunes. Raw grainy official test-camera feeling with cinematic contrast.",
+    "sources": [
+      "https://www.nuclearweaponarchive.org/Russia/Sovatmtest.html",
+      "https://www.kas.de/en/web/multilateraler-dialog-wien/to-the-third-nuclear-age-a-timeline/detail/-/content/inaugural-soviet-nuclear-test"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. RDS-1, Semipalatinsk Kazakh steppe, 29 August 1949. Low long-lens perspective across an expansive dry grass steppe, distant tiny 1940s test structures barely visible. Mid-distance asymmetric dark mushroom column with a flattened billowing cap, stem laden with dust, low shock-dust front sweeping horizontally across test ground. Place column on right third, long flat horizon low across frame, foreground seed heads dark and out of focus. This is a tens-of-kilotons tower test, smaller apparent destruction than the remote megaton scenes. No high mountain wall, no forest, no city, no desert dunes. Raw grainy official test-camera feeling with cinematic contrast.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/rds-1-semipalatinsk.webp",
+    "status": "accepted",
+    "sourceFile": "exec-b8df4199-a43f-48cc-bc98-b528ee408ce6.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "gerboise-reggane",
+    "yield": "70 kt tower test",
+    "scene": "Gerboise Bleue, Reggane Algerian Sahara, 13 February 1960. Remote wide camera from a stony flat desert escarpment, immense open hamada stretching toward a pale dusty horizon. Tower-test blast has grown into a tall irregular tilted cloud stem with a spreading dust canopy; a broad sand/dust veil rolls across sunlit mineral ground, darker rock slabs at the bottom foreground. Early morning low oblique light. Off-center cloud on far left, most frame communicates harsh vast dry landscape and streaking airborne dust. No picturesque giant dunes, no city, no coastal water, no forest, no Arctic terrain. 70-kiloton event distinct from smaller Trinity's early glowing fireball.",
+    "sources": [
+      "https://www.assemblee-nationale.fr/rap-oecst/essais_nucleaires/i3571.asp",
+      "https://moruroa.assemblee.pf/medias/pdf/Tableau%20Essais%20nucl%C3%A9aires%20fran%C3%A7ais%20au%20Sahara%201966.pdf"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Gerboise Bleue, Reggane Algerian Sahara, 13 February 1960. Remote wide camera from a stony flat desert escarpment, immense open hamada stretching toward a pale dusty horizon. Tower-test blast has grown into a tall irregular tilted cloud stem with a spreading dust canopy; a broad sand/dust veil rolls across sunlit mineral ground, darker rock slabs at the bottom foreground. Early morning low oblique light. Off-center cloud on far left, most frame communicates harsh vast dry landscape and streaking airborne dust. No picturesque giant dunes, no city, no coastal water, no forest, no Arctic terrain. 70-kiloton event distinct from smaller Trinity's early glowing fireball.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/gerboise-reggane.webp",
+    "status": "accepted",
+    "sourceFile": "exec-676a0c38-c74d-4a36-883b-3450065da7ab.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "ivy-mike-elugelab",
+    "yield": "10.4 Mt surface test",
+    "scene": "Ivy Mike, Elugelab Enewetak Atoll, 1 November 1952 local time. Cinematic sea-level long-range view across dark rippled Pacific toward an island-displacing thermonuclear surface explosion. Immense pale-red cauliflower cloud climbs out of a broad opaque turbulent water-and-coral debris base that swallows the tiny low islet, with dark low reef fragments at far edges and immense steaming surface spray. Capture turbulent early cloud growth rather than neatly finished symmetrical mushroom; broad heavy columns partly merge. Low horizon and water filling bottom half distinguish this sea-view scene from the high aerial Castle Bravo view. No city, mountains, dramatic foreground palm grove, planet, or gigantic impossible tsunami wall.",
+    "sources": [
+      "https://www.energy.gov/nnsa/articles/2020-nnsa-trinity-brochure",
+      "https://www.atomicarchive.com/history/cold-war/page-3.html"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Ivy Mike, Elugelab Enewetak Atoll, 1 November 1952 local time. Cinematic sea-level long-range view across dark rippled Pacific toward an island-displacing thermonuclear surface explosion. Immense pale-red cauliflower cloud climbs out of a broad opaque turbulent water-and-coral debris base that swallows the tiny low islet, with dark low reef fragments at far edges and immense steaming surface spray. Capture turbulent early cloud growth rather than neatly finished symmetrical mushroom; broad heavy columns partly merge. Low horizon and water filling bottom half distinguish this sea-view scene from the high aerial Castle Bravo view. No city, mountains, dramatic foreground palm grove, planet, or gigantic impossible tsunami wall.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/ivy-mike-elugelab.webp",
+    "status": "accepted",
+    "sourceFile": "exec-1565a089-dc45-46b9-9ffb-7b0b89177e18.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "orange-herald-malden",
+    "yield": "720 kt airburst",
+    "scene": "Orange Herald test, near Malden Island in the central Pacific, 31 May 1957. Distant low aerial view ALONG the narrow flat coral island shoreline, pale reef surf curving diagonally from lower left toward the horizon. Above the ocean off the far end of the island a bright detached airburst cloud is expanding into a slender stem and uneven rounded crown, with a dark red atmospheric shadow trailing across water. Retain visible water gap between glowing cloud region and surface haze; no surface crater, no wave swallowing entire island. 720-kiloton high-yield fission test impressive but visibly more restrained than the 10\u201315 megaton atoll scenes. No city, mountains or lush mountainous tropical island.",
+    "sources": [
+      "https://assets.publishing.service.gov.uk/media/5a755567e5274a59fa717577/ntvfactsheet5.pdf",
+      "https://www.nuclearweaponarchive.org/~nuclearw/Uk/UKTesting.html"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Orange Herald test, near Malden Island in the central Pacific, 31 May 1957. Distant low aerial view ALONG the narrow flat coral island shoreline, pale reef surf curving diagonally from lower left toward the horizon. Above the ocean off the far end of the island a bright detached airburst cloud is expanding into a slender stem and uneven rounded crown, with a dark red atmospheric shadow trailing across water. Retain visible water gap between glowing cloud region and surface haze; no surface crater, no wave swallowing entire island. 720-kiloton high-yield fission test impressive but visibly more restrained than the 10\u201315 megaton atoll scenes. No city, mountains or lush mountainous tropical island.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/orange-herald-malden.webp",
+    "status": "accepted",
+    "sourceFile": "exec-026c6a51-705d-41db-8972-2372d3c40cb6.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  },
+  {
+    "id": "canopus-fangataufa",
+    "yield": "2.6 Mt balloon-suspended atmospheric test",
+    "scene": "Canopus, Fangataufa Atoll French Polynesia, 24 August 1968. Oblique medium-altitude panorama across a clearly enclosed oval coral lagoon, thin low vegetated rim separated from the dark open ocean. A huge elevated multi-lobed thermonuclear cloud over the far side, its broad pale glowing cap contrasted against layered dark stormlike atmosphere, a slender dusty lower column fading toward surface haze. Atmospheric balloon-suspended test context, no balloon remaining visible after detonation. Let an intact curve of lagoon and reef dominate lower half, cloud high on left, view through slanting haze. Scale between Orange Herald and the US megaton surface tests. No snow, tall volcanic mountains, city, giant surface crater, orbital planet view, or generic centered mushroom.",
+    "sources": [
+      "https://www.cea.fr/multimedia/Documents/publications/ouvrages/LIVRE-Les-essais-nucleaires-en-Polynesie-francaise.pdf",
+      "https://www-dam.cea.fr/dam/wp-content/uploads/2018/07/direction-applications-militaires-cea-dissuasion-nucleaire-france.pdf"
+    ],
+    "prompt": "Use case: historical-scene. Asset type: static scenario preview for Nuke Simulator. Create a NEW cinematic photographic illustration, landscape 3:2. Red monochrome duotone ONLY: charcoal blacks, deep crimson midtones, pale hot red highlights, natural atmospheric haze, silver-gelatin film grain, realistic photographic detail. Dark, sober, ominous. Historical interpretation rather than an archival photograph or precise forecast. The location and credible relative destructive scale are essential; do not repeat a generic centered mushroom cloud. No typography, captions, borders, logos, collage, modern skyscrapers, identifiable people, or graphic injuries. Canopus, Fangataufa Atoll French Polynesia, 24 August 1968. Oblique medium-altitude panorama across a clearly enclosed oval coral lagoon, thin low vegetated rim separated from the dark open ocean. A huge elevated multi-lobed thermonuclear cloud over the far side, its broad pale glowing cap contrasted against layered dark stormlike atmosphere, a slender dusty lower column fading toward surface haze. Atmospheric balloon-suspended test context, no balloon remaining visible after detonation. Let an intact curve of lagoon and reef dominate lower half, cloud high on left, view through slanting haze. Scale between Orange Herald and the US megaton surface tests. No snow, tall volcanic mountains, city, giant surface crater, orbital planet view, or generic centered mushroom.",
+    "date": "2026-11-09",
+    "generation": "built-in image_gen",
+    "output": "/media/scenarios/canopus-fangataufa.webp",
+    "status": "accepted",
+    "sourceFile": "exec-a2f7f03c-54fa-49da-b2e7-88f1c7354105.png",
+    "review": "Inspected full-size generated output for location, composition, red photographic style and illustrative scale; accepted. Not an archival reconstruction or calibrated forecast.",
+    "encoding": {
+      "width": 1200,
+      "height": 800,
+      "format": "WebP",
+      "quality": 78,
+      "method": 6
+    }
+  }
+]

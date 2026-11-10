@@ -10,7 +10,7 @@ export interface DossierFact {
   readonly sources: readonly string[];
 }
 
-/** Exterior silhouette asset in pixels; scale comes from the annotated physical length. */
+/** Exterior silhouette asset in pixels; it is illustrative and has no drawn scale reference. */
 export interface DossierSilhouette {
   readonly src: string;
   readonly width: number;
