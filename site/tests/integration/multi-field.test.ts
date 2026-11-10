@@ -2,7 +2,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { blastRadiiForYield } from "../../src/domain/blast";
 import { advanceMultiFieldWork, createMultiFieldWork, expandingBlastIntensity, multiFieldBudget, MultiBlastCanvasRenderer, MULTI_FIELD_WORK_CHUNK } from "../../src/rendering/effects/MultiBlastCanvasRenderer";
-import { multiBlastColor, multiBlastDisplayIntensity, multiBlastHueIntensity } from "../../src/rendering/effects/multiBlastPalette";
+import { composedBlastColor, multiBlastColor, multiBlastDisplayIntensity, multiBlastHueIntensity } from "../../src/rendering/effects/multiBlastPalette";
 import { combineBlastPeakAndSum } from "../../src/domain/overlap";
 import { buildBlastGroundGrid, type BlastGroundGrid } from "../../src/rendering/effects/blastFieldGeometry";
 import type { Launch, LaunchFrame } from "../../src/application/launch";
@@ -70,7 +70,7 @@ describe("multi-strike rendering contracts", () => {
 
   it("invalidates the renderer's shared camera samples when the sixth strike changes mask resolution", () => {
     const toGeo = vi.fn(({ x, y }: { x: number; y: number }) => ({ longitude: -74 + x / 10_000, latitude: 40 + y / 10_000 }));
-    const camera = { toGeo, toScreen: () => ({ x: 400, y: 350 }) };
+    const camera = { snapshot: () => ({ pitch: 0 }), toGeo, toScreen: () => ({ x: 400, y: 350 }) };
     const gradient = { addColorStop: () => {} };
     const context = {
       setTransform: () => {}, clearRect: () => {}, save: () => {}, restore: () => {}, drawImage: () => {},
@@ -100,6 +100,36 @@ describe("multi-strike rendering contracts", () => {
     }
   });
 
+  it("admits only the newest eight pitched optical rasters and reuses them for ten-warhead repaints", () => {
+    const gradient = { addColorStop: () => {} };
+    const context = {
+      setTransform: () => {}, clearRect: () => {}, save: () => {}, restore: () => {}, drawImage: () => {},
+      createImageData: (width: number, height: number) => ({ data: new Uint8ClampedArray(width * height * 4) }),
+      putImageData: () => {}, createRadialGradient: () => gradient, beginPath: () => {}, arc: () => {}, fill: () => {},
+    };
+    const canvas = () => ({ width: 0, height: 0, getContext: () => context });
+    const createElement = vi.spyOn(document, "createElement").mockImplementation(() => canvas() as unknown as HTMLCanvasElement);
+    const camera = {
+      snapshot: () => ({ pitch: 45 }),
+      toGeo: ({ x, y }: { x: number; y: number }) => ({ longitude: -74 + x / 10_000, latitude: 40 + y / 10_000 }),
+      toScreen: ({ longitude, latitude }: { longitude: number; latitude: number }) => ({ x: (longitude + 74) * 10_000, y: (latitude - 40) * 10_000 }),
+    };
+    const frames = Array.from({ length: 10 }, (_, index): LaunchFrame => {
+      const origin = { longitude: -73.98 + index * .0001, latitude: 40.015 };
+      return { launch: { id: index + 1, deviceId: "rsm-56-bulava", yieldMt: .12, route: { start: origin, control: origin, target: origin }, launchedAtMs: 0, flightMs: 6500, blastMs: 4600, radii: blastRadiiForYield(.12) }, elapsedMs: 11_100 };
+    });
+    const renderer = new MultiBlastCanvasRenderer(canvas() as unknown as HTMLCanvasElement, camera as never);
+    try {
+      renderer.render(frames, 400, 300);
+      expect(createElement).toHaveBeenCalledTimes(9); // one shared field + eight admitted optical bitmaps
+      for (let count = 0; count < 12; count++) renderer.render(frames, 400, 300);
+      expect(createElement).toHaveBeenCalledTimes(9);
+      renderer.invalidateProjection(); renderer.render(frames, 400, 300);
+      expect(createElement).toHaveBeenCalledTimes(18); // one bounded rebuild, then reuse again
+      renderer.render(frames, 400, 300); expect(createElement).toHaveBeenCalledTimes(18);
+    } finally { renderer.dispose(); createElement.mockRestore(); }
+  });
+
   it("preserves the grouped single-launch inspection through an asynchronous field continuation", () => {
     // More than 1,024 offscreen deliveries force a second chunk without costly
     // geodesic sampling; the separate inspection canvas stands in for the ruler.
@@ -123,6 +153,7 @@ describe("multi-strike rendering contracts", () => {
       const viewport = { longitude: -74, latitude: 40 };
       const remote = { longitude: 120, latitude: -20 };
       const camera = {
+        snapshot: () => ({ pitch: 0 }),
         toGeo: ({ x, y }: { x: number; y: number }) => ({ longitude: viewport.longitude + x / 1000, latitude: viewport.latitude + y / 1000 }),
         toScreen: () => ({ x: 10, y: 10 }),
       };
@@ -143,7 +174,13 @@ describe("multi-strike rendering contracts", () => {
       expect(clearInspection).not.toHaveBeenCalled();
       renderer.render(frames, 30, 20, true);
       expect(clearInspection).toHaveBeenCalledOnce();
+      renderer.invalidateProjection();
+      renderer.render(frames, 30, 20, false); // start another pending chunk before Reset/disposal
       renderer.dispose();
+      expect(cancelFrame).toHaveBeenCalled();
+      const callsAtDisposal = clearInspection.mock.calls.length;
+      continuation!(0); // even an already-delivered stale callback has no latest request
+      expect(clearInspection).toHaveBeenCalledTimes(callsAtDisposal);
     } finally {
       createElement.mockRestore();
       requestFrame.mockRestore();
@@ -201,18 +238,18 @@ describe("multi-strike rendering contracts", () => {
     expect(zoomed.widthPx).toBeLessThanOrEqual(158);
   });
 
-  it("keeps model overlap order while compressing the broad halo only in the color mapping", () => {
+  it("preserves normalized intensity instead of dimming an isolated multi field", () => {
     expect(multiBlastDisplayIntensity(0)).toBe(0);
     expect(multiBlastDisplayIntensity(1)).toBe(1);
-    expect(multiBlastDisplayIntensity(0.25)).toBeLessThan(0.1);
-    expect(multiBlastDisplayIntensity(0.75)).toBeLessThan(0.6);
+    expect(multiBlastDisplayIntensity(0.25)).toBe(0.25);
+    expect(multiBlastDisplayIntensity(0.75)).toBe(0.75);
     expect(multiBlastDisplayIntensity(0.9)).toBeGreaterThan(0.8);
     expect(multiBlastDisplayIntensity(0.9)).toBeGreaterThan(multiBlastDisplayIntensity(0.75));
   });
 
-  it("moves partial overlap from the purple legend band through pink and red without brightening its opacity", () => {
+  it("warms actual overlap with bounded opacity while retaining an isolated sample exactly", () => {
     const sample = (count: number) => {
-      const peak = 0.34;
+      const peak = 0.14;
       const sum = peak * count;
       const display = multiBlastDisplayIntensity(combineBlastPeakAndSum(peak, sum));
       return { color: multiBlastColor(multiBlastHueIntensity(display, peak, sum)), opacity: multiBlastColor(display).alpha };
@@ -223,6 +260,7 @@ describe("multi-strike rendering contracts", () => {
     expect(one.color.blue).toBeGreaterThan(one.color.red);
     expect(two.color.red).toBeGreaterThan(two.color.blue);
     expect(three.color.red - three.color.blue).toBeGreaterThan(two.color.red - two.color.blue);
+    expect(composedBlastColor(.14, .14, one.color)).toEqual(one.color);
     expect(multiBlastHueIntensity(0.5, 0.34, 0.68)).toBeGreaterThan(0.5);
     expect(multiBlastHueIntensity(0.5, 0.34, 0.68)).toBeLessThanOrEqual(0.66);
     expect(one.opacity).toBeLessThan(two.opacity);

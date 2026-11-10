@@ -1,3 +1,4 @@
+import { isSelectableYieldMt } from "../catalog/selectableYield";
 import type { GeoPoint } from "../domain/geodesy";
 import type { ScenarioSelectionAction, ScenarioSelectionState } from "./scenarioSelection";
 import { INITIAL_SCENARIO_SELECTION, reduceScenarioSelection } from "./scenarioSelection";
@@ -165,7 +166,7 @@ export function reduceSimulator(state: SimulatorState, action: SimulatorAction):
   if (action.type === "setMapTone") return state.mapTone === action.tone ? state : { ...state, mapTone: action.tone };
   if (action.type === "setPanelsVisible") return state.panelsVisible === action.visible ? state : { ...state, panelsVisible: action.visible };
   if (action.type === "launchAt") {
-    if (!Number.isFinite(action.nowMs) || !Number.isFinite(action.yieldMt) || action.yieldMt <= 0) return state;
+    if (!Number.isFinite(action.nowMs) || !isSelectableYieldMt(action.yieldMt) || (action.deviceId !== "custom" && !getDeviceById(action.deviceId))) return state;
     const flightMs = action.flightMs ?? (action.reducedMotion ? REDUCED_FLIGHT_MS : FLIGHT_MS);
     if (!Number.isFinite(flightMs) || flightMs <= 0) return state;
     const device = getDeviceById(action.deviceId);

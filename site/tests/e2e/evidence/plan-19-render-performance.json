@@ -1,0 +1,392 @@
+{
+  "browser": "157.0.8103.40",
+  "node": "v26.13.0",
+  "baselineSource": "origin/main46a9ab1 archived site built with same Node26 and dependencies",
+  "viewport": {
+    "width": 1508,
+    "height": 1080
+  },
+  "method": "Chrome CDP Performance TaskDuration/ScriptDuration deltas during4700 fake-clock milliseconds after impact;3 interleaved samples per fixture/version; fixed local tiles; output is process CPU time, not real-time latency",
+  "samples": [
+    {
+      "repeat": 1,
+      "fixture": "single",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 512.1,
+      "scriptCpuMs": 440.596,
+      "jsHeapUsedBytes": 13303252
+    },
+    {
+      "repeat": 1,
+      "fixture": "single",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 535.235,
+      "scriptCpuMs": 456.84999999999997,
+      "jsHeapUsedBytes": 14322040
+    },
+    {
+      "repeat": 1,
+      "fixture": "multi-one",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 3424.4350000000004,
+      "scriptCpuMs": 3309.534,
+      "jsHeapUsedBytes": 12060484
+    },
+    {
+      "repeat": 1,
+      "fixture": "multi-one",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 855.3000000000001,
+      "scriptCpuMs": 670.1270000000001,
+      "jsHeapUsedBytes": 13321060
+    },
+    {
+      "repeat": 1,
+      "fixture": "multi-two",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 6265.7699999999995,
+      "scriptCpuMs": 6121.589,
+      "jsHeapUsedBytes": 8052424
+    },
+    {
+      "repeat": 1,
+      "fixture": "multi-two",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 5994.919,
+      "scriptCpuMs": 5865.337,
+      "jsHeapUsedBytes": 14814476
+    },
+    {
+      "repeat": 1,
+      "fixture": "multi-five",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 7264.692,
+      "scriptCpuMs": 7113.396,
+      "jsHeapUsedBytes": 8361756
+    },
+    {
+      "repeat": 1,
+      "fixture": "multi-five",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 7411.156,
+      "scriptCpuMs": 7255.803,
+      "jsHeapUsedBytes": 8187820
+    },
+    {
+      "repeat": 1,
+      "fixture": "mirv-ten",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 298.126,
+      "scriptCpuMs": 178.09900000000002,
+      "jsHeapUsedBytes": 9011352
+    },
+    {
+      "repeat": 1,
+      "fixture": "mirv-ten",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 292.016,
+      "scriptCpuMs": 180.386,
+      "jsHeapUsedBytes": 8665240
+    },
+    {
+      "repeat": 2,
+      "fixture": "single",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 579.415,
+      "scriptCpuMs": 485.376,
+      "jsHeapUsedBytes": 14362792
+    },
+    {
+      "repeat": 2,
+      "fixture": "single",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 593.2379999999999,
+      "scriptCpuMs": 491.084,
+      "jsHeapUsedBytes": 14066880
+    },
+    {
+      "repeat": 2,
+      "fixture": "multi-one",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 3369.371,
+      "scriptCpuMs": 3245.939,
+      "jsHeapUsedBytes": 13320764
+    },
+    {
+      "repeat": 2,
+      "fixture": "multi-one",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 597.4390000000001,
+      "scriptCpuMs": 500.068,
+      "jsHeapUsedBytes": 13059608
+    },
+    {
+      "repeat": 2,
+      "fixture": "multi-two",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 6569.392,
+      "scriptCpuMs": 6422.022,
+      "jsHeapUsedBytes": 8233464
+    },
+    {
+      "repeat": 2,
+      "fixture": "multi-two",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 6254.475,
+      "scriptCpuMs": 6099.326999999999,
+      "jsHeapUsedBytes": 8107216
+    },
+    {
+      "repeat": 2,
+      "fixture": "multi-five",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 7523.45,
+      "scriptCpuMs": 7371.181,
+      "jsHeapUsedBytes": 8317864
+    },
+    {
+      "repeat": 2,
+      "fixture": "multi-five",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 7299.1900000000005,
+      "scriptCpuMs": 7153.613,
+      "jsHeapUsedBytes": 14857348
+    },
+    {
+      "repeat": 2,
+      "fixture": "mirv-ten",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 234.63,
+      "scriptCpuMs": 144.768,
+      "jsHeapUsedBytes": 11612284
+    },
+    {
+      "repeat": 2,
+      "fixture": "mirv-ten",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 269.457,
+      "scriptCpuMs": 163.706,
+      "jsHeapUsedBytes": 11585836
+    },
+    {
+      "repeat": 3,
+      "fixture": "single",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 532.5,
+      "scriptCpuMs": 452.209,
+      "jsHeapUsedBytes": 10926932
+    },
+    {
+      "repeat": 3,
+      "fixture": "single",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 540.143,
+      "scriptCpuMs": 457.69,
+      "jsHeapUsedBytes": 14570892
+    },
+    {
+      "repeat": 3,
+      "fixture": "multi-one",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 3367.489,
+      "scriptCpuMs": 3253.221,
+      "jsHeapUsedBytes": 8891428
+    },
+    {
+      "repeat": 3,
+      "fixture": "multi-one",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 552.4060000000001,
+      "scriptCpuMs": 467.84999999999997,
+      "jsHeapUsedBytes": 13346208
+    },
+    {
+      "repeat": 3,
+      "fixture": "multi-two",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 6233.429,
+      "scriptCpuMs": 6098.362,
+      "jsHeapUsedBytes": 8056168
+    },
+    {
+      "repeat": 3,
+      "fixture": "multi-two",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 6037.86,
+      "scriptCpuMs": 5893.831999999999,
+      "jsHeapUsedBytes": 8100860
+    },
+    {
+      "repeat": 3,
+      "fixture": "multi-five",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 7119.929,
+      "scriptCpuMs": 6972.654,
+      "jsHeapUsedBytes": 8120680
+    },
+    {
+      "repeat": 3,
+      "fixture": "multi-five",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 7286.451999999999,
+      "scriptCpuMs": 7137.731,
+      "jsHeapUsedBytes": 8161160
+    },
+    {
+      "repeat": 3,
+      "fixture": "mirv-ten",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 244.00000000000003,
+      "scriptCpuMs": 150.49599999999998,
+      "jsHeapUsedBytes": 13457592
+    },
+    {
+      "repeat": 3,
+      "fixture": "mirv-ten",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 273.283,
+      "scriptCpuMs": 166.196,
+      "jsHeapUsedBytes": 10881132
+    }
+  ],
+  "summary": {
+    "single": {
+      "before": {
+        "meanTaskCpuMs": 541.3383333333333,
+        "meanScriptCpuMs": 459.39366666666666,
+        "taskCpuRangeMs": [
+          512.1,
+          579.415
+        ]
+      },
+      "after": {
+        "meanTaskCpuMs": 556.2053333333333,
+        "meanScriptCpuMs": 468.54133333333334,
+        "taskCpuRangeMs": [
+          535.235,
+          593.2379999999999
+        ]
+      },
+      "taskCpuChangePercent": 2.7463416286179765
+    },
+    "multi-one": {
+      "before": {
+        "meanTaskCpuMs": 3387.0983333333334,
+        "meanScriptCpuMs": 3269.5646666666667,
+        "taskCpuRangeMs": [
+          3367.489,
+          3424.4350000000004
+        ]
+      },
+      "after": {
+        "meanTaskCpuMs": 668.3816666666667,
+        "meanScriptCpuMs": 546.015,
+        "taskCpuRangeMs": [
+          552.4060000000001,
+          855.3000000000001
+        ]
+      },
+      "taskCpuChangePercent": -80.26683606764689
+    },
+    "multi-two": {
+      "before": {
+        "meanTaskCpuMs": 6356.197,
+        "meanScriptCpuMs": 6213.991000000001,
+        "taskCpuRangeMs": [
+          6233.429,
+          6569.392
+        ]
+      },
+      "after": {
+        "meanTaskCpuMs": 6095.751333333334,
+        "meanScriptCpuMs": 5952.831999999999,
+        "taskCpuRangeMs": [
+          5994.919,
+          6254.475
+        ]
+      },
+      "taskCpuChangePercent": -4.097507781251375
+    },
+    "multi-five": {
+      "before": {
+        "meanTaskCpuMs": 7302.690333333333,
+        "meanScriptCpuMs": 7152.410333333333,
+        "taskCpuRangeMs": [
+          7119.929,
+          7523.45
+        ]
+      },
+      "after": {
+        "meanTaskCpuMs": 7332.2660000000005,
+        "meanScriptCpuMs": 7182.382333333334,
+        "taskCpuRangeMs": [
+          7286.451999999999,
+          7411.156
+        ]
+      },
+      "taskCpuChangePercent": 0.4049968616588906
+    },
+    "mirv-ten": {
+      "before": {
+        "meanTaskCpuMs": 258.91866666666664,
+        "meanScriptCpuMs": 157.78766666666667,
+        "taskCpuRangeMs": [
+          234.63,
+          298.126
+        ]
+      },
+      "after": {
+        "meanTaskCpuMs": 278.252,
+        "meanScriptCpuMs": 170.096,
+        "taskCpuRangeMs": [
+          269.457,
+          292.016
+        ]
+      },
+      "taskCpuChangePercent": 7.466952299048879
+    }
+  },
+  "cache": {
+    "accumulatorBytesPerCell": 12,
+    "maximumCells": 212800,
+    "retainedGeographicGrids": 1,
+    "maximumOpticalRasters": 8
+  },
+  "perRepaintBounds": {
+    "geodesicEvaluations": 600000,
+    "launchCandidates": 1024
+  },
+  "candidateInitialScript": "index-BBhLUEWf.js",
+  "reproduce": "From site/: node scripts/measure-blast-performance.mjs http://127.0.0.1:4175 http://127.0.0.1:4174 tests/e2e/evidence/plan-19-render-performance.json",
+  "interpretation": "The one-strike multi path now uses the single renderer and substantially reduces CPU. Two-field composition is modestly faster. Five-field mean TaskDuration is +0.4%; its before/after ranges overlap, consistent with host variation. Single mean is +2.7% with overlapping ranges. Default-camera MIRV mean is +19ms CPU (+7.5%) across4700 fake-clock milliseconds; many impacts are offscreen. See separate all-ten-visible pitched measurements; these CPU deltas are not real-time frame latency."
+}

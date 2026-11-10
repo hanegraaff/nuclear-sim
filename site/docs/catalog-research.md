@@ -1,6 +1,6 @@
 # Catalog preview research and limits
 
-Research reviewed on **2026-11-09** for R-16 and R-17. This file records public exterior dimensions and historical context only. It is not an engineering specification, a weapon design reference, or a forecast. Device yields and scenario coordinates remain the existing simulation catalog values.
+Research reviewed on **2026-11-09** for R-16 and R-17. The active inventory is 49 fixed devices plus Custom and 16 scenarios (11 historical, five hypothetical), capped at 1.5 Tt per choice. The detailed evidence below retains earlier source records where useful; removed above-ceiling entries are archival context, not current selections. This file records public exterior dimensions and historical context only. It is not an engineering specification, a weapon design reference, or a forecast. Device yields and scenario coordinates remain the existing simulation catalog values.
 
 ## Method and qualifications
 
@@ -12,9 +12,9 @@ Conversions: 1 inch = 0.0254 m; 1 foot = 0.3048 m; 1 pound = 0.45359237 kg; 1 me
 
 ## Exterior illustrations
 
-The SVGs are newly authored line illustrations; source photographs/diagrams are references and are not copied as raster assets. All are estimates because line simplification, museum replicas, undocumented variants and perspective prevent engineering fidelity. Known length/diameter ratios determine drawing proportions. Unknown dimensions have **no calibrated scale**. Test assemblies are drawn as test apparatus, spherical assemblies, or gondolas where the record supports that form. A complete unknown exterior is represented by an explicitly qualified documentary enclosure, not a falsely precise operational weapon. No internal structure is depicted. Each asset is under 20 KiB.
+The SVGs are newly authored line illustrations; source photographs/diagrams are references and are not copied as raster assets. All are estimates because line simplification, museum replicas, undocumented variants and perspective prevent engineering fidelity. Known length/diameter ratios determine drawing proportions. The drawings show **no reference-measure bar or scale text**; length stays in the fact table, and proportions are not a universal cross-weapon display scale. Unknown dimensions remain unknown. Test assemblies are drawn as test apparatus, spherical assemblies, or gondolas where the record supports that form. A complete unknown exterior is represented by an explicitly qualified documentary enclosure, not a falsely precise operational weapon. No internal structure is depicted. Each asset is under 20 KiB.
 
-Particular limits: Greenhouse George shows a documented toroidal component because the archival history disputes whether it is the complete Cylinder/Silex apparatus. Gerboise Bleue and Canopus show estimated test enclosures/gondolas, not documented bomb casings. RDS-37 and Grapple X/Y use approximate air-drop exterior envelopes; no unsupported dimensions are supplied. W76/Mk4A uses a qualified public Mk 4 envelope estimate; W87/Mk21 and W88/Mk5 show public reentry envelopes, never bare warhead dimensions. Hypothetical studies use an energy-study symbol labeled Conceptual (est).
+Particular limits: Greenhouse George uses a dashed estimated apparatus envelope because the documented toroidal item may be only a component; it does not establish the complete Cylinder/Silex exterior. Gerboise Bleue and Canopus show estimated test enclosures/gondolas, not documented bomb casings. RDS-37 and Grapple X/Y use approximate air-drop exterior envelopes; no unsupported dimensions are supplied. W76/Mk4A uses a qualified public Mk 4 envelope estimate; W87/Mk21 and W88/Mk5 show public reentry envelopes, never bare warhead dimensions. Hypothetical studies use an energy-study symbol labeled Conceptual (est).
 
 ## Source register
 
@@ -92,15 +92,15 @@ Particular limits: Greenhouse George shows a documented toroidal component becau
 - **foabCharge** — [VPK historical military review — explicitly reported FOAB explosive mass](https://vpk.name/en/612321_missiles-alone-are-not-enough-now-the-time-of-superbombs-and-superbombs-is-coming-back.html). Accessed 2026-11-09.
 
 
-## Field evidence matrix
+## Field evidence matrix and archived source records
 
-All source names below resolve to the register above. Values and confidence flags correspond to the lazy catalog data; labels identify the actual object and units.
+All source names below resolve to the register above. The active retained exterior audit later in this document supersedes older view decisions. The three above-ceiling study entries and four dependent scenario source records are retained here only as archival context. Values and confidence flags correspond to the lazy catalog data; labels identify the actual object and units.
 
 ### mk-82 — Mk 82 low-drag bomb / Tritonal configuration
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 2.29 m | sourced | airman |
+| Length | 2.29 m | sourced | airman |
 | Total mass | 241 kg | sourced | weaponFile |
 | EXPLOSIVE FILL | 87.1 kg Tritonal fill | sourced | fill |
 | Created / milestone | 1950s — design family | estimated | mkHistory |
@@ -114,7 +114,7 @@ Low-drag tail configuration. Published lengths vary with fuze and tail; 7 ft 6.2
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 4.26 m | sourced | jassm |
+| Length | 4.26 m | sourced | jassm |
 | Total mass | 1,023 kg | sourced | jassmCSIS |
 | WARHEAD / FILL MASS | 450 kg warhead; 108.9 kg Tritonal fill | sourced | jassmCSIS, fill |
 | Created / milestone | 2003 — initial service | sourced | jassmCSIS |
@@ -122,13 +122,13 @@ Low-drag tail configuration. Published lengths vary with fuze and tail; 7 ft 6.2
 | Country | United States | sourced | jassm, jassmCSIS |
 | Exterior | `/media/devices/agm-158-jassm.svg` | estimated | jassm, jassmCSIS |
 
-Baseline AGM-158A, not the extended-range variant. Side outline shows the deployed wing silhouette; wing span is not body diameter. Retirement date is not established in the reviewed manufacturer record.
+Baseline AGM-158A, not the extended-range variant. The estimated plan-view outline shows the deployed-wing envelope; wing span is not body diameter. Retirement date is not established in the reviewed manufacturer record.
 
 ### gbu-49 — GBU-49 Enhanced Paveway II complete guided bomb
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.29 m | sourced | paveway |
+| Length | 3.29 m | sourced | paveway |
 | Total mass | 275 kg complete bomb | estimated | weaponFile |
 | LISTED EXPLOSIVE LOAD | 136.1 kg listed explosive load | sourced | fill |
 | Created / milestone | 2000s — Enhanced Paveway II introduction | estimated | danishPaveway |
@@ -142,7 +142,7 @@ Baseline AGM-158A, not the extended-range variant. Side outline shows the deploy
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.00 m | sourced | weaponFile |
+| Length | 3.00 m | sourced | weaponFile |
 | Total mass | 454 kg class | sourced | armyBombs |
 | EXPLOSIVE FILL | 201.8 kg Tritonal fill | sourced | weaponFile |
 | Created / milestone | 1950s — design family | estimated | mkHistory |
@@ -156,7 +156,7 @@ Nominal 1,000 lb weight class; exact total mass and length vary with fuze and ta
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.78 m | sourced | airman |
+| Length | 3.78 m | sourced | airman |
 | Total mass | 907 kg class | sourced | armyBombs |
 | EXPLOSIVE FILL | 428.6 kg Tritonal fill | sourced | fill |
 | Created / milestone | 1950s — design family | estimated | mkHistory |
@@ -170,7 +170,7 @@ Nominal 1,000 lb weight class; exact total mass and length vary with fuze and ta
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 9.14 m | sourced | moab |
+| Length | 9.14 m | sourced | moab |
 | Total mass | 9,798 kg | sourced | moab |
 | EXPLOSIVE FILL | 8,482 kg H6 fill | sourced | moab |
 | Created / milestone | 2003-03-11 — first live test | sourced | moab |
@@ -184,7 +184,7 @@ Museum gives 30 ft, 21,600 lb gross and 18,700 lb fill. Converted and rounded to
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Unknown — not established in public sources | unknown | foab |
+| Length | Unknown — not established in public sources | unknown | foab |
 | COMPLETE MUNITION MASS | Not established — gross/fill reports conflict | unknown | foabReview, foabCharge |
 | REPORTED EXPLOSIVE LOAD | 7,100 kg claimed explosive load | reported | foabCharge |
 | Created / milestone | 2007-09-11 — reported test | sourced | foab |
@@ -212,7 +212,7 @@ The recognizable bulbous head, narrow spigot tail and four stabilizing fins depi
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 0.846 m | sourced | nwa |
+| Length | 0.846 m | sourced | nwa |
 | PROJECTILE MASS | 54–58 kg | sourced | nwa |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1963 — production | sourced | nwa |
@@ -226,7 +226,7 @@ The recognizable bulbous head, narrow spigot tail and four stabilizing fins depi
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 0.610 m | sourced | nwa |
+| Length | 0.610 m | sourced | nwa |
 | COMPLETE PACKAGE MASS | 68 kg complete | sourced | nwa |
 | WARHEAD MASS | 27 kg warhead body | sourced | nwa |
 | Created / milestone | 1964 — production | sourced | nwa |
@@ -240,7 +240,7 @@ Complete package envelope is 24 × 16 in and 150 lb; the approximately 59 lb war
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.05 m | sourced | littleBoy |
+| Length | 3.05 m | sourced | littleBoy |
 | Total mass | 4,400 kg | sourced | littleBoy |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | littleBoy |
 | Created / milestone | 1945-08-06 — combat use | sourced | littleBoy |
@@ -254,7 +254,7 @@ National Archives gives 10 ft, 28 in and 9,700 lb for the Hiroshima assembly. So
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 1.5 m across assembly | estimated | gadget |
+| Length | 1.5 m across assembly | estimated | gadget |
 | Total mass | Unknown — not established in public sources | unknown | gadget, trinity |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | gadget, trinity |
 | Created / milestone | 1945-07-16 — test | sourced | trinity |
@@ -268,7 +268,7 @@ Approximate visible assembly diameter inferred from the NPS photograph with Norr
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.25 m | sourced | nwa |
+| Length | 3.25 m | sourced | nwa |
 | Total mass | 4,672 kg | sourced | fatManWS |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | fatManWS |
 | Created / milestone | 1945-08-09 — combat use | sourced | fatManWS |
@@ -282,7 +282,7 @@ Uses the 128 in Model 1561 external envelope, with the distinctive box tail. Som
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.70 m | sourced | rdsMuseum |
+| Length | 3.70 m | sourced | rdsMuseum |
 | Total mass | 4,600 kg | sourced | rdsMuseum |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | rdsMuseum |
 | Created / milestone | 1949-08-29 — first test | sourced | kazakh |
@@ -296,7 +296,7 @@ Museum explicitly gives 3.7 m × 1.5 m and 4.6 t. Test was on a tower; the outli
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.56 m | sourced | b61spec |
+| Length | 3.56 m | sourced | b61spec |
 | Total mass | 374 kg | sourced | b61spec |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | b61spec |
 | Created / milestone | 2021 — first production unit | sourced | b61production |
@@ -310,7 +310,7 @@ B61-12-specific 825 lb mass; legacy B61 family masses are lower. New tail guidan
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Unknown — not established in public sources | unknown | gerboise, france |
+| Length | Unknown — not established in public sources | unknown | gerboise, france |
 | Total mass | Unknown — not established in public sources | unknown | gerboise, france |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | gerboise, france |
 | Created / milestone | 1960-02-13 — test | sourced | gerboise |
@@ -338,7 +338,7 @@ The same public scholarly Mk 4 exterior model supplies both 1.3 m length, 0.40 m
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 0.965 m | sourced | storax |
+| Length | 0.965 m | sourced | storax |
 | Total mass | 212 kg | sourced | storax |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | storax |
 | Created / milestone | 1962-07-06 — test | sourced | sedan |
@@ -352,7 +352,7 @@ The same public scholarly Mk 4 exterior model supplies both 1.3 m length, 0.40 m
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 0.798 m | sourced | w80, nwa, nnsa2027 |
+| Length | 0.798 m | sourced | w80, nwa, nnsa2027 |
 | WARHEAD MASS | 132 kg | sourced | w80, nwa, nnsa2027 |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | w80, nwa, nnsa2027 |
 | Created / milestone | 1981 — first production | sourced | w80, nwa, nnsa2027 |
@@ -366,7 +366,7 @@ Public bare-warhead envelope: 31.4 × 11.8 in, 290 lb. The approximate W80-famil
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Unknown — not established in public sources | unknown | greenhouse |
+| Length | Unknown — not established in public sources | unknown | greenhouse |
 | Total mass | Unknown — not established in public sources | unknown | greenhouse |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | greenhouse |
 | Created / milestone | 1951-05-08 — test | sourced | greenhouse |
@@ -374,7 +374,7 @@ Public bare-warhead envelope: 31.4 × 11.8 in, 290 lb. The approximate W80-famil
 | Country | United States | sourced | greenhouse |
 | Exterior | `/media/devices/greenhouse-george.svg` | estimated | greenhouse |
 
-Historical records call the apparatus Cylinder / Silex; a documented toroidal item may be only one component. Outline shows that recognizable exterior component (est), not a complete known assembly or its internal construction. Complete size/mass remain unknown.
+Historical records call the apparatus Cylinder / Silex; a documented toroidal item may be only one component. The outline therefore uses a dashed estimated apparatus envelope, not that component as a verified complete exterior. Complete size/mass remain unknown.
 
 ### w87 — W87 / Mk 21 reentry assembly
 
@@ -394,7 +394,7 @@ Dimensions describe the public Mk 21 reentry-vehicle envelope, not the bare warh
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.60 m | sourced | nwa |
+| Length | 3.60 m | sourced | nwa |
 | Total mass | 324 kg | estimated | nwa |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1985 — stockpile entry | sourced | gao2006 |
@@ -408,7 +408,7 @@ Mod 7 legacy casing with retarding-tail form, not Mod 12 guidance fins. NNSA rec
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 5.80 m casing | sourced | rdsBook |
+| Length | 5.80 m casing | sourced | rdsBook |
 | Total mass | 7,000 kg complete device | sourced | rdsBook |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | rdsBook |
 | Created / milestone | 1953-08-12 — test | sourced | rdsBook |
@@ -436,7 +436,7 @@ Public Mk 5 envelope estimates, not a bare-warhead engineering specification. Th
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.25 m | sourced | nwa, ivy |
+| Length | 3.25 m | sourced | nwa, ivy |
 | Total mass | 3,901 kg | sourced | nwa, ivy |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa, ivy |
 | Created / milestone | 1952-11-16 — test | sourced | ivy |
@@ -450,7 +450,7 @@ King was the test of the Mark 18 bomb family. 128 in × 60 in and 8,600 lb are t
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 0.76 m across assembly | estimated | ukArchive |
+| Length | 0.76 m across assembly | estimated | ukArchive |
 | TEST ASSEMBLY MASS | 1,000 kg test assembly | estimated | orangeGlossary |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | ukArchive, orangeGlossary, ukTests |
 | Created / milestone | 1957-05-31 — test | sourced | ukTests |
@@ -464,7 +464,7 @@ Historical glossary describes a one-ton Orange Herald assembly and distinguishes
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 1.21 m | sourced | nwa |
+| Length | 1.21 m | sourced | nwa |
 | WARHEAD MASS | 249–251 kg | sourced | nwa |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1962 — production | sourced | nwa |
@@ -478,7 +478,7 @@ Bare warhead public dimensions: 47.8 × 16.3 in, 550–553 lb. Does not include 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.68 m | sourced | b83, b83status |
+| Length | 3.68 m | sourced | b83, b83status |
 | Total mass | 1,089 kg | sourced | b83, b83status |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | b83, b83status |
 | Created / milestone | 1983 — first production | sourced | b83, b83status |
@@ -492,7 +492,7 @@ Public dimensions 145 × 18 in and 2,400 lb. Retirement policy is not proof that
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 1.38–1.47 m | sourced | nwa |
+| Length | 1.38–1.47 m | sourced | nwa |
 | WARHEAD MASS | 744–762 kg | sourced | nwa |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1958 — W49 production | sourced | nwa |
@@ -506,7 +506,7 @@ W49 public warhead body range: 54.3–57.9 in and 1,640–1,680 lb. Outline excl
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Unknown — not established in public sources | unknown | rds37, soviet |
+| Length | Unknown — not established in public sources | unknown | rds37, soviet |
 | Total mass | Unknown — not established in public sources | unknown | rds37, soviet |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | rds37, soviet |
 | Created / milestone | 1955-11-22 — test | sourced | rds37 |
@@ -520,21 +520,21 @@ Reviewed primary historical account confirms the test but does not establish com
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Unknown — not established in public sources | unknown | ukTests, ukFilm, ukArchive |
+| Length | Unknown — not established in public sources | unknown | ukTests, ukFilm, ukArchive |
 | Total mass | Unknown — not established in public sources | unknown | ukTests, ukFilm, ukArchive |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | ukTests, ukFilm, ukArchive |
 | Created / milestone | 1957-11-08 — test | sourced | ukTests |
 | Retired / status | Not applicable — one-off test | inapplicable | ukTests |
 | Country | United Kingdom | sourced | ukTests, ukFilm, ukArchive |
-| Exterior | `/media/devices/grapple-x.svg` | estimated | ukTests, ukFilm, ukArchive |
+| Exterior | `/media/devices/grapple-x.svg` | estimated | ukTests, ukArchive |
 
-Exterior outline is an approximate air-drop casing envelope informed by IWM test footage. No defensible complete dimensions/mass established. Do not confuse the test assembly, its carrier aircraft, and a later service warhead.
+Exterior outline is an explicitly approximate air-drop casing envelope; no defensible complete dimensions/mass or exact exterior likeness was established. The IWM record describes test-explosion footage and does not substantiate casing geometry. Do not confuse the test assembly, its carrier aircraft, and a later service warhead.
 
 ### canopus — Canopus balloon-suspended test assembly
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Unknown — not established in public sources | unknown | canopus, france |
+| Length | Unknown — not established in public sources | unknown | canopus, france |
 | EXPERIMENTAL DEVICE MASS | 3,000 kg experimental device | estimated | canopusINA |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | canopus, france |
 | Created / milestone | 1968-08-24 — test | sourced | canopus |
@@ -548,7 +548,7 @@ INA historical footage coverage describes an approximately three-ton device susp
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Unknown — not established in public sources | unknown | ukTests, ukArchive |
+| Length | Unknown — not established in public sources | unknown | ukTests, ukArchive |
 | Total mass | Unknown — not established in public sources | unknown | ukTests, ukArchive |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | ukTests, ukArchive |
 | Created / milestone | 1958-04-28 — test | sourced | ukTests |
@@ -562,7 +562,7 @@ Approximate air-dropped test casing silhouette; no defensible complete external 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 2.68 m | sourced | nwa |
+| Length | 2.68 m | sourced | nwa |
 | WARHEAD MASS | 2,826–2,903 kg | sourced | nwa |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1958 — production | sourced | nwa |
@@ -576,7 +576,7 @@ Approximate air-dropped test casing silhouette; no defensible complete external 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.76 m | sourced | nwa |
+| Length | 3.76 m | sourced | nwa |
 | Total mass | 4,037 kg | sourced | nwa |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | nwa |
 | Created / milestone | 1962 — production | sourced | b53, nwa |
@@ -590,7 +590,7 @@ Approximate air-dropped test casing silhouette; no defensible complete external 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 2.85 m | sourced | poplar |
+| Length | 2.85 m | sourced | poplar |
 | Total mass | 4,226 kg | sourced | poplar |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | poplar |
 | Created / milestone | 1958-07-12 — test | sourced | poplar |
@@ -604,7 +604,7 @@ Poplar experimental device: 112.1 × 48.2 in and 9,316 lb. It preceded the longe
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 6.19 m main apparatus | sourced | ivyDims |
+| Length | 6.19 m main apparatus | sourced | ivyDims |
 | Total mass | 74,400 kg with diagnostic equipment | estimated | ivyDims |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | ivyDims |
 | Created / milestone | 1952-11-01 — local test date | sourced | ivy |
@@ -618,7 +618,7 @@ The large upright experimental apparatus is not a deliverable bomb. Source gives
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 5.71 m | sourced | castle |
+| Length | 5.71 m | sourced | castle |
 | Total mass | 17,963 kg | sourced | castle |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | castle |
 | Created / milestone | 1954-05-05 — local test date | sourced | castle |
@@ -632,7 +632,7 @@ Runt II used the same exterior casing, dimensions and weight as the Runt I test 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 4.56 m | sourced | castle |
+| Length | 4.56 m | sourced | castle |
 | Total mass | 10,659 kg | sourced | castle |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | castle |
 | Created / milestone | 1954-03-01 — local test date | sourced | bravoDTRA |
@@ -646,7 +646,7 @@ Runt II used the same exterior casing, dimensions and weight as the Runt I test 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 3.76 m | sourced | poplar |
+| Length | 3.76 m | sourced | poplar |
 | Total mass | 4,840 kg | sourced | poplar |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | poplar |
 | Created / milestone | 1960 — production | sourced | poplar |
@@ -660,7 +660,7 @@ Runt II used the same exterior casing, dimensions and weight as the Runt I test 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 8.00 m | sourced | boomba |
+| Length | 8.00 m | sourced | boomba |
 | Total mass | 27,000 kg | estimated | boomba |
 | SEPARATE PAYLOAD | Not applicable — self-contained nuclear device | inapplicable | boomba |
 | Created / milestone | 1961-10-30 — test | sourced | boomba |
@@ -674,7 +674,7 @@ Public reported gross masses range roughly 24.5–27.5 t; 27 t is a rounded esti
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 22.5 m | estimated | yars |
+| Length | 22.5 m | estimated | yars |
 | LAUNCH MASS | 49,000 kg launch mass | estimated | yars |
 | DELIVERY PAYLOAD | 1,200 kg payload | estimated | yars |
 | Created / milestone | 2007-05 — first flight test | sourced | yars |
@@ -688,7 +688,7 @@ Carrier exterior, not one warhead. CSIS table lists 49,600 kg but its narrative 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 12.1 m | estimated | bulava |
+| Length | 12.1 m | estimated | bulava |
 | LAUNCH MASS | 36,800 kg launch mass | estimated | bulava |
 | DELIVERY PAYLOAD | 1,150 kg payload | estimated | bulava |
 | Created / milestone | 2005-09 — first powered flight | sourced | bulava |
@@ -702,7 +702,7 @@ Public dimensions vary: CSIS narrative gives 12–13.5 m and 36–39 t; preview 
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | 35.3 m | reported | sarmat |
+| Length | 35.3 m | reported | sarmat |
 | LAUNCH MASS | 208,100 kg launch mass | reported | sarmat |
 | DELIVERY PAYLOAD | 10,000 kg payload capacity | reported | sarmat |
 | Created / milestone | 2022-04 — first full-flight test | sourced | sarmatStatus |
@@ -716,7 +716,7 @@ Carrier exterior from the public Makeyev/CSIS diagram. Earlier service announcem
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Not applicable — no real device | inapplicable | model |
+| Length | Not applicable — no real device | inapplicable | model |
 | Total mass | Not applicable — no real device | inapplicable | model |
 | Payload / fill | Not applicable — no real device | inapplicable | model |
 | Created / milestone | Not applicable — hypothetical study | inapplicable | model |
@@ -730,7 +730,7 @@ Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, p
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Not applicable — no real device | inapplicable | model |
+| Length | Not applicable — no real device | inapplicable | model |
 | Total mass | Not applicable — no real device | inapplicable | model |
 | Payload / fill | Not applicable — no real device | inapplicable | model |
 | Created / milestone | Not applicable — hypothetical study | inapplicable | model |
@@ -744,7 +744,7 @@ Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, p
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Not applicable — no real device | inapplicable | model |
+| Length | Not applicable — no real device | inapplicable | model |
 | Total mass | Not applicable — no real device | inapplicable | model |
 | Payload / fill | Not applicable — no real device | inapplicable | model |
 | Created / milestone | Not applicable — hypothetical study | inapplicable | model |
@@ -758,7 +758,7 @@ Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, p
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Not applicable — no real device | inapplicable | model |
+| Length | Not applicable — no real device | inapplicable | model |
 | Total mass | Not applicable — no real device | inapplicable | model |
 | Payload / fill | Not applicable — no real device | inapplicable | model |
 | Created / milestone | Not applicable — hypothetical study | inapplicable | model |
@@ -772,7 +772,7 @@ Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, p
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Not applicable — no real device | inapplicable | model |
+| Length | Not applicable — no real device | inapplicable | model |
 | Total mass | Not applicable — no real device | inapplicable | model |
 | Payload / fill | Not applicable — no real device | inapplicable | model |
 | Created / milestone | Not applicable — hypothetical study | inapplicable | model |
@@ -786,7 +786,7 @@ Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, p
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Not applicable — no real device | inapplicable | model |
+| Length | Not applicable — no real device | inapplicable | model |
 | Total mass | Not applicable — no real device | inapplicable | model |
 | Payload / fill | Not applicable — no real device | inapplicable | model |
 | Created / milestone | Not applicable — hypothetical study | inapplicable | model |
@@ -800,7 +800,7 @@ Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, p
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Not applicable — no real device | inapplicable | model |
+| Length | Not applicable — no real device | inapplicable | model |
 | Total mass | Not applicable — no real device | inapplicable | model |
 | Payload / fill | Not applicable — no real device | inapplicable | model |
 | Created / milestone | Not applicable — hypothetical study | inapplicable | model |
@@ -814,7 +814,7 @@ Simulation only. Conceptual (est) energy-study symbol; no actual weapon shape, p
 
 | Field | Display value | Confidence | Sources |
 | --- | --- | --- | --- |
-| Length / scale | Not applicable — no real device | inapplicable | model |
+| Length | Not applicable — no real device | inapplicable | model |
 | Total mass | Not applicable — no real device | inapplicable | model |
 | Payload / fill | Not applicable — no real device | inapplicable | model |
 | Created / milestone | Not applicable — hypothetical study | inapplicable | model |
@@ -997,9 +997,9 @@ This hypothetical hemisphere-scale event would erupt near Point Nemo in the Sout
 
 This hypothetical one-petaton stress test imagines Earth beneath a release of almost ungraspable scale. No familiar city edge would soften the distant view: only an inhabited world reduced to an experimental frame. Literal planetary consequences lie beyond the screening formulas.
 
-## Review correction and remaining evidence limits
+## Historical 52-entry review correction and remaining evidence limits
 
-On 2026-11-09, all 52 dossier records and exterior assets were audited. Unknown field counts before this correction: `{'length': 8, 'totalMass': 9, 'payloadMass': 33, 'created': 0, 'retired': 7, 'country': 0}`; after: `{'length': 7, 'totalMass': 7, 'payloadMass': 0, 'created': 0, 'retired': 0, 'country': 0}`. The large reduction comes from correcting semantics, providing published estimates, and showing known status milestones rather than treating an unannounced retirement date as an unknown entire history.
+Before the ceiling reduced the active inventory, all 52 original dossier records and exterior assets were audited on 2026-11-09. This is the historical review; the retained 49-choice audit below defines the current exterior decisions. Unknown field counts before this correction: `{'length': 8, 'totalMass': 9, 'payloadMass': 33, 'created': 0, 'retired': 7, 'country': 0}`; after: `{'length': 7, 'totalMass': 7, 'payloadMass': 0, 'created': 0, 'retired': 0, 'country': 0}`. The large reduction comes from correcting semantics, providing published estimates, and showing known status milestones rather than treating an unannounced retirement date as an unknown entire history.
 
 - **Davy Crockett:** the old rounded-rectangle drawing represented the bare W54 body while the selector named the delivery weapon. It now depicts the recognizable complete M388 projectile: 0.787 m, 34.5 kg, with the 23.1 kg W54 separately identified. The launcher is excluded.
 - **W76:** the archive alone lacked a public length. The same scholarly Mk 4 model supplies 1.3 m × 0.40 m and 90 kg for a complete reentry assembly. Applying that family envelope to Mk 4A is an educated estimate. The old archive’s differently scoped 164 kg is retained as a research discrepancy, not combined into the new displayed mass.
@@ -1012,4 +1012,81 @@ On 2026-11-09, all 52 dossier records and exterior assets were audited. Unknown 
 
 ## Exterior audit on 2026-11-09
 
-All 52 SVG paths exist, retain valid explicit 960 × 320 image dimensions, and stay below the 20 KiB per-outline budget. Stroke weight was increased for the actual small preview display, where the original hairlines could become subpixel. M388 was redrawn as the complete projectile; W80 gained its public aft collar; W76 gained a calibrated estimated Mk 4A exterior; Fat Man, Ivy King, RDS-1 and RDS-6s were refined against their distinct casing families. Remaining outlines preserve their documented object identity, external ratio and qualifiers. Unknown test-assembly drawings remain estimated documentary envelopes, not secretly precise real casings. No internal weapon construction is depicted. A background headless Google Chrome pass decoded all 52 images at 960 × 320, checked every transformed drawing bound for clipping, and inspected the contact sheet. Eight conceptual symbols received smaller internal transforms to keep their orbital strokes safely inside the SVG viewport.
+In that original inventory, all 52 SVG paths existed with valid explicit 960 × 320 image dimensions and stayed below the 20 KiB per-outline budget. Stroke weight was increased for the actual small preview display, where the original hairlines could become subpixel. M388 was redrawn as the complete projectile; W80 gained its public aft collar; W76 gained a calibrated estimated Mk 4A exterior; Fat Man, Ivy King, RDS-1 and RDS-6s were refined against their distinct casing families. Remaining outlines preserve their documented object identity, external ratio and qualifiers. Unknown test-assembly drawings remain estimated documentary envelopes, not secretly precise real casings. No internal weapon construction is depicted. A background headless Google Chrome pass decoded all 52 images at 960 × 320, checked every transformed drawing bound for clipping, and inspected the contact sheet. Eight conceptual symbols received smaller internal transforms to keep their orbital strokes safely inside the SVG viewport.
+
+## Retained exterior review — selection refinement
+
+This second review on **2026-11-09** covers the 49 choices retained under the 1.5 Tt ceiling: 44 real weapons/test assemblies/carriers and five conceptual studies. It supersedes the preceding 52-asset inventory for the active selector. The retired `large-continent`, `hemisphere-scale`, and `earth-spanning` assets are removed from runtime storage; their previous versions remain in Git history. Every retained drawing loses its reference-measure bar and accompanying SVG text. The UI keeps the ordinary length fact and an estimated exterior/conceptual qualification; these drawings are independently fitted to their viewports, not presented at a common physical scale.
+
+The review compares the named entity, public exterior reference, existing dimensional evidence, and rendered geometry. Changes below are exterior clip art only. Published length/body-diameter ratios guide proportions where available; wing/fin span is separately interpreted from photographs, not mistaken for body diameter. Perspective and replica differences still prevent exact engineering fidelity. All silhouettes retain **estimated** confidence. “Retained” means that the reviewed evidence did not justify a further shape change, not that an outline has been certified exact. For inaccessible or ambiguous records, the limitation is explicit rather than filled with invented detail.
+
+### Additional exterior references and retrieval limits
+
+- **b61Exterior** — [DOE/NNSA B61-12 exterior fact sheet](https://www.energy.gov/sites/prod/files/2018/12/f58/B61-12%20LEP%20factsheet.pdf), page 1; retrieved and its illustration inspected. The guided tail distinguishes this variant from legacy B61 tails. This historical sheet is used for exterior identity, not its superseded production schedule.
+- **b61Sandia** — [Sandia's completed-production exterior photographs](https://newsreleases.sandia.gov/b61-12-sustainment/); used to cross-check variant identity.
+- **jassmExterior** — [Lockheed Martin product card](https://www.lockheedmartin.com/content/dam/lockheed-martin/mfc/pc/jassm/22-14207-ADSW_JASSM_Product%20Card%20Updates.pdf) and [Lockheed Martin ornamental design patent USD417639S](https://patents.google.com/patent/USD417639S/en). The product-card photograph was retrieved and inspected; the patent identifies side, plan, and deployed-wing views. The revised drawing deliberately uses a symmetric estimated plan view rather than mixing a side body with one oversized deployed wing. The older dossier's “side outline” wording is superseded by this view decision.
+- **pavewayExterior** — [Department of Defense public GBU-49 configuration notice](https://public-inspection.federalregister.gov/2023-21063.pdf), Annex, items 23–24; corroborates a complete guided weapon with nose control group and aft airfoil group rather than an unmodified Mk 82 body. Exact fit remains estimated.
+- Existing **mkHistory**, **moab**, **littleBoy**, **fatMan**, **gadget**, **davyHistory**, **rdsBook**, **canopus**, and the individual **w76/w80/w87/w88** exterior records were revisited. Museum photographs of MOAB and Fat Man, the NPS Gadget photograph, and publicly reproduced W48, W39, B53, B83 and Tsar Bomba exterior photographs were inspected alongside the SVGs. Reproduced photographs supply shape context; their specialist host's speculative internal descriptions are not used for the artwork.
+- The RFNC museum catalog resolves, but its individual-page scans are not searchable exterior specifications. The live RFNC museum page timed out. Some USAF `.mil` pages, including B53 and B61 fact pages, returned 403; their indexed museum records were cross-checked with accessible public exterior images. This is a best-effort exterior review, not a claim of newly measured dimensions.
+- **ukFilm** (IWM AWE 34) currently says its footage is unavailable and describes explosion footage. It does **not** substantiate a Grapple X casing shape; the earlier field note attributing its envelope to that footage must not be treated as verified likeness. Grapple X/Y remain explicitly approximate air-drop envelopes. **canopus** establishes balloon/gondola context but does not give a precise casing drawing. FOAB's public evidence likewise does not establish a calibrated complete exterior.
+
+### Per-choice outcomes
+
+All source aliases resolve to the register or additional-reference list above. Removal of drawn reference measures applies to every row, including unchanged geometry.
+
+| Catalog ID | Exterior review and decision | Evidence and confidence limit |
+| --- | --- | --- |
+| `mk-82` | Retained low-drag body and tail; checked nose, taper and body ratio. | mkHistory, airman; estimated tail/fuze configuration. |
+| `agm-158-jassm` | Redrawn as a symmetric plan view with faceted forebody, deployed wings and tail surfaces. | jassmExterior; simplified exterior, not an exact flight drawing. |
+| `gbu-49` | Added distinct forward seeker/control section and revised nose canards/aft airfoils. | pavewayExterior, paveway; full guided configuration, approximate fit. |
+| `mk-83` | Retained corresponding larger Mk 80 body and low-drag tail. | mkHistory, airman; body proportions checked, tail configuration estimated. |
+| `mk-84` | Retained the Mk 80 family profile at its catalog body ratio. | mkHistory, airman; fuze/tail variants remain estimated. |
+| `moab` | Redrawn with pointed forebody, slender body wings and recognizable aft lattice fins. | moab exterior photograph/specifications; grid simplification estimated. |
+| `foab` | Changed to dashed approximate envelope rather than asserting a verified complete casing. | foab, foabReview; public footage/reporting insufficient for exact shape or dimensions. |
+| `w54` | Retained full M388 bulbous projectile, spigot and fins; excluded its launcher. | davyHistory; 31 in overall / 11 in body ratio agrees with drawing; fins estimated. |
+| `w48` | Refined pointed projectile ogive, cylindrical afterbody and exterior driving-band silhouette. | nwa exterior photograph; approximate shell profile, no internal structure. |
+| `sadm` | Retained carrying-canister envelope and handle rather than depicting an artillery round. | nwa; complete demolition-munition presentation remains estimated. |
+| `little-boy` | Replaced generic tapered bomb body with its cylindrical casing, rounded blunt nose and box tail. | littleBoy exterior record and photograph; assembled entity, estimated tail framing. |
+| `trinity-gadget` | Retained exposed spherical test assembly, exterior cable cues and support. | gadget photograph; not an aerodynamic bomb casing. |
+| `fat-man` | Retained broad rounded casing and boxed tail from prior correction. | fatMan museum photograph, fatManWS; proportions checked. |
+| `rds-1` | Retained distinct broad Soviet casing estimate and box tail. | rdsBook, rdsMuseum; museum/replica interpretation remains estimated. |
+| `b61` | Revised sharp ogive, parallel body and compact guided tail-kit outline for B61-12. | b61Exterior, b61Sandia; does not reuse a legacy parachute-tail drawing. |
+| `gerboise-bleue` | Retained dashed test-enclosure estimate. | gerboise; no defensible precise full exterior found. |
+| `w76` | Retained long conical Mk 4A envelope with qualified rounded nose. | mk4Study, w76; public Mk 4 family envelope applied to Mk 4A as estimate. |
+| `sedan` | Retained short experimental-package exterior envelope. | sedan, storax; package dimensions, not a delivery bomb. |
+| `w80` | Retained cylindrical stepped exterior with aft collar. | w80 exterior photographs; generic W80 family, mounting variation estimated. |
+| `greenhouse-george` | Replaced isolated torus/component symbol with a dashed experimental-apparatus envelope. | greenhouse; a component must not imply a verified complete exterior. Exact shape remains unknown. |
+| `w87` | Retained public Mk 21 conical reentry envelope. | w87; depicts the reentry body, not a visible bare warhead. |
+| `b61-7` | Refined ogive/cylinder and legacy aft-body/fixed-tail outline, distinct from B61-12. | b61, b61spec, b61Exterior comparison; variant fit estimated. |
+| `rds-6s` | Retained long rounded casing and finned aft section. | rdsBook, rdsMuseum; exterior family estimate. |
+| `w88` | Retained public Mk 5 conical reentry envelope. | w88; equivalent published envelope ratio is not evidence of identical internal hardware. |
+| `ivy-king` | Retained broad Mk 18/Mk 6 family casing and box-tail estimate. | ivy, nwa; complete air-drop entity. |
+| `orange-herald` | Retained experimental assembly sphere. | ukArchive, orangeGlossary; does not claim to show the complete aerodynamic carrier casing. |
+| `w59` | Retained independently dimensioned warhead envelope. | nwa; exact exterior fittings are not established, omitted rather than invented. |
+| `b83` | Refined pointed nose, long straight body and aft parachute/tail profile. | b83 exterior photograph; complete bomb, estimated details. |
+| `starfish-prime` | Retained dimensioned W49 experimental warhead envelope. | nwa; not a complete Thor missile or its reentry carrier. |
+| `rds-37` | Changed approximate air-drop envelope to dashed strokes. | rds37, soviet; no newly verified casing dimensions or exact likeness. |
+| `grapple-x` | Changed approximate air-drop envelope to dashed strokes. | ukTests, ukArchive; ukFilm cannot validate exterior likeness. |
+| `canopus` | Retained suspended test-gondola/enclosure estimate. | canopus, france; external suspension context only. |
+| `grapple-y` | Changed approximate air-drop envelope to dashed strokes. | ukTests, ukArchive; exact complete casing remains unverified. |
+| `w39` | Refined flat-ended cylindrical package with exterior end collars. | nwa public mock-up photograph; warhead package, not Mark 39 delivery bomb. |
+| `b53` | Replaced generic bomb template with broad cylinder, blunt rounded nose, aft taper and compact fins. | b53 museum record/public exterior photograph; full body ratio checked. |
+| `hard-tack-poplar` | Retained experimental-package envelope. | poplar; not substituted with the later complete B41 bomb casing. |
+| `ivy-mike` | Retained long Sausage apparatus and support-foot silhouette. | ivy exterior shot-cab photographs, ivyDims; excludes building/cryogenic installation. |
+| `castle-yankee` | Retained long test-device envelope and exterior bands/supports. | castle; cylindrical package estimate, not a service bomb. |
+| `castle-bravo` | Retained shorter cylindrical Shrimp envelope and supports. | castle, bravoDTRA; simplified test apparatus. |
+| `mk41` | Retained complete gravity-bomb casing and tail. | poplar, nwa; body ratio checked, exterior tail estimate. |
+| `tsar-bomba` | Redrawn with truncated blunt nose, wide forward casing, long tapered afterbody and compact aft fins. | boomba museum photograph, rdsBook; published body ratio checked. |
+| `rs-24-yars` | Retained complete carrier envelope and estimated exterior stage joins. | yars publicly credited Russian MoD/MITT imagery; carrier dimensions are public estimates. |
+| `rsm-56-bulava` | Retained shorter, wider complete carrier silhouette. | bulava publicly credited Russian MoD imagery; body ratio remains estimated. |
+| `rs-28-sarmat` | Retained complete heavy-carrier silhouette. | sarmat publicly credited Makeyev exterior diagram; dimensions remain reported. |
+| `city-breaker` | Retained conceptual energy-study symbol. | model; no real hardware or dimensional claim. |
+| `gigaton-study` | Retained conceptual energy-study symbol. | model; no real hardware or dimensional claim. |
+| `regional-event` | Retained conceptual energy-study symbol. | model; no real hardware or dimensional claim. |
+| `hundred-gigaton` | Retained conceptual energy-study symbol. | model; no real hardware or dimensional claim. |
+| `continent-scale` | Retained conceptual energy-study symbol. | model; no real hardware or dimensional claim. |
+| Custom preview | Retained unspecified-hardware state; no fixed silhouette asset to certify. | User supplies energy only; physical exterior facts are inapplicable. |
+
+### Rendered review evidence
+
+The [retained-outline contact sheet](../../docs/plan-19-outlines-contact.png) was captured and visually inspected in background headless Google Chrome. All 49 exact SVG byte streams decoded as 960 × 320 images; every transformed drawing stayed inside the viewport with stroke clearance, no SVG text/reference scale remained, and the largest serialized SVG was 838 bytes. The inspected geometric bounds ranged from y = 12 to y = 303 in a 320-pixel viewBox; no drawing was accepted by changing a screenshot baseline. The developer's browser tests additionally exercise the application-owned asset/cache path. Twelve drawings received geometry corrections; four other uncertain casing envelopes gained dashed qualification. These checks establish rendering and evidence coverage, not exact undocumented weapon geometry.

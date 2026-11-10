@@ -28,8 +28,11 @@ test("keyboard browsing previews independently, selection closes, and every focu
   await select.press("ArrowDown"); await expect(preview(page)).toBeVisible();
   await select.press("Shift+Tab"); await expect(preview(page)).toHaveCount(0);
   await select.focus(); await select.press("End");
-  await expect(preview(page)).toHaveAttribute("data-candidate-id", "earth-spanning");
-  await select.press("Enter"); await expect(select).toHaveValue("earth-spanning"); await expect(preview(page)).toHaveCount(0);
+  await expect(preview(page)).toHaveAttribute("data-candidate-id", "continent-scale");
+  await expect(preview(page).locator(".preview-size-annotation")).toHaveCount(0);
+  await expect(preview(page)).not.toContainText("↔");
+  await expect(preview(page).locator("dt").first()).toHaveText("LENGTH");
+  await select.press("Enter"); await expect(select).toHaveValue("continent-scale"); await expect(preview(page)).toHaveCount(0);
   await select.press("ArrowUp"); await expect(preview(page)).toBeVisible();
   await page.evaluate(() => window.dispatchEvent(new Event("blur")));
   await expect(preview(page)).toHaveCount(0);
@@ -80,7 +83,7 @@ test("stationary repeated wheel scrolling keeps its active candidate on a visibl
   }
   await expect(select).toBeFocused();
   await select.press("Home"); await expect(list.getByRole("option", { name: "Custom yield…", exact: true })).toBeInViewport();
-  await select.press("End"); await expect(list.getByRole("option", { name: "1 Pt Earth-span stress test · 1 Pt", exact: true })).toBeInViewport();
+  await select.press("End"); await expect(list.getByRole("option", { name: "1.5 Tt small-continent study · 1.5 Tt", exact: true })).toBeInViewport();
 });
 
 test("weapon dossier ends after its researched exterior facts", async ({ page }) => {
@@ -103,6 +106,7 @@ test("scenario image and dark event text follow the candidate without moving cam
   const select = page.getByRole("combobox", { name: "Scenario", exact: true });
   await select.focus(); await select.press("ArrowDown");
   await expect(preview(page)).toHaveAttribute("data-candidate-id", "hiroshima");
+  await expect(preview(page).locator("footer")).toHaveCount(0);
   await expect(preview(page).locator(".preview-event-copy")).not.toBeEmpty();
   await expect(preview(page)).toContainText("AI-GENERATED ILLUSTRATION");
   await expect(map).toHaveAttribute("data-center-longitude", before!);
@@ -133,11 +137,11 @@ test("all payload categories and custom input end with facts without comparison 
   await expect(preview(page).locator(".preview-power, .preview-note, .preview-sources, footer, sup")).toHaveCount(0);
 });
 
-test("all 52 silhouettes paint through the real image cache and remain available after eviction", async ({ page }, testInfo) => {
+test("all 49 silhouettes paint through the real image cache and remain available after eviction", async ({ page }, testInfo) => {
   test.setTimeout(120_000);
   const select = weapon(page);
   const ids = await select.locator("option").evaluateAll((options) => options.map((option) => (option as HTMLOptionElement).value).filter((id) => id !== "custom"));
-  expect(ids).toHaveLength(52);
+  expect(ids).toHaveLength(49);
   await select.focus(); await select.press("Home");
   const rendered: Array<{ id: string; width: number; height: number; ink: number }> = [];
   for (const id of ids) {

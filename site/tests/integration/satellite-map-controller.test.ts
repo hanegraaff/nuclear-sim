@@ -265,7 +265,7 @@ describe("satellite map controller", () => {
     controller.dispose();
   });
 
-  it("switches immediately between independent multi fields and the latest single ruler, invalidating both on camera movement", () => {
+  it("uses the same single field with mode-specific inspection and switches to shared composition for multiple fields", () => {
     const runtime = fakeMap();
     const singleRender = vi.fn().mockReturnValue(null);
     const multiRender = vi.fn();
@@ -282,9 +282,11 @@ describe("satellite map controller", () => {
     const launch: Launch = { id: 1, deviceId: "fat-man", yieldMt: 0.021, route, launchedAtMs: 0, flightMs: 6500, blastMs: 4600, radii: blastRadiiForYield(0.021) };
     const frames = [{ launch, elapsedMs: 11_100 }];
     controller.setSceneFrame(frames, true);
-    expect(multiRender).toHaveBeenCalledWith(frames, 2208, 740, true);
+    expect(multiRender).not.toHaveBeenCalled();
+    expect(singleRender).toHaveBeenLastCalledWith(launch, 11_100, 2208, 740, null, false);
     expect(missileMany).toHaveBeenCalledWith(frames, 2208, 740);
-    expect(singleRender).not.toHaveBeenCalled();
+    controller.setSceneFrame([...frames, { launch: { ...launch, id: 2 }, elapsedMs: 11_100 }], true);
+    expect(multiRender).toHaveBeenCalledOnce();
     runtime.emit("move");
     expect(singleInvalidate).toHaveBeenCalledOnce();
     expect(multiInvalidate).toHaveBeenCalledOnce();

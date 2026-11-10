@@ -47,8 +47,8 @@ test("Fat Man Visible shows a 98.5 km field, four inspection bands and restores 
   await expect(simulator).toHaveAttribute("data-zoom", blastZoom!);
 });
 
-test("1 Pt Visible field remains present through a large first-entry camera ease", async ({ page }, testInfo) => {
-  await page.getByRole("combobox", { name: "Weapon or delivery system" }).selectOption("earth-spanning");
+test("1.5 Tt Visible field remains present through a large first-entry camera ease", async ({ page }, testInfo) => {
+  await page.getByRole("combobox", { name: "Weapon or delivery system" }).selectOption("continent-scale");
   await page.mouse.click(1050, 700);
   await page.clock.runFor(11_300);
   await page.getByRole("tab", { name: "VISIBLE", exact: true }).click();

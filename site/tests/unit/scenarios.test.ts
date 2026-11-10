@@ -22,17 +22,13 @@ const reference = [
   ["hypothetical", "tokyo-100", "What if: 100 Mt over Tokyo?", "city-breaker", 139.6917, 35.6895, "Central Tokyo"],
   ["hypothetical", "europe-continent", "Continent scale · Central Europe", "continent-scale", 8.6821, 50.1109, "Central Europe"],
   ["hypothetical", "north-america-continent", "Continent scale · North America", "continent-scale", -98.4842, 39.0119, "Geographic center of the contiguous US"],
-  ["hypothetical", "africa-continent", "Large-continent scale · Africa", "large-continent", 21, 8, "Central Africa · illustrative"],
-  ["hypothetical", "asia-continent", "Large-continent scale · Asia", "large-continent", 90, 45, "Central Asia · illustrative"],
   ["hypothetical", "australia-continent", "Continent scale · Australia", "continent-scale", 134, -25, "Central Australia · illustrative"],
-  ["hypothetical", "point-nemo-hemisphere", "Hemisphere scale · Point Nemo", "hemisphere-scale", -123.3933, -48.8763, "Point Nemo, South Pacific"],
-  ["hypothetical", "earth-thought-experiment", "Earth-span stress test · 1 Pt", "earth-spanning", 0, 0, "Global overlay origin"],
 ] as const;
 
 describe("scenario catalog parity", () => {
   it("preserves every group, label, device, coordinate and location in prototype order", () => {
     expect(SCENARIOS.map((s) => [s.kind, s.id, s.name, s.deviceId, s.point.longitude, s.point.latitude, s.locationName])).toEqual(reference);
-    expect(new Set(SCENARIOS.map((s) => s.id)).size).toBe(20);
+    expect(new Set(SCENARIOS.map((s) => s.id)).size).toBe(16);
     for (const scenario of SCENARIOS) {
       expect(getScenarioById(scenario.id)).toBe(scenario);
       expect(getDeviceById(scenario.deviceId)).toBeDefined();

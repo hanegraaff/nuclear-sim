@@ -1,14 +1,15 @@
 import type { LaunchFrame } from "../../application/launch";
-import { combineBlastPeakAndSum, blastDamageIntensity } from "../../domain/overlap";
-import { destinationPoint, surfaceDistanceKm, type GeoPoint } from "../../domain/geodesy";
+import { blastDamageIntensity } from "../../domain/overlap";
+import { surfaceDistanceKm, type GeoPoint } from "../../domain/geodesy";
 import type { BlastRadii } from "../../domain/blast";
-import type { MapCameraAdapter, ScreenPoint } from "../map/MapCameraAdapter";
+import type { MapCameraAdapter } from "../map/MapCameraAdapter";
 import { blastExpansion } from "../animation/blastTiming";
 import { buildBlastGroundGrid, type BlastGroundGrid } from "./blastFieldGeometry";
-import { MULTI_BLAST_COLOR_LUT, multiBlastDisplayIntensity, multiBlastHueIntensity } from "./multiBlastPalette";
+import { writeComposedBlastSample } from "./multiBlastPalette";
+import { createBlastFieldSampler } from "./blastPalette";
+import { BlastOpticalEffects } from "./BlastOpticalEffects";
 
 const FALLOFF_FACTOR = 1.24;
-const FLASH_MS = 1100;
 /** Maximum geodesic evaluations or launch candidates processed in one repaint. */
 export const MULTI_FIELD_WORK_CHUNK = 600_000;
 const MAX_LAUNCHES_PER_CHUNK = 1024;
@@ -18,6 +19,7 @@ interface FieldContribution {
   readonly origin: GeoPoint;
   readonly radii: BlastRadii;
   readonly travelledKm: number;
+  readonly sample: ReturnType<typeof createBlastFieldSampler>;
 }
 
 /** Mutable sample accumulators and cursor for one immutable set of strike frames. */
@@ -26,6 +28,8 @@ export interface MultiFieldWorkState {
   readonly ground: BlastGroundGrid;
   readonly peak: Float32Array;
   readonly sum: Float32Array;
+  /** Dominant single-reference RGBA bytes; fixed memory independent of strike count. */
+  readonly baseColors: Uint8ClampedArray;
   nextFrame: number;
   nextPixel: number;
   currentField: FieldContribution | null;
@@ -61,6 +65,7 @@ export function expandingBlastIntensity(distanceKm: number, radii: BlastRadii, t
 export function createMultiFieldWork(frames: readonly LaunchFrame[], ground: BlastGroundGrid): MultiFieldWorkState {
   return {
     frames, ground, peak: new Float32Array(ground.longitudes.length), sum: new Float32Array(ground.longitudes.length),
+    baseColors: new Uint8ClampedArray(ground.longitudes.length * 4),
     nextFrame: 0, nextPixel: 0, currentField: null,
   };
 }
@@ -86,7 +91,7 @@ export function advanceMultiFieldWork(state: MultiFieldWorkState, maxEvaluations
         state.nextFrame += 1;
         continue;
       }
-      state.currentField = { origin, radii: launch.radii, travelledKm };
+      state.currentField = { origin, radii: launch.radii, travelledKm, sample: createBlastFieldSampler(launch.radii) };
     }
     const field = state.currentField;
     while (state.nextPixel < cells && evaluations < maxEvaluations) {
@@ -95,9 +100,24 @@ export function advanceMultiFieldWork(state: MultiFieldWorkState, maxEvaluations
       const longitude = state.ground.longitudes[index]!;
       const latitude = state.ground.latitudes[index]!;
       if (!Number.isFinite(longitude) || !Number.isFinite(latitude)) continue;
-      const distance = surfaceDistanceKm(field.origin, { longitude, latitude });
-      const intensity = expandingBlastIntensity(distance, field.radii, field.travelledKm);
-      state.peak[index] = Math.max(state.peak[index]!, intensity);
+      const distance = Math.fround(surfaceDistanceKm(field.origin, { longitude, latitude }));
+      const intensity = Math.fround(expandingBlastIntensity(distance, field.radii, field.travelledKm));
+      if (intensity <= 0) continue;
+      const peak = state.peak[index]!;
+      const offset = index * 4;
+      if (intensity >= peak) {
+        const color = field.sample(distance, field.travelledKm);
+        const alpha = Math.round(color.alpha * 255);
+        // Equal-intensity fields can have different expanding-tail colors.
+        // A deterministic lexicographic tie break preserves order independence.
+        const rank = alpha * 0x1000000 + color.red * 0x10000 + color.green * 0x100 + color.blue;
+        const priorRank = state.baseColors[offset + 3]! * 0x1000000 + state.baseColors[offset]! * 0x10000 + state.baseColors[offset + 1]! * 0x100 + state.baseColors[offset + 2]!;
+        if (intensity > peak || rank > priorRank) {
+          state.baseColors[offset] = color.red; state.baseColors[offset + 1] = color.green;
+          state.baseColors[offset + 2] = color.blue; state.baseColors[offset + 3] = alpha;
+        }
+      }
+      state.peak[index] = Math.max(peak, intensity);
       state.sum[index] = state.sum[index]! + intensity;
     }
     if (state.nextPixel === cells) {
@@ -125,11 +145,14 @@ export class MultiBlastCanvasRenderer {
   private compositionKey = "";
   private cameraRevision = 0;
 
-  constructor(private readonly canvas: HTMLCanvasElement, private readonly camera: MapCameraAdapter, private readonly inspectionCanvas?: HTMLCanvasElement) {}
+  private readonly optics: BlastOpticalEffects;
+
+  constructor(private readonly canvas: HTMLCanvasElement, private readonly camera: MapCameraAdapter, private readonly inspectionCanvas?: HTMLCanvasElement) { this.optics = new BlastOpticalEffects(camera); }
 
   /** Drop the one shared camera grid and cancel stale chunks after projection changes. */
   invalidateProjection(): void {
     this.cameraRevision += 1;
+    this.optics.invalidateProjection();
     this.cancelPending();
     this.ground = null;
     this.groundKey = "";
@@ -141,11 +164,15 @@ export class MultiBlastCanvasRenderer {
 
   /** Cancel scheduled continuation when the map controller is disposed. */
   dispose(): void {
+    this.optics.invalidateProjection();
     this.cancelPending();
     this.latestRequest = null;
     this.job = null;
     this.ground = null;
     this.groundKey = "";
+    this.fieldCanvas = null;
+    this.fieldContext = null;
+    this.compositionKey = "";
   }
 
   /** Paint all delivery frames at CSS-pixel viewport dimensions; preserve a grouped single-launch ruler when requested. */
@@ -191,8 +218,20 @@ export class MultiBlastCanvasRenderer {
     }
     // Sun glows are decorative; all geographic fields and WebGL domes remain
     // present while only the eight newest glows use per-frame Canvas work.
-    this.paintOpticalSuns(context, impacted.slice(-8));
-    this.paintActiveShockwaves(context, impacted.slice(-8));
+    for (const { launch, elapsedMs } of impacted.slice(-8)) {
+      this.optics.paint(context, launch, elapsedMs, width, height, {
+        viewportWidth: width, viewportHeight: height,
+        sample: () => {
+          const ground = this.ground;
+          if (!ground) return null;
+          // One temporary distance array builds a cached light bitmap; no
+          // per-strike geographic masks survive this callback.
+          const distancesKm = Float32Array.from(ground.longitudes, (longitude, index) =>
+            surfaceDistanceKm(launch.route.target, { longitude, latitude: ground.latitudes[index]! }));
+          return { width: ground.width, height: ground.height, scale: ground.width / width, distancesKm };
+        },
+      });
+    }
     if (this.job || frameKey !== this.compositionKey) this.scheduleContinuation();
   }
 
@@ -248,14 +287,7 @@ export class MultiBlastCanvasRenderer {
       const peak = job.peak[index]!;
       if (peak <= 0) continue;
       const sum = job.sum[index]!;
-      const display = multiBlastDisplayIntensity(combineBlastPeakAndSum(peak, sum));
-      const alphaOffset = Math.min(255, Math.round(display * 255)) * 4;
-      const colorOffset = Math.min(255, Math.round(multiBlastHueIntensity(display, peak, sum) * 255)) * 4;
-      const offset = index * 4;
-      image.data[offset] = MULTI_BLAST_COLOR_LUT[colorOffset]!;
-      image.data[offset + 1] = MULTI_BLAST_COLOR_LUT[colorOffset + 1]!;
-      image.data[offset + 2] = MULTI_BLAST_COLOR_LUT[colorOffset + 2]!;
-      image.data[offset + 3] = MULTI_BLAST_COLOR_LUT[alphaOffset + 3]!;
+      writeComposedBlastSample(image.data, index * 4, peak, sum, job.baseColors);
     }
     this.fieldContext.putImageData(image, 0, 0);
   }
@@ -277,65 +309,4 @@ export class MultiBlastCanvasRenderer {
     this.repaintId = null;
   }
 
-  /** Put a small white-hot glow over each impact while the WebGL domes remain distinct. */
-  private paintOpticalSuns(context: CanvasRenderingContext2D, frames: readonly LaunchFrame[]): void {
-    context.save();
-    context.globalCompositeOperation = "screen";
-    for (const { launch, elapsedMs } of frames) {
-      const center = this.camera.toScreen(launch.route.target);
-      if (!Number.isFinite(center.x) || !Number.isFinite(center.y)) continue;
-      const age = elapsedMs - launch.flightMs;
-      const reveal = Math.min(1, age / 650);
-      const radius = 22 + Math.min(38, launch.radii.fireball * 65);
-      const glow = context.createRadialGradient(center.x, center.y, 0, center.x, center.y, radius);
-      glow.addColorStop(0, `rgba(255,255,245,${0.8 * reveal})`);
-      glow.addColorStop(0.32, `rgba(255,235,129,${0.52 * reveal})`);
-      glow.addColorStop(1, "rgba(255,102,28,0)");
-      context.fillStyle = glow;
-      context.beginPath(); context.arc(center.x, center.y, radius, 0, Math.PI * 2); context.fill();
-      if (!launch.reducedMotion && age < FLASH_MS) this.paintFlash(context, center, age);
-    }
-    context.restore();
-  }
-
-  /** Short impact flash remains visible above the combined mask. */
-  private paintFlash(context: CanvasRenderingContext2D, center: ScreenPoint, ageMs: number): void {
-    const life = Math.max(0, ageMs / FLASH_MS);
-    const opacity = Math.min(1, life / 0.035) * (1 - life) ** 1.55;
-    if (opacity <= 0) return;
-    const radius = 34 + Math.sqrt(life) * 110;
-    const flash = context.createRadialGradient(center.x, center.y, 0, center.x, center.y, radius);
-    flash.addColorStop(0, `rgba(255,255,255,${opacity})`);
-    flash.addColorStop(0.35, `rgba(255,221,114,${0.7 * opacity})`);
-    flash.addColorStop(1, "rgba(255,67,15,0)");
-    context.fillStyle = flash;
-    context.beginPath(); context.arc(center.x, center.y, radius, 0, Math.PI * 2); context.fill();
-  }
-
-  /** Keep only the newest eight active rings to bound dense-frame line work. */
-  private paintActiveShockwaves(context: CanvasRenderingContext2D, frames: readonly LaunchFrame[]): void {
-    for (const { launch, elapsedMs } of frames) {
-      const progress = (elapsedMs - launch.flightMs) / launch.blastMs;
-      if (launch.reducedMotion || progress <= 0 || progress >= 1) continue;
-      const radiusKm = launch.radii.light * blastExpansion(progress);
-      context.save();
-      context.beginPath();
-      let valid = true;
-      for (let index = 0; index < 72; index += 1) {
-        let point: ScreenPoint;
-        try { point = this.camera.toScreen(destinationPoint(launch.route.target, radiusKm, index * 5)); }
-        catch { valid = false; break; }
-        if (!Number.isFinite(point.x) || !Number.isFinite(point.y)) { valid = false; break; }
-        if (index === 0) context.moveTo(point.x, point.y);
-        else context.lineTo(point.x, point.y);
-      }
-      if (valid) {
-        context.closePath();
-        context.strokeStyle = "rgba(255,93,48,.6)";
-        context.lineWidth = 2;
-        context.stroke();
-      }
-      context.restore();
-    }
-  }
 }

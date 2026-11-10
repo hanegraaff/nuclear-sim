@@ -1,5 +1,6 @@
 /** R-16/R-17: every selectable fixed ID has research metadata and every scenario pairs distinct prose with local artwork. */
-import { existsSync, statSync } from "node:fs";
+import { existsSync, statSync, readdirSync, readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { DEVICES, DEVICE_GROUPS } from "../../src/catalog/devices";
@@ -12,7 +13,11 @@ const asset = (src: string) => resolve(process.cwd(), "public", src.slice(1));
 const confidences = ["sourced", "reported", "estimated", "unknown", "inapplicable"];
 
 describe("complete public device dossiers", () => {
-  it("covers all 52 fixed IDs without substituting unmodeled weapons", () => {
+  it("ships exactly the active device and scenario media, without retired orphan files", () => {
+    expect(readdirSync(asset("/media/devices")).sort()).toEqual(DEVICES.map((d) => `${d.id}.svg`).sort());
+    expect(readdirSync(asset("/media/scenarios")).sort()).toEqual(SCENARIOS.map((s) => `${s.id}.webp`).sort());
+  });
+  it("covers all 49 fixed IDs without substituting unmodeled weapons", () => {
     expect(Object.keys(DEVICE_DOSSIERS).sort()).toEqual(DEVICES.map((device) => device.id).sort());
   });
 
@@ -43,15 +48,21 @@ describe("complete public device dossiers", () => {
     expect(existsSync(asset(dossier.silhouette.src))).toBe(true);
     // 20 KiB is the explicit Plan 18 transfer budget for one optimized exterior outline.
     expect(statSync(asset(dossier.silhouette.src)).size).toBeLessThanOrEqual(20 * 1024);
-    expect(dossier.silhouette.width).toBeGreaterThan(0);
-    expect(dossier.silhouette.height).toBeGreaterThan(0);
+    expect(readFileSync(asset(dossier.silhouette.src), "utf8")).not.toMatch(/<text|reference length|scale unavailable/i);
+    expect(dossier.silhouette.width).toBe(960);
+    expect(dossier.silhouette.height).toBe(320);
   });
 });
 
 describe("scenario event previews", () => {
-  it("pairs all 20 scenarios with distinct event descriptions and no orphan preview IDs", () => {
+  it("preserves every surviving hypothetical artwork byte for byte from the pre-Plan-19 hash ledger", () => {
+    const hashes = JSON.parse(readFileSync(resolve(process.cwd(), "tests/fixtures/plan-19-preserved-artwork.json"), "utf8")) as Record<string, string>;
+    expect(Object.keys(hashes).sort()).toEqual(SCENARIOS.filter((s) => s.kind === "hypothetical").map((s) => s.id).sort());
+    for (const [id, expected] of Object.entries(hashes)) expect(createHash("sha256").update(readFileSync(asset(`/media/scenarios/${id}.webp`))).digest("hex")).toBe(expected);
+  });
+  it("pairs all 16 scenarios with distinct event descriptions and no orphan preview IDs", () => {
     expect(Object.keys(SCENARIO_PREVIEWS).sort()).toEqual(SCENARIOS.map((scenario) => scenario.id).sort());
-    expect(new Set(Object.values(SCENARIO_PREVIEWS).map((preview) => preview.description)).size).toBe(20);
+    expect(new Set(Object.values(SCENARIO_PREVIEWS).map((preview) => preview.description)).size).toBe(16);
   });
 
   for (const scenario of SCENARIOS) it(`${scenario.id} supplies readable event text and a compressed local image`, () => {

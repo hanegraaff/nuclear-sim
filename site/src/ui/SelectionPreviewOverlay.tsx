@@ -53,7 +53,7 @@ function DeviceFacts({ dossier, cache }: { readonly dossier: DeviceDossier; read
   return <>
     <div className="preview-outline-wrap">
       <PreviewImage key={dossier.silhouette.src} url={dossier.silhouette.src} alt={`${dossier.entityLabel} exterior outline${dossier.silhouette.confidence === "estimated" ? " (est)" : ""}`} cache={cache} className="preview-outline" width={dossier.silhouette.width} height={dossier.silhouette.height} />
-      <div className="preview-size-annotation"><span>↔ {qualified(dossier.length)}</span><span>EXTERIOR PROFILE{dossier.silhouette.confidence === "estimated" ? " (est)" : ""}</span></div>
+      <div className="preview-exterior-caption">EXTERIOR PROFILE{dossier.silhouette.confidence === "estimated" ? " (est)" : ""}</div>
     </div>
     <dl className="preview-facts">{facts.filter(([label, fact]) => label !== "PAYLOAD / FILL" || fact.confidence !== "inapplicable").map(([label, fact]) => <div key={label}><dt>{fact.label ?? label}</dt><dd>{qualified(fact)}</dd></div>)}</dl>
   </>;
@@ -125,7 +125,6 @@ export default function SelectionPreviewOverlay({ kind, options, state, listId, 
             {custom && <><div className="preview-concept">CUSTOM YIELD<br /><small>No physical weapon specified</small></div><dl className="preview-facts">{["LENGTH", "TOTAL MASS", "CREATED / INTRODUCED", "RETIRED / STATUS", "COUNTRY OF ORIGIN"].map((label) => <div key={label}><dt>{label}</dt><dd>Not applicable — simulation input</dd></div>)}</dl></>}
             {scene && scenario && <><PreviewImage key={scene.imageSrc} url={scene.imageSrc} alt={`Red monochrome illustration of a huge blast at ${scenario.locationName}`} cache={cache} className="preview-scenario-image" width={scene.imageWidth} height={scene.imageHeight} /><p className="preview-image-caption">AI-GENERATED ILLUSTRATION · {scenario.locationName}</p><p className="preview-event-copy">{scene.description}</p><p className="preview-sources">{scene.sources.map((source) => <span key={source} title={source}>{sourceLabel(source)} </span>)}</p></>}
           </div>
-          {kind === "scenario" && <footer>SHIFT + PAGE UP/DOWN: SCROLL PREVIEW · LEAVE DROPDOWN TO DISMISS</footer>}
         </aside>
       </div>
     </div>}

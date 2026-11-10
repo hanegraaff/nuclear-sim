@@ -1,0 +1,103 @@
+{
+  "browser": "157.0.8103.40",
+  "node": "v26.13.0",
+  "baselineSource": "Pre-Plan-19 source46a9ab1, built with same Node26/dependencies",
+  "viewport": {
+    "width": 1508,
+    "height": 1080
+  },
+  "method": "Chrome CDP TaskDuration/ScriptDuration deltas during4700 fake-clock ms after impact;3 interleaved samples per fixture/version; fixed local tiles; CPU time, not real-time latency",
+  "samples": [
+    {
+      "repeat": 1,
+      "fixture": "mirv-ten-pitched",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 8032.7,
+      "scriptCpuMs": 7811.459,
+      "jsHeapUsedBytes": 15704552,
+      "impacts": 10,
+      "pitch": 60
+    },
+    {
+      "repeat": 1,
+      "fixture": "mirv-ten-pitched",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 7920.641,
+      "scriptCpuMs": 7707.415,
+      "jsHeapUsedBytes": 11376732,
+      "impacts": 10,
+      "pitch": 60
+    },
+    {
+      "repeat": 2,
+      "fixture": "mirv-ten-pitched",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 7914.841,
+      "scriptCpuMs": 7717.285000000001,
+      "jsHeapUsedBytes": 13475116,
+      "impacts": 10,
+      "pitch": 60
+    },
+    {
+      "repeat": 2,
+      "fixture": "mirv-ten-pitched",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 8006.595000000001,
+      "scriptCpuMs": 7777.449,
+      "jsHeapUsedBytes": 9224416,
+      "impacts": 10,
+      "pitch": 60
+    },
+    {
+      "repeat": 3,
+      "fixture": "mirv-ten-pitched",
+      "version": "before",
+      "animationMs": 4700,
+      "taskCpuMs": 7887.224,
+      "scriptCpuMs": 7672.508,
+      "jsHeapUsedBytes": 9166208,
+      "impacts": 10,
+      "pitch": 60
+    },
+    {
+      "repeat": 3,
+      "fixture": "mirv-ten-pitched",
+      "version": "after",
+      "animationMs": 4700,
+      "taskCpuMs": 8014.716,
+      "scriptCpuMs": 7790.313,
+      "jsHeapUsedBytes": 9242196,
+      "impacts": 10,
+      "pitch": 60
+    }
+  ],
+  "summary": {
+    "mirv-ten-pitched": {
+      "before": {
+        "meanTaskCpuMs": 7944.921666666666,
+        "meanScriptCpuMs": 7733.750666666667
+      },
+      "after": {
+        "meanTaskCpuMs": 7980.650666666667,
+        "meanScriptCpuMs": 7758.392333333333
+      }
+    }
+  },
+  "cache": {
+    "accumulatorBytesPerCell": 12,
+    "maximumCells": 212800,
+    "retainedGeographicGrids": 1,
+    "maximumOpticalRasters": 8
+  },
+  "perRepaintBounds": {
+    "geodesicEvaluations": 600000,
+    "launchCandidates": 1024
+  },
+  "candidateInitialScript": "index-BBhLUEWf.js",
+  "reproduce": "From site/: node scripts/measure-blast-performance.mjs http://127.0.0.1:4175 http://127.0.0.1:4174 tests/e2e/evidence/plan-19-pitched-performance.json mirv-ten-pitched",
+  "interpretation": "Ten impact fields are present at pitch60. Mean CPU differs by about0.5%, with overlapping ranges. The focused renderer test separately proves the admitted eight optical bitmaps allocate once and reuse across12repaints; camera invalidation causes one bounded rebuild."
+}

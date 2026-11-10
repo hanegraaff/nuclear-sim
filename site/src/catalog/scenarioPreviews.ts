@@ -162,52 +162,12 @@ export const SCENARIO_PREVIEWS: Readonly<Record<string, ScenarioPreview>> = {
       "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
     ]
   },
-  "africa-continent": {
-    "id": "africa-continent",
-    "imageSrc": "/media/scenarios/africa-continent.webp",
-    "imageWidth": 1200,
-    "imageHeight": 800,
-    "description": "This hypothetical extreme event would tower above Central Africa. Forest, rivers and settlements would seem a thin living surface beneath the red cloud. Landscapes sustaining generations would become terribly slight in the imagined scene, whose continental consequences lie beyond this model’s calibration.",
-    "sources": [
-      "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-    ]
-  },
-  "asia-continent": {
-    "id": "asia-continent",
-    "imageSrc": "/media/scenarios/asia-continent.webp",
-    "imageWidth": 1200,
-    "imageHeight": 800,
-    "description": "This hypothetical extreme event would loom over Central Asia’s wide land and mountain horizons. Routes, water and scattered communities would seem fragile beneath the cloud. The dark scene imagines broken connections across an inhabited landscape; it cannot forecast a continent’s fate.",
-    "sources": [
-      "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-    ]
-  },
   "australia-continent": {
     "id": "australia-continent",
     "imageSrc": "/media/scenarios/australia-continent.webp",
     "imageWidth": 1200,
     "imageHeight": 800,
     "description": "This hypothetical continent-scale blast would rise over Australia’s interior. Desert ranges and long roads would become small beneath an overwhelming red sky. Communities, Country and ecosystems give that landscape meaning; the imagined loss is immense, while literal continental damage exceeds this model’s calibration.",
-    "sources": [
-      "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-    ]
-  },
-  "point-nemo-hemisphere": {
-    "id": "point-nemo-hemisphere",
-    "imageSrc": "/media/scenarios/point-nemo-hemisphere.webp",
-    "imageWidth": 1200,
-    "imageHeight": 800,
-    "description": "This hypothetical hemisphere-scale event would erupt near Point Nemo in the South Pacific. No skyline would make the huge cloud comprehensible, only ocean beneath an impossible glare. Remoteness would offer no reassuring boundary in an artistic catastrophe beyond the model’s calibrated assumptions.",
-    "sources": [
-      "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
-    ]
-  },
-  "earth-thought-experiment": {
-    "id": "earth-thought-experiment",
-    "imageSrc": "/media/scenarios/earth-thought-experiment.webp",
-    "imageWidth": 1200,
-    "imageHeight": 800,
-    "description": "This hypothetical one-petaton stress test imagines Earth beneath a release of almost ungraspable scale. No familiar city edge would soften the distant view: only an inhabited world reduced to an experimental frame. Literal planetary consequences lie beyond the screening formulas.",
     "sources": [
       "https://github.com/hanegraaff/nuclear-sim/blob/main/site/docs/model.md"
     ]
