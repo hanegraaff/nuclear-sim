@@ -1,0 +1,364 @@
+{
+  "browser": "pinned Playwright Chromium",
+  "viewport": {
+    "width": 2208,
+    "height": 1276
+  },
+  "baselineInitialGzipBytes": 399142,
+  "initialGzipBytes": 401913,
+  "initialGzipDeltaBytes": 2771,
+  "artworkTotalBytes": 1350105,
+  "artwork": [
+    {
+      "folder": "devices",
+      "bytes": 661
+    },
+    {
+      "folder": "devices",
+      "bytes": 639
+    },
+    {
+      "folder": "devices",
+      "bytes": 624
+    },
+    {
+      "folder": "devices",
+      "bytes": 641
+    },
+    {
+      "folder": "devices",
+      "bytes": 609
+    },
+    {
+      "folder": "devices",
+      "bytes": 602
+    },
+    {
+      "folder": "devices",
+      "bytes": 697
+    },
+    {
+      "folder": "devices",
+      "bytes": 721
+    },
+    {
+      "folder": "devices",
+      "bytes": 674
+    },
+    {
+      "folder": "devices",
+      "bytes": 694
+    },
+    {
+      "folder": "devices",
+      "bytes": 706
+    },
+    {
+      "folder": "devices",
+      "bytes": 664
+    },
+    {
+      "folder": "devices",
+      "bytes": 818
+    },
+    {
+      "folder": "devices",
+      "bytes": 588
+    },
+    {
+      "folder": "devices",
+      "bytes": 670
+    },
+    {
+      "folder": "devices",
+      "bytes": 668
+    },
+    {
+      "folder": "devices",
+      "bytes": 648
+    },
+    {
+      "folder": "devices",
+      "bytes": 557
+    },
+    {
+      "folder": "devices",
+      "bytes": 420
+    },
+    {
+      "folder": "devices",
+      "bytes": 684
+    },
+    {
+      "folder": "devices",
+      "bytes": 706
+    },
+    {
+      "folder": "devices",
+      "bytes": 698
+    },
+    {
+      "folder": "devices",
+      "bytes": 636
+    },
+    {
+      "folder": "devices",
+      "bytes": 686
+    },
+    {
+      "folder": "devices",
+      "bytes": 686
+    },
+    {
+      "folder": "devices",
+      "bytes": 686
+    },
+    {
+      "folder": "devices",
+      "bytes": 736
+    },
+    {
+      "folder": "devices",
+      "bytes": 838
+    },
+    {
+      "folder": "devices",
+      "bytes": 483
+    },
+    {
+      "folder": "devices",
+      "bytes": 710
+    },
+    {
+      "folder": "devices",
+      "bytes": 674
+    },
+    {
+      "folder": "devices",
+      "bytes": 687
+    },
+    {
+      "folder": "devices",
+      "bytes": 682
+    },
+    {
+      "folder": "devices",
+      "bytes": 627
+    },
+    {
+      "folder": "devices",
+      "bytes": 631
+    },
+    {
+      "folder": "devices",
+      "bytes": 628
+    },
+    {
+      "folder": "devices",
+      "bytes": 486
+    },
+    {
+      "folder": "devices",
+      "bytes": 407
+    },
+    {
+      "folder": "devices",
+      "bytes": 416
+    },
+    {
+      "folder": "devices",
+      "bytes": 794
+    },
+    {
+      "folder": "devices",
+      "bytes": 781
+    },
+    {
+      "folder": "devices",
+      "bytes": 482
+    },
+    {
+      "folder": "devices",
+      "bytes": 527
+    },
+    {
+      "folder": "devices",
+      "bytes": 784
+    },
+    {
+      "folder": "devices",
+      "bytes": 398
+    },
+    {
+      "folder": "devices",
+      "bytes": 487
+    },
+    {
+      "folder": "devices",
+      "bytes": 720
+    },
+    {
+      "folder": "devices",
+      "bytes": 487
+    },
+    {
+      "folder": "devices",
+      "bytes": 485
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 96534
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 40384
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 38034
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 120104
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 96162
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 144078
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 72386
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 126872
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 112522
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 55994
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 25222
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 85010
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 117064
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 28962
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 56676
+    },
+    {
+      "folder": "scenarios",
+      "bytes": 103068
+    }
+  ],
+  "candidateSamplesMs": [
+    2.5,
+    10.599999994039536,
+    11.099999994039536,
+    11.099999994039536,
+    13.600000008940697,
+    14,
+    14.099999994039536,
+    14.099999994039536,
+    14.099999994039536,
+    14.699999988079071,
+    14.799999997019768,
+    14.899999991059303,
+    14.900000005960464,
+    15,
+    15,
+    15,
+    15.200000002980232,
+    15.5,
+    15.599999994039536,
+    15.700000002980232
+  ],
+  "candidateP95Ms": 15.599999994039536,
+  "previewLongTasksMs": [],
+  "launchWithPickerClosedFrameIntervalsMs": [
+    16.699999999999818,
+    33.20000000000027,
+    33.399999999999636,
+    33.40000000000009,
+    33.30000000000018,
+    16.699999999999818,
+    33.30000000000018,
+    33.40000000000009,
+    33.29999999999973,
+    16.59999999999991,
+    50,
+    16.700000000000273,
+    33.29999999999973,
+    33.40000000000009,
+    33.30000000000018,
+    33.29999999999973,
+    33.30000000000018,
+    33.40000000000009,
+    33.29999999999973,
+    16.600000000000364,
+    50.09999999999991,
+    16.59999999999991,
+    33.40000000000009,
+    33.29999999999973,
+    16.700000000000273,
+    33.29999999999973,
+    33.40000000000009,
+    33.20000000000027,
+    33.399999999999636,
+    16.600000000000364,
+    33.399999999999636,
+    33.40000000000009,
+    16.59999999999991,
+    33.30000000000018,
+    33.30000000000018,
+    16.699999999999818,
+    33.399999999999636,
+    33.30000000000018,
+    66.60000000000036,
+    33.399999999999636,
+    33.30000000000018,
+    33.30000000000018,
+    33.399999999999636,
+    16.600000000000364,
+    33.399999999999636,
+    33.30000000000018,
+    16.699999999999818,
+    33.30000000000018,
+    33.30000000000018,
+    33.30000000000018,
+    16.699999999999818,
+    33.399999999999636,
+    16.600000000000364,
+    33.30000000000018,
+    33.399999999999636,
+    16.699999999999818,
+    33.30000000000018,
+    33.30000000000018,
+    16.699999999999818,
+    33.30000000000018
+  ],
+  "cacheBounds": {
+    "images": 2,
+    "decodedBytes": 16777216,
+    "verification": "tests/integration/preview-image-cache.test.ts"
+  }
+}
